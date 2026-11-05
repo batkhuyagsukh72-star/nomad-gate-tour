@@ -41,11 +41,11 @@
   // label offsets in screen px: [dx, dy, anchor]
   var labelPos = { ub: [0, -20, 'middle'], terelj: [12, -11, 'start'], chinggis: [13, 19, 'start'], khustai: [0, -16, 'middle'], family: [0, 27, 'middle'],
                    elsen: [0, -16, 'middle'], kharkhorin: [-13, 5, 'end'], orkhon: [0, 27, 'middle'] };
-  function curve(pts) {
+  function curve(pts, bend) {
     var d = 'M' + pts[0].map(function (v) { return v.toFixed(1); }).join(' ');
     for (var i = 1; i < pts.length; i++) {
       var a = pts[i - 1], b = pts[i], mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, dx = b[0] - a[0], dy = b[1] - a[1], len = Math.hypot(dx, dy) || 1;
-      var k = (i % 2 ? 1 : -1) * Math.min(34, len * .2);
+      var k = (i % 2 ? 1 : -1) * (bend ? Math.min(bend[0], len * bend[1]) : Math.min(34, len * .2));
       d += ' Q' + (mx - dy / len * k).toFixed(1) + ' ' + (my + dx / len * k).toFixed(1) + ' ' + b[0].toFixed(1) + ' ' + b[1].toFixed(1);
     }
     return d;
@@ -85,8 +85,8 @@
   var smallMap = matchMedia('(max-width: 640px)');
   /* whole-country map: routes at their true position on Mongolia, labels pulled out on leader lines */
   var fullLabels = { // label anchor in map units (1200x620 frame) + text-anchor
-    ub: [708, 208, 'middle'], terelj: [792, 240, 'start'], chinggis: [792, 292, 'start'], khustai: [706, 330, 'start'],
-    family: [676, 356, 'middle'], elsen: [582, 250, 'middle'], kharkhorin: [524, 287, 'end'], orkhon: [488, 372, 'middle'] };
+    ub: [700, 210, 'middle'], terelj: [792, 244, 'start'], chinggis: [792, 298, 'start'], khustai: [712, 334, 'start'],
+    family: [626, 356, 'middle'], elsen: [574, 250, 'middle'], kharkhorin: [520, 288, 'end'], orkhon: [486, 374, 'middle'] };
   function mapFullSVG(ids, o) {
     o = o || {}; var uid = o.uid || 'f', fs = o.fs || 19, labels = o.labels === undefined ? true : o.labels;
     var used = {}; ids.forEach(function (id) { byId[id].route.forEach(function (p) { used[p] = 1; }); });
@@ -100,7 +100,14 @@
       '<rect width="1200" height="620" fill="url(#dots' + uid + ')" clip-path="url(#mn' + uid + ')"/>' +
       '<text class="m-name" x="600" y="478" text-anchor="middle">' + esc(t('map.country')) + '</text>' +
       '<ellipse cx="640" cy="292" rx="190" ry="120" fill="url(#halo' + uid + ')"/>';
-    ids.forEach(function (id) { s += '<path class="m-route" data-route="' + id + '" d="' + curve(byId[id].route.map(P)) + '"/>'; });
+    ids.forEach(function (id) { s += '<path class="m-route" data-route="' + id + '" d="' + curve(byId[id].route.map(P), [9, .07]) + '"/>'; });
+    // real-distance scale bar (Mercator is conformal: same scale on both axes at this latitude)
+    var u100 = 100 / (M.kmPerUnit || 2.09), sx0 = 66, sy0 = 556;
+    var bar = 'M' + sx0 + ' ' + (sy0 - 7) + 'V' + sy0 + 'H' + (sx0 + 3 * u100).toFixed(1) + 'V' + (sy0 - 7);
+    for (var tk = 1; tk < 3; tk++) bar += 'M' + (sx0 + tk * u100).toFixed(1) + ' ' + (sy0 - 4) + 'V' + sy0;
+    s += '<g class="m-scale"><path d="' + bar + '"/><text x="' + sx0 + '" y="' + (sy0 - 14) + '" text-anchor="middle">0</text>' +
+      '<text x="' + (sx0 + 3 * u100).toFixed(1) + '" y="' + (sy0 - 14) + '" text-anchor="middle">300 ' + esc(t('map.km')) + '</text></g>';
+    var ubp = P('ub'); s += '<circle class="m-pulse" cx="' + ubp[0] + '" cy="' + ubp[1] + '" r="12"/><circle class="m-pulse m-pulse2" cx="' + ubp[0] + '" cy="' + ubp[1] + '" r="12"/>';
     Object.keys(used).forEach(function (p) {
       var xy = P(p), ub = p === 'ub', lp = fullLabels[p], x = xy[0].toFixed(1), y = xy[1].toFixed(1);
       var show = labels === true || (Array.isArray(labels) && labels.indexOf(p) > -1);
@@ -113,17 +120,43 @@
     });
     return s + '</svg>';
   }
+  var travRaf = null, travOn = false, travIO = null;
+  function startTravellers() {
+    if (travRaf) cancelAnimationFrame(travRaf); travRaf = null;
+    if (reduce) return;
+    var items = [];
+    $$('#map-svg svg').forEach(function (svg) {
+      $$('.m-route', svg).forEach(function (path, i) {
+        var len = path.getTotalLength(); if (!len) return;
+        var c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        c.setAttribute('class', 'm-trav'); c.setAttribute('r', svg.classList.contains('mfull') ? 4.2 : 3.6); c.setAttribute('data-route', path.getAttribute('data-route'));
+        svg.insertBefore(c, svg.querySelector('.m-pin'));
+        items.push({ c: c, p: path, len: len, dur: Math.max(4200, len * 38), off: i * 0.23 });
+      });
+    });
+    var tick = function (now) {
+      if (travOn) items.forEach(function (it) {
+        var x = (now / it.dur + it.off) % 2, f = x < 1 ? x : 2 - x; f = f * f * (3 - 2 * f); // ping-pong with ease
+        var pt = it.p.getPointAtLength(f * it.len); it.c.setAttribute('cx', pt.x.toFixed(1)); it.c.setAttribute('cy', pt.y.toFixed(1));
+      });
+      travRaf = requestAnimationFrame(tick);
+    };
+    travRaf = requestAnimationFrame(tick);
+    if (!travIO && 'IntersectionObserver' in window) { travIO = new IntersectionObserver(function (e) { travOn = e[0].isIntersecting; }, { rootMargin: '100px' }); travIO.observe($('#map-svg')); }
+    else if (!travIO) travOn = true;
+  }
   function renderMap() {
     var all = D.tours.map(function (x) { return x.id; });
     $('#map-svg').innerHTML = smallMap.matches
       ? mapFullSVG(all, { uid: 'f', fs: 30, labels: ['ub'] }) + '<div class="map-zoom">' + mapSVG(all, { uid: 'm', w: 440, h: 236, b: [500, 200, 800, 361], fs: 11, locator: false, labels: { ub: [-10, -12, 'end'], khustai: [0, 24, 'middle'], chinggis: [0, 23, 'middle'], orkhon: [-8, 24, 'start'], terelj: [10, -10, 'start'] } }) + '</div>'
       : mapFullSVG(all, { uid: 'f', fs: 19 });
+    startTravellers();
     $('#mapList').innerHTML = D.tours.map(function (tr, i) {
       return '<li><button type="button" data-route-btn="' + tr.id + '"><span class="n">0' + (i + 1) + '</span><span class="t">' + esc(L(tr.name)) + '</span><span class="d">' + tr.days + ' ' + esc(dayWord(tr.days)) + '</span></button></li>';
     }).join('');
   }
   function highlight(id) {
-    $$('#map-svg .m-route').forEach(function (p) { p.classList.toggle('dim', !!id && p.getAttribute('data-route') !== id); p.classList.toggle('hl', p.getAttribute('data-route') === id); });
+    $$('#map-svg .m-route, #map-svg .m-trav').forEach(function (p) { p.classList.toggle('dim', !!id && p.getAttribute('data-route') !== id); p.classList.toggle('hl', p.getAttribute('data-route') === id); });
     $$('#mapList button').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-route-btn') === id); });
   }
   $('#mapList').addEventListener('mouseover', function (e) { var b = e.target.closest('[data-route-btn]'); if (b) highlight(b.getAttribute('data-route-btn')); });
@@ -533,8 +566,12 @@
       gsap.from('.jc', { y: 80, opacity: 0, duration: 1.3, stagger: .1, ease: 'expo.out', scrollTrigger: { trigger: '#jTrack', start: 'top 85%' } });
 
       // map: routes draw, pins pop
-      $$('#map-svg .m-route').forEach(function (p, i) { var len = p.getTotalLength() + 2; gsap.fromTo(p, { strokeDasharray: len, strokeDashoffset: len }, { strokeDashoffset: 0, duration: 2.2, delay: i * .18, ease: 'power2.inOut', scrollTrigger: { trigger: '#map-svg', start: 'top 70%' } }); });
-      gsap.from('#map-svg .m-pin', { scale: 0, opacity: 0, transformOrigin: '50% 50%', duration: .8, stagger: .06, ease: 'back.out(2.4)', scrollTrigger: { trigger: '#map-svg', start: 'top 70%' } });
+      var mst = { trigger: '#map-svg', start: 'top 72%' };
+      $$('#map-svg .m-country').forEach(function (p) { var len = p.getTotalLength() + 2; gsap.fromTo(p, { strokeDasharray: len, strokeDashoffset: len, fillOpacity: 0 }, { strokeDashoffset: 0, fillOpacity: 1, duration: 2.4, ease: 'power2.inOut', scrollTrigger: mst }); });
+      gsap.from('#map-svg .mfull > rect, #map-svg .m-name, #map-svg .mfull > ellipse', { opacity: 0, duration: 1.6, delay: .6, ease: 'power1.out', scrollTrigger: mst });
+      $$('#map-svg .m-route').forEach(function (p, i) { var len = p.getTotalLength() + 2; gsap.fromTo(p, { strokeDasharray: len, strokeDashoffset: len }, { strokeDashoffset: 0, duration: 2, delay: 1 + i * .2, ease: 'power2.inOut', scrollTrigger: mst, onComplete: function () { p.style.strokeDasharray = 'none'; } }); });
+      gsap.from('#map-svg .m-pin text, #map-svg .m-lead, #map-svg .m-scale', { opacity: 0, y: 6, duration: .9, stagger: .03, delay: 1.6, ease: 'power2.out', scrollTrigger: mst });
+      gsap.from('#map-svg .m-pin circle', { scale: 0, opacity: 0, transformOrigin: '50% 50%', duration: .8, stagger: .02, delay: 1.1, ease: 'back.out(2.4)', scrollTrigger: mst });
       gsap.from('#mapList li', { x: -30, opacity: 0, duration: 1, stagger: .07, ease: 'expo.out', scrollTrigger: { trigger: '#mapList', start: 'top 85%' } });
 
       // experiences: active item drives the frame

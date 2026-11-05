@@ -478,4 +478,5 @@
   Object.keys(STEP).forEach(function (l) { D.t[l]['pay.less'] = STEP[l][0]; D.t[l]['pay.more'] = STEP[l][1]; });
   var COUNTRY = { en: 'MONGOLIA', mn: 'МОНГОЛ УЛС', ru: 'МОНГОЛИЯ', ko: '몽골', ja: 'モンゴル', de: 'MONGOLEI', es: 'MONGOLIA' };
   Object.keys(COUNTRY).forEach(function (l) { D.t[l]['map.country'] = COUNTRY[l]; });
+  ['en','ko','ja','de','es'].forEach(function (l) { D.t[l]['map.km'] = 'km'; }); D.t.mn['map.km'] = 'км'; D.t.ru['map.km'] = 'км';
 })();

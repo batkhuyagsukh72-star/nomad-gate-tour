@@ -177,6 +177,14 @@ html:not(.js) .st-text .w,html.rm .st-text .w{opacity:1}
 .mfull .m-route.hl{stroke-width:5}
 .mfull .m-lead{stroke:rgba(241,220,154,.45);stroke-width:1;vector-effect:non-scaling-stroke}
 .mfull .m-pin text{stroke-width:6px}
+.mfull .m-scale path{fill:none;stroke:rgba(241,220,154,.7);stroke-width:1.4;vector-effect:non-scaling-stroke}
+.mfull .m-scale text{font:600 15px/1 var(--sans);letter-spacing:.08em;fill:rgba(243,236,223,.62)}
+.m-trav{fill:#FFF3C9;filter:drop-shadow(0 0 5px rgba(241,220,154,.95)) drop-shadow(0 0 12px rgba(201,160,78,.7));transition:opacity .5s}
+.m-trav.dim{opacity:.08}
+.m-pulse{fill:none;stroke:var(--gold-hi);stroke-width:1.4;vector-effect:non-scaling-stroke;transform-box:fill-box;transform-origin:center;animation:mPulse 3.2s cubic-bezier(.2,.6,.3,1) infinite;opacity:0}
+.m-pulse2{animation-delay:1.6s}
+@keyframes mPulse{0%{transform:scale(.5);opacity:.85}100%{transform:scale(3.4);opacity:0}}
+html.rm .m-pulse,html.rm .m-trav{display:none}
 .map-zoom{margin-top:18px;padding-top:14px;border-top:1px solid var(--line-2)}
 .map-zoom svg{width:100%;height:auto;display:block;overflow:visible}
 .m-loc{position:absolute;right:0;top:-8px;width:clamp(110px,11vw,160px);height:auto;overflow:visible}
