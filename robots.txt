@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin.html
 Disallow: /pay-test.html
 
-Sitemap: https://batkhuyagsukh72-star.github.io/nomad-gate-tour/sitemap.xml
+Sitemap: https://nomadgatetour.com/sitemap.xml
