@@ -191,13 +191,13 @@ window.NGT = {
         Empty = demo mode (the whole booking + test payment runs in the browser, nothing is charged).
    Prices are SAMPLE values, per person, and must match the `tours` table (supabase/migrations/001_bookings.sql).
    When api is set the site loads live prices from the server, so the server is always the source of truth. */
-window.NGT.payments = { api: 'https://oiaagrrfkwfnnohstzqu.supabase.co/functions/v1/api', mode: 'test' }; // mode: 'request' (book now, pay later) | 'test'; the server's mode wins when api is set
+window.NGT.payments = { api: 'https://oiaagrrfkwfnnohstzqu.supabase.co/functions/v1/api', mode: 'request' }; // mode: 'request' (book now, pay later) | 'test'; the server's mode wins when api is set
 window.NGT.prices = {
-  terelj:  { usd: 120, mnt: 420000,  privUsd: 0,   privMnt: 0,      depositPct: 30 },
-  central: { usd: 850, mnt: 2950000, privUsd: 120, privMnt: 420000, depositPct: 30 },
-  nomad:   { usd: 480, mnt: 1650000, privUsd: 60,  privMnt: 210000, depositPct: 30 },
-  autumn:  { usd: 690, mnt: 2400000, privUsd: 90,  privMnt: 310000, depositPct: 30 },
-  stars:   { usd: 320, mnt: 1100000, privUsd: 30,  privMnt: 105000, depositPct: 30 }
+  terelj:  { usd: 120, mnt: 420000,  privUsd: 0,   privMnt: 0,      depositPct: 20 },
+  central: { usd: 850, mnt: 2950000, privUsd: 120, privMnt: 420000, depositPct: 20 },
+  nomad:   { usd: 480, mnt: 1650000, privUsd: 60,  privMnt: 210000, depositPct: 20 },
+  autumn:  { usd: 690, mnt: 2400000, privUsd: 90,  privMnt: 310000, depositPct: 20 },
+  stars:   { usd: 320, mnt: 1100000, privUsd: 30,  privMnt: 105000, depositPct: 20 }
 };
 
 /* ---------- Booking terms (used by terms.html) ----------
@@ -205,9 +205,9 @@ window.NGT.prices = {
 window.NGT.terms = {
   draft: true,                         // shows a "draft" notice on the terms page; set false when confirmed
   updated: '2026-11-05',
-  company: 'Nomad Gate Tour',          // legal company name (e.g. "Nomad Gate Tour LLC")
+  company: 'Nomad Gate Tour (Хөтөч БКЖ Глобал ХХК)', // brand + legal company name
   address: 'Ulaanbaatar, Mongolia',    // registered address
-  depositPct: 30,                      // deposit at booking, %
+  depositPct: 20,                      // deposit at booking, %
   balanceDays: 45,                     // balance due this many days before the trip
   cancelFull: 60,                      // cancel this many days or more before: deposit refunded
   cancelHalf: 30,                      // between cancelHalf and cancelFull: half of the deposit refunded
