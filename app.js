@@ -83,11 +83,41 @@
     return s;
   }
   var smallMap = matchMedia('(max-width: 640px)');
+  /* whole-country map: routes at their true position on Mongolia, labels pulled out on leader lines */
+  var fullLabels = { // label anchor in map units (1200x620 frame) + text-anchor
+    ub: [708, 208, 'middle'], terelj: [792, 240, 'start'], chinggis: [792, 292, 'start'], khustai: [706, 330, 'start'],
+    family: [676, 356, 'middle'], elsen: [582, 250, 'middle'], kharkhorin: [524, 287, 'end'], orkhon: [488, 372, 'middle'] };
+  function mapFullSVG(ids, o) {
+    o = o || {}; var uid = o.uid || 'f', fs = o.fs || 19, labels = o.labels === undefined ? true : o.labels;
+    var used = {}; ids.forEach(function (id) { byId[id].route.forEach(function (p) { used[p] = 1; }); });
+    var P = function (p) { return M.pins[p]; };
+    var s = '<svg class="mfull" viewBox="8 22 1184 578" role="img" aria-label="' + esc(t('map.aria')) + '" style="--fs:' + fs + 'px"><defs>' +
+      '<radialGradient id="glow' + uid + '"><stop offset="0" stop-color="#F1DC9A" stop-opacity=".55"/><stop offset="1" stop-color="#F1DC9A" stop-opacity="0"/></radialGradient>' +
+      '<radialGradient id="halo' + uid + '"><stop offset="0" stop-color="#C9A04E" stop-opacity=".16"/><stop offset="1" stop-color="#C9A04E" stop-opacity="0"/></radialGradient>' +
+      '<pattern id="dots' + uid + '" width="13" height="13" patternUnits="userSpaceOnUse"><circle cx="6.5" cy="6.5" r="1.25" fill="#C9A04E" fill-opacity=".38"/></pattern>' +
+      '<clipPath id="mn' + uid + '"><path d="' + M.d + '"/></clipPath></defs>' +
+      '<path class="m-country" d="' + M.d + '"/>' +
+      '<rect width="1200" height="620" fill="url(#dots' + uid + ')" clip-path="url(#mn' + uid + ')"/>' +
+      '<text class="m-name" x="600" y="478" text-anchor="middle">' + esc(t('map.country')) + '</text>' +
+      '<ellipse cx="640" cy="292" rx="190" ry="120" fill="url(#halo' + uid + ')"/>';
+    ids.forEach(function (id) { s += '<path class="m-route" data-route="' + id + '" d="' + curve(byId[id].route.map(P)) + '"/>'; });
+    Object.keys(used).forEach(function (p) {
+      var xy = P(p), ub = p === 'ub', lp = fullLabels[p], x = xy[0].toFixed(1), y = xy[1].toFixed(1);
+      var show = labels === true || (Array.isArray(labels) && labels.indexOf(p) > -1);
+      s += '<g class="m-pin' + (ub ? ' m-ub' : '') + '" data-pin="' + p + '">';
+      if (show && lp) s += '<line class="m-lead" x1="' + x + '" y1="' + y + '" x2="' + lp[0] + '" y2="' + (lp[1] + (lp[1] < xy[1] ? 6 : -fs * .8)) + '"/>';
+      s += '<circle class="m-glow" cx="' + x + '" cy="' + y + '" r="' + (ub ? 26 : 17) + '" style="fill:url(#glow' + uid + ')"/>' +
+        '<circle cx="' + x + '" cy="' + y + '" r="' + (ub ? 7.5 : 5.5) + '"/>' + (ub ? '' : '<circle class="core" cx="' + x + '" cy="' + y + '" r="2.3"/>');
+      if (show && lp) s += '<text x="' + lp[0] + '" y="' + lp[1] + '" text-anchor="' + lp[2] + '">' + esc(L(D.places[p])) + '</text>';
+      s += '</g>';
+    });
+    return s + '</svg>';
+  }
   function renderMap() {
     var all = D.tours.map(function (x) { return x.id; });
     $('#map-svg').innerHTML = smallMap.matches
-      ? mapSVG(all, { uid: 'm', w: 440, h: 236, b: [500, 200, 800, 361], fs: 11, labels: { ub: [-12, 4, 'end'], khustai: [0, 24, 'middle'], chinggis: [0, 23, 'middle'], orkhon: [-8, 24, 'start'], terelj: [10, -10, 'start'] } })
-      : mapSVG(all, { uid: 'm', w: 800, h: 360, b: [490, 215, 790, 350] });
+      ? mapFullSVG(all, { uid: 'f', fs: 30, labels: ['ub'] }) + '<div class="map-zoom">' + mapSVG(all, { uid: 'm', w: 440, h: 236, b: [500, 200, 800, 361], fs: 11, locator: false, labels: { ub: [-10, -12, 'end'], khustai: [0, 24, 'middle'], chinggis: [0, 23, 'middle'], orkhon: [-8, 24, 'start'], terelj: [10, -10, 'start'] } }) + '</div>'
+      : mapFullSVG(all, { uid: 'f', fs: 19 });
     $('#mapList').innerHTML = D.tours.map(function (tr, i) {
       return '<li><button type="button" data-route-btn="' + tr.id + '"><span class="n">0' + (i + 1) + '</span><span class="t">' + esc(L(tr.name)) + '</span><span class="d">' + tr.days + ' ' + esc(dayWord(tr.days)) + '</span></button></li>';
     }).join('');

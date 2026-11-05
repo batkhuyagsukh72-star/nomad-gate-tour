@@ -476,4 +476,6 @@
   var STEP = { en: ['Fewer travellers', 'More travellers'], mn: ['Хүний тоог хасах', 'Хүний тоог нэмэх'], ru: ['Меньше путешественников', 'Больше путешественников'],
     ko: ['인원 줄이기', '인원 늘리기'], ja: ['人数を減らす', '人数を増やす'], de: ['Weniger Reisende', 'Mehr Reisende'], es: ['Menos viajeros', 'Más viajeros'] };
   Object.keys(STEP).forEach(function (l) { D.t[l]['pay.less'] = STEP[l][0]; D.t[l]['pay.more'] = STEP[l][1]; });
+  var COUNTRY = { en: 'MONGOLIA', mn: 'МОНГОЛ УЛС', ru: 'МОНГОЛИЯ', ko: '몽골', ja: 'モンゴル', de: 'MONGOLEI', es: 'MONGOLIA' };
+  Object.keys(COUNTRY).forEach(function (l) { D.t[l]['map.country'] = COUNTRY[l]; });
 })();
