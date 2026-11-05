@@ -39,8 +39,8 @@
 
   /* ---------- map ---------- */
   // label offsets in screen px: [dx, dy, anchor]
-  var labelPos = { ub: [0, -20, 'middle'], terelj: [12, -11, 'start'], chinggis: [13, 19, 'start'], khustai: [0, -16, 'middle'], family: [0, 27, 'middle'],
-                   elsen: [0, -16, 'middle'], kharkhorin: [-13, 5, 'end'], orkhon: [0, 27, 'middle'] };
+  var labelPos = { ub: [0, -20, 'middle'], terelj: [12, -11, 'start'], chinggis: [13, 19, 'start'], khustai: [0, -16, 'middle'], khogno: [12, -12, 'start'],
+                   elsen: [0, 27, 'middle'], kharkhorin: [-13, 5, 'end'], orkhon: [0, 27, 'middle'], tsenkher: [-13, 5, 'end'], terkh: [-13, 5, 'end'], jargalant: [-13, 5, 'end'] };
   function curve(pts, bend) {
     var d = 'M' + pts[0].map(function (v) { return v.toFixed(1); }).join(' ');
     for (var i = 1; i < pts.length; i++) {
@@ -70,11 +70,26 @@
       '<mask id="mask' + uid + '"><rect width="' + W + '" height="' + H + '" fill="url(#fade' + uid + ')"/></mask></defs>' +
       '<rect class="m-dots" width="' + W + '" height="' + H + '" fill="url(#dots' + uid + ')" mask="url(#mask' + uid + ')"/>';
     ids.forEach(function (id) { s += '<path class="m-route" data-route="' + id + '" d="' + curve(byId[id].route.map(P)) + '"/>'; });
-    Object.keys(used).forEach(function (p) {
-      var xy = P(p), lp = (o.labels && o.labels[p]) || labelPos[p] || [0, -16, 'middle'], ub = p === 'ub', x = xy[0].toFixed(1), y = xy[1].toFixed(1);
+    // labels: preferred offset first, then above / below / right / left; a label that still collides is left out (the dot stays)
+    var fz = o.fs || 14, boxes = [], k = fz / 14;
+    var box = function (x, y, txt, a) { var w = txt.length * fz * .64 + 4, x0 = a === 'start' ? x : a === 'end' ? x - w : x - w / 2; return [x0, y - fz * .85, x0 + w, y + fz * .3]; };
+    var hit = function (bx) { if (bx[0] < 2 || bx[2] > W - 2 || bx[1] < 2 || bx[3] > H - 2) return true; return boxes.some(function (c) { return bx[0] < c[2] && bx[2] > c[0] && bx[1] < c[3] && bx[3] > c[1]; }); };
+    var keys = Object.keys(used).sort(function (a, b) { return (b === 'ub') - (a === 'ub'); });
+    keys.forEach(function (p) { var xy = P(p); boxes.push([xy[0] - 6, xy[1] - 6, xy[0] + 6, xy[1] + 6]); });
+    var texts = {};
+    keys.forEach(function (p) {
+      if (o.only && o.only.indexOf(p) < 0) return;
+      var xy = P(p), txt = L(D.places[p]), pref = (o.labels && o.labels[p]) || labelPos[p] || [0, -16, 'middle'];
+      var cands = [pref, [0, -16 * k, 'middle'], [0, 27 * k, 'middle'], [13 * k, 5 * k, 'start'], [-13 * k, 5 * k, 'end']];
+      for (var i = 0; i < cands.length; i++) {
+        var c = cands[i], tx = xy[0] + c[0], ty = xy[1] + c[1], bx = box(tx, ty, txt, c[2]);
+        if (!hit(bx) || i === cands.length - 1 && p === 'ub') { boxes.push(bx); texts[p] = '<text x="' + tx.toFixed(1) + '" y="' + ty.toFixed(1) + '" text-anchor="' + c[2] + '">' + esc(txt) + '</text>'; break; }
+      }
+    });
+    keys.forEach(function (p) {
+      var xy = P(p), ub = p === 'ub', x = xy[0].toFixed(1), y = xy[1].toFixed(1);
       s += '<g class="m-pin' + (ub ? ' m-ub' : '') + '" data-pin="' + p + '"><circle class="m-glow" cx="' + x + '" cy="' + y + '" r="' + (ub ? 22 : 15) + '" style="fill:url(#glow' + uid + ')"/>' +
-        '<circle cx="' + x + '" cy="' + y + '" r="' + (ub ? 6.5 : 5) + '"/>' + (ub ? '' : '<circle class="core" cx="' + x + '" cy="' + y + '" r="2"/>') +
-        '<text x="' + (xy[0] + lp[0]).toFixed(1) + '" y="' + (xy[1] + lp[1]).toFixed(1) + '" text-anchor="' + lp[2] + '">' + esc(L(D.places[p])) + '</text></g>';
+        '<circle cx="' + x + '" cy="' + y + '" r="' + (ub ? 6.5 : 5) + '"/>' + (ub ? '' : '<circle class="core" cx="' + x + '" cy="' + y + '" r="2"/>') + (texts[p] || '') + '</g>';
     });
     s += '</svg>';
     if (o.locator !== false) {
@@ -85,8 +100,12 @@
   var smallMap = matchMedia('(max-width: 640px)');
   /* whole-country map: routes at their true position on Mongolia, labels pulled out on leader lines */
   var fullLabels = { // label anchor in map units (1200x620 frame) + text-anchor
-    ub: [700, 210, 'middle'], terelj: [792, 244, 'start'], chinggis: [792, 298, 'start'], khustai: [712, 334, 'start'],
-    family: [626, 356, 'middle'], elsen: [574, 250, 'middle'], kharkhorin: [520, 288, 'end'], orkhon: [486, 374, 'middle'] };
+    ub: [745, 240, 'start'], terelj: [800, 282, 'start'], chinggis: [790, 318, 'start'], khustai: [650, 248, 'end'], aglag: [740, 205, 'start'],
+    elsen: [604, 342, 'start'], khogno: [570, 268, 'end'], kharkhorin: [575, 374, 'middle'], orkhon: [470, 352, 'end'], tsenkher: [500, 300, 'end'],
+    ugii: [548, 250, 'end'], bulgan: [600, 200, 'start'], khuvsgul: [452, 102, 'end'], amarbayasgalant: [690, 150, 'start'], terkh: [440, 292, 'end'],
+    jargalant: [440, 220, 'end'], urantogoo: [575, 190, 'start'], tsagaan: [700, 430, 'start'], ongi: [630, 400, 'start'], bayanzag: [575, 450, 'end'],
+    khongor: [520, 520, 'end'], yol: [630, 535, 'start'] };
+  var fullDefault = ['ub', 'terelj', 'aglag', 'amarbayasgalant', 'khuvsgul', 'terkh', 'kharkhorin', 'orkhon', 'elsen', 'tsagaan', 'yol', 'khongor'];
   function mapFullSVG(ids, o) {
     o = o || {}; var uid = o.uid || 'f', fs = o.fs || 19, labels = o.labels === undefined ? true : o.labels;
     var used = {}; ids.forEach(function (id) { byId[id].route.forEach(function (p) { used[p] = 1; }); });
@@ -98,8 +117,8 @@
       '<clipPath id="mn' + uid + '"><path d="' + M.d + '"/></clipPath></defs>' +
       '<path class="m-country" d="' + M.d + '"/>' +
       '<rect width="1200" height="620" fill="url(#dots' + uid + ')" clip-path="url(#mn' + uid + ')"/>' +
-      '<text class="m-name" x="600" y="478" text-anchor="middle">' + esc(t('map.country')) + '</text>' +
-      '<ellipse cx="640" cy="292" rx="190" ry="120" fill="url(#halo' + uid + ')"/>';
+      '<text class="m-name" x="960" y="368" text-anchor="middle">' + esc(t('map.country')) + '</text>' +
+      '<ellipse cx="600" cy="310" rx="300" ry="230" fill="url(#halo' + uid + ')"/>';
     ids.forEach(function (id) { s += '<path class="m-route" data-route="' + id + '" d="' + curve(byId[id].route.map(P), [9, .07]) + '"/>'; });
     // real-distance scale bar (Mercator is conformal: same scale on both axes at this latitude)
     var u100 = 100 / (M.kmPerUnit || 2.09), sx0 = 66, sy0 = 556;
@@ -108,14 +127,16 @@
     s += '<g class="m-scale"><path d="' + bar + '"/><text x="' + sx0 + '" y="' + (sy0 - 14) + '" text-anchor="middle">0</text>' +
       '<text x="' + (sx0 + 3 * u100).toFixed(1) + '" y="' + (sy0 - 14) + '" text-anchor="middle">300 ' + esc(t('map.km')) + '</text></g>';
     var ubp = P('ub'); s += '<circle class="m-pulse" cx="' + ubp[0] + '" cy="' + ubp[1] + '" r="12"/><circle class="m-pulse m-pulse2" cx="' + ubp[0] + '" cy="' + ubp[1] + '" r="12"/>';
+    // every place has a label; the default set is visible, the rest appear when their tour is highlighted
     Object.keys(used).forEach(function (p) {
       var xy = P(p), ub = p === 'ub', lp = fullLabels[p], x = xy[0].toFixed(1), y = xy[1].toFixed(1);
-      var show = labels === true || (Array.isArray(labels) && labels.indexOf(p) > -1);
-      s += '<g class="m-pin' + (ub ? ' m-ub' : '') + '" data-pin="' + p + '">';
-      if (show && lp) s += '<line class="m-lead" x1="' + x + '" y1="' + y + '" x2="' + lp[0] + '" y2="' + (lp[1] + (lp[1] < xy[1] ? 6 : -fs * .8)) + '"/>';
+      var def = labels === true ? fullDefault.indexOf(p) > -1 : Array.isArray(labels) && labels.indexOf(p) > -1, hov = labels === true;
+      var cls = 'lab' + (def ? '' : ' opt'), routes = ids.filter(function (id) { return byId[id].route.indexOf(p) > -1; }).join(' ');
+      s += '<g class="m-pin' + (ub ? ' m-ub' : '') + '" data-pin="' + p + '" data-routes=" ' + routes + ' ">';
+      if (lp && (def || hov)) s += '<g class="' + cls + '"><line class="m-lead" x1="' + x + '" y1="' + y + '" x2="' + lp[0] + '" y2="' + (lp[1] + (lp[1] < xy[1] ? 6 : -fs * .8)) + '"/></g>';
       s += '<circle class="m-glow" cx="' + x + '" cy="' + y + '" r="' + (ub ? 26 : 17) + '" style="fill:url(#glow' + uid + ')"/>' +
         '<circle cx="' + x + '" cy="' + y + '" r="' + (ub ? 7.5 : 5.5) + '"/>' + (ub ? '' : '<circle class="core" cx="' + x + '" cy="' + y + '" r="2.3"/>');
-      if (show && lp) s += '<text x="' + lp[0] + '" y="' + lp[1] + '" text-anchor="' + lp[2] + '">' + esc(L(D.places[p])) + '</text>';
+      if (lp && (def || hov)) s += '<g class="' + cls + '"><text x="' + lp[0] + '" y="' + lp[1] + '" text-anchor="' + lp[2] + '">' + esc(L(D.places[p])) + '</text></g>';
       s += '</g>';
     });
     return s + '</svg>';
@@ -149,15 +170,17 @@
   function renderMap() {
     var all = D.tours.map(function (x) { return x.id; });
     $('#map-svg').innerHTML = smallMap.matches
-      ? mapFullSVG(all, { uid: 'f', fs: 30, labels: ['ub'] }) + '<div class="map-zoom">' + mapSVG(all, { uid: 'm', w: 440, h: 236, b: [500, 200, 800, 361], fs: 11, locator: false, labels: { ub: [-10, -12, 'end'], khustai: [0, 24, 'middle'], chinggis: [0, 23, 'middle'], orkhon: [-8, 24, 'start'], terelj: [10, -10, 'start'] } }) + '</div>'
+      ? mapFullSVG(all, { uid: 'f', fs: 30, labels: ['ub', 'khuvsgul', 'kharkhorin', 'khongor'] }) + '<div class="map-zoom">' + mapSVG(all, { uid: 'm', w: 440, h: 250, b: [500, 196, 760, 343.7], fs: 11, locator: false, only: ['ub', 'aglag', 'kharkhorin', 'elsen', 'orkhon', 'terelj', 'ugii', 'tsenkher', 'bulgan', 'khustai'], labels: { ub: [-10, 22, 'end'], terelj: [10, -10, 'start'], aglag: [0, -14, 'middle'], elsen: [4, 22, 'start'], kharkhorin: [-10, 18, 'end'], orkhon: [0, 24, 'middle'], ugii: [0, -14, 'middle'], tsenkher: [-10, 4, 'end'], bulgan: [0, -14, 'middle'], khustai: [0, 24, 'middle'] } }) + '</div>'
       : mapFullSVG(all, { uid: 'f', fs: 19 });
     startTravellers();
     $('#mapList').innerHTML = D.tours.map(function (tr, i) {
-      return '<li><button type="button" data-route-btn="' + tr.id + '"><span class="n">0' + (i + 1) + '</span><span class="t">' + esc(L(tr.name)) + '</span><span class="d">' + tr.days + ' ' + esc(dayWord(tr.days)) + '</span></button></li>';
+      return '<li><button type="button" data-route-btn="' + tr.id + '"><span class="n">' + (i < 9 ? '0' : '') + (i + 1) + '</span><span class="t">' + esc(L(tr.name)) + '</span><span class="d">' + tr.days + ' ' + esc(dayWord(tr.days)) + '</span></button></li>';
     }).join('');
   }
   function highlight(id) {
     $$('#map-svg .m-route, #map-svg .m-trav').forEach(function (p) { p.classList.toggle('dim', !!id && p.getAttribute('data-route') !== id); p.classList.toggle('hl', p.getAttribute('data-route') === id); });
+    $$('#map-svg svg.mfull').forEach(function (svg) { svg.classList.toggle('hl-on', !!id); });
+    $$('#map-svg .mfull .m-pin').forEach(function (g) { g.classList.toggle('on', !!id && (g.getAttribute('data-routes') || '').indexOf(' ' + id + ' ') > -1); });
     $$('#mapList button').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-route-btn') === id); });
   }
   $('#mapList').addEventListener('mouseover', function (e) { var b = e.target.closest('[data-route-btn]'); if (b) highlight(b.getAttribute('data-route-btn')); });
@@ -237,6 +260,14 @@
 
   /* ---------- tour detail ---------- */
   var tourEl = $('#tour'), tourOpen = null, lastFocus = null, who = 2;
+  /* "camp:4" -> "4 nights in ger camps" in the current language (plural forms via Intl.PluralRules) */
+  function inclText(code) {
+    var a = String(code).split(':'), o = D.incl && D.incl[a[0]]; if (!o) return '';
+    var v = o[lang] || o.en, n = a[1] ? Number(a[1]) : 0;
+    if (v && typeof v === 'object') { var f = 'other'; try { f = new Intl.PluralRules(lang).select(n); } catch (e) {} v = v[f] || v.other; }
+    return String(v).replace('{n}', n);
+  }
+  function maxPax() { var p = D.prices && D.prices[tourOpen], tr = byId[tourOpen]; return (p && p.maxPax) || (tr && tr.maxPax) || 12; }
   function fillTour(tr) {
     $('#tourImg').src = 'img/' + tr.img + '.webp'; $('#tourImg').alt = L(tr.name);
     $('#tourKick').innerHTML = '<svg class="star"><use href="#i-star"/></svg>' + esc(tr.days + ' ' + dayWord(tr.days) + ' · ' + L(tr.season));
@@ -244,15 +275,16 @@
     $('#tourFacts').innerHTML = [[t('d.duration'), tr.days + ' ' + dayWord(tr.days)], [t('d.season'), L(tr.season)], [t('d.style'), L(tr.style)], [t('d.route'), tr.route.length - 1 + ' · ' + L(D.places[tr.route[1]])]]
       .map(function (f) { return '<div><dt>' + esc(f[0]) + '</dt><dd>' + esc(f[1]) + '</dd></div>'; }).join('');
     $('#tourDays').innerHTML = tr.plan.map(function (d, i) { var x = L(d); return '<li><span class="dn">' + (i + 1) + '</span><div><h4>' + esc(x[0]) + '</h4><p>' + esc(x[1]) + '</p></div></li>'; }).join('');
-    $('#tourInc').innerHTML = t('d.inc').map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('');
-    $('#tourExc').innerHTML = t('d.exc').map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('');
+    var li = function (s) { return s ? '<li>' + esc(s) + '</li>' : ''; };
+    $('#tourInc').innerHTML = (tr.inc ? tr.inc.map(inclText) : t('d.inc')).map(li).join('');
+    $('#tourExc').innerHTML = (tr.exc ? tr.exc.map(inclText) : t('d.exc')).map(li).join('');
     var i2 = $('#tourImg2'); if (tr.img2) { i2.src = 'img/' + tr.img2 + '.webp'; i2.alt = ''; i2.hidden = false; } else i2.hidden = true;
     $('#tourMap').innerHTML = (smallMap.matches ? mapSVG([tr.id], { uid: 't', w: 440, h: 250, fs: 11, locator: false, labels: { ub: [0, 26, 'middle'], orkhon: [-8, 24, 'start'], chinggis: [0, 23, 'middle'] } }) : mapSVG([tr.id], { uid: 't', w: 820, h: 330, locator: false, labels: { ub: [0, 28, 'middle'] } }));
     if (typeof renderQuote === 'function') renderQuote();
   }
   function openTour(id) {
     var tr = byId[id]; if (!tr) return;
-    lastFocus = document.activeElement; tourOpen = id; fillTour(tr); showStep(1);
+    lastFocus = document.activeElement; tourOpen = id; who = Math.min(who, maxPax()); $('#b-who').textContent = who; fillTour(tr); showStep(1);
     var d = new Date(); d.setDate(d.getDate() + 14); $('#b-date').min = new Date().toISOString().slice(0, 10); if (!$('#b-date').value) $('#b-date').value = d.toISOString().slice(0, 10);
     tourEl.hidden = false; $('#tourScroll').scrollTop = 0; document.body.style.overflow = 'hidden'; document.body.classList.add('modal-open'); if (lenis) lenis.stop();
     try { history.replaceState(null, '', '#journey-' + id); } catch (x) {}
@@ -272,13 +304,13 @@
   $('#tourClose').addEventListener('click', function () { closeTour(); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { if (tourOpen) closeTour(); else if (!$('#mnav').hidden) setMenu(false); } });
   $('#b-minus').addEventListener('click', function () { who = Math.max(1, who - 1); $('#b-who').textContent = who; });
-  $('#b-plus').addEventListener('click', function () { who = Math.min(16, who + 1); $('#b-who').textContent = who; });
+  $('#b-plus').addEventListener('click', function () { who = Math.min(maxPax(), who + 1); $('#b-who').textContent = who; });
   $('#b-send').addEventListener('click', function () {
-    var id = tourOpen, date = $('#b-date').value, stay = $('#b-stay').selectedOptions[0].textContent;
+    var id = tourOpen, date = $('#b-date').value, stayF = $('#b-stay').closest('.f'), stay = stayF && !stayF.hidden ? $('#b-stay').selectedOptions[0].textContent : '';
     closeTour(function () {
       $('#f-journey').value = id; $('#f-who').value = String(Math.min(16, who));
       if (date) $('#f-month').value = String(new Date(date + 'T00:00:00').getMonth() + 1);
-      $('#f-msg').value = (date ? t('b.datepre') + date + '\n' : '') + t('b.staypre') + stay;
+      $('#f-msg').value = (date ? t('b.datepre') + date + (stay ? '\n' : '') : '') + (stay ? t('b.staypre') + stay : '');
       goTo('#contact'); setTimeout(function () { $('#f-name').focus({ preventScroll: true }); }, 1200);
     });
   });
@@ -372,20 +404,29 @@
     } catch (e) { return c === 'MNT' ? Math.round(v) + ' ₮' : '$' + v; }
   }
   /* must match priceFor() in supabase/functions/_shared/core.ts */
+  function perPerson(p, n, c) { // tiers: [[minTravellers, usd, mnt], ...] ascending
+    var per = c === 'USD' ? p.usd : p.mnt;
+    (p.tiers || []).forEach(function (x) { if (n >= x[0]) per = c === 'USD' ? x[1] : x[2]; });
+    return per;
+  }
   function quote(id, stay, n, c) {
     var p = D.prices && D.prices[id]; if (!p) return null;
-    var per = c === 'USD' ? p.usd + (stay === 'private' ? p.privUsd : 0) : p.mnt + (stay === 'private' ? p.privMnt : 0);
+    var per = perPerson(p, n, c) + (stay === 'private' ? (c === 'USD' ? p.privUsd : p.privMnt) || 0 : 0);
     var total = per * n, dep = c === 'USD' ? Math.round(total * p.depositPct) / 100 : Math.round(total * p.depositPct / 100);
-    return { from: c === 'USD' ? p.usd : p.mnt, total: total, dep: dep, pct: p.depositPct };
+    return { per: per, total: total, dep: dep, pct: p.depositPct, tiered: (p.tiers || []).length > 1 };
   }
   function sumRows(rows) { return rows.map(function (r) { return '<div' + (r[2] ? ' class="' + r[2] + '"' : '') + '><dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd></div>'; }).join(''); }
   function renderQuote() {
     if (!tourOpen) return;
     $$('#bCur button').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-cur') === cur); });
+    var stayF = $('#b-stay').closest('.f'), p0 = D.prices && D.prices[tourOpen];
+    if (stayF) { stayF.hidden = !(p0 && p0.privUsd > 0); if (stayF.hidden) $('#b-stay').value = 'shared'; }
+    $('#b-plus').disabled = who >= maxPax(); $('#b-minus').disabled = who <= 1;
     var q = quote(tourOpen, $('#b-stay').value || 'shared', who, cur);
     $('#b-book').hidden = !q; $('#bPrice').hidden = !q; $('#bSum').hidden = !q;
+    var grp = $('#bGroup'); if (grp) grp.hidden = !(q && q.tiered);
     if (!q) return;
-    $('#bPrice').innerHTML = '<small>' + esc(t('pay.from')) + '</small> <b>' + esc(money(q.from, cur)) + '</b> <small>' + esc(t('pay.pp')) + '</small>';
+    $('#bPrice').innerHTML = '<b>' + esc(money(q.per, cur)) + '</b> <small>' + esc(t('pay.pp')) + '</small>';
     $('#bSum').innerHTML = sumRows([[t('pay.total'), money(q.total, cur)], [t('pay.deposit').replace('{p}', q.pct), money(q.dep, cur), 'dep'], [t('pay.balance'), money(q.total - q.dep, cur)]]);
     $('#bPayTxt').textContent = payMode === 'request' ? t('pay.sendreq') : t('pay.paybtn').replace('{amt}', money(q.dep, cur));
   }
@@ -464,7 +505,10 @@
   if (API) fetch(API + '/tours').then(function (r) { return r.json(); }).then(function (list) {
     if (list && list.mode) { payMode = list.mode === 'request' ? 'request' : 'test'; list = list.tours; payTexts(); }
     if (!Array.isArray(list)) return; D.prices = D.prices || {};
-    list.forEach(function (p) { D.prices[p.id] = { usd: +p.usd, mnt: +p.mnt, privUsd: +p.privUsd, privMnt: +p.privMnt, depositPct: +p.depositPct }; });
+    list.forEach(function (p) {
+      var tiers = (p.tiers || []).map(function (x) { return [+x.min, +x.usd, +x.mnt]; }).sort(function (a, b) { return a[0] - b[0]; });
+      D.prices[p.id] = { usd: +p.usd, mnt: +p.mnt, privUsd: +p.privUsd, privMnt: +p.privMnt, depositPct: +p.depositPct, tiers: tiers, maxPax: +p.maxPax || 12 };
+    });
     renderQuote();
   }).catch(function () {});
 
@@ -623,7 +667,7 @@
       window.addEventListener('load', function () { ScrollTrigger.refresh(); });
     }
     runGate();
-    var m = location.hash.match(/^#journey-(\w+)/);
+    var m = location.hash.match(/^#journey-([\w-]+)/);
     if (m && byId[m[1]]) { var iv = setInterval(function () { if (root.classList.contains('entered')) { clearInterval(iv); openTour(m[1]); } }, 200); }
     checkReturn();
   }

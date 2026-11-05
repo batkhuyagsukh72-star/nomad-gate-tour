@@ -186,7 +186,7 @@ html:not(.js) .st-text .w,html.rm .st-text .w{opacity:1}
 @keyframes mPulse{0%{transform:scale(.5);opacity:.85}100%{transform:scale(3.4);opacity:0}}
 html.rm .m-pulse,html.rm .m-trav{display:none}
 .map-zoom{margin-top:18px;padding-top:14px;border-top:1px solid var(--line-2)}
-.map-zoom svg{width:100%;height:auto;display:block;overflow:visible}
+.map-zoom svg{width:100%;height:auto;display:block;overflow:hidden}
 .m-loc{position:absolute;right:0;top:-8px;width:clamp(110px,11vw,160px);height:auto;overflow:visible}
 .m-loc path{fill:rgba(243,236,223,.05);stroke:rgba(201,160,78,.55);stroke-width:5;stroke-linejoin:round}
 .m-loc rect{fill:rgba(201,160,78,.22);stroke:var(--gold-hi);stroke-width:6}
@@ -426,3 +426,14 @@ html.js:not(.entered) .wa,body.modal-open .wa{opacity:0;pointer-events:none;tran
 @media (prefers-reduced-motion:reduce){
   *{transition-duration:.01ms!important;animation-duration:.01ms!important}
 }
+
+/* map: place names appear for the highlighted tour */
+.mfull .lab{transition:opacity .35s ease}
+.mfull .lab.opt{opacity:0}
+.mfull.hl-on .lab{opacity:0}
+.mfull.hl-on .m-pin.on .lab{opacity:1}
+.mfull .m-pin{transition:opacity .35s ease}
+.mfull.hl-on .m-pin:not(.on){opacity:.35}
+/* booking panel */
+.book .f[hidden],.book .note[hidden]{display:none!important}
+.stepper button:disabled{opacity:.35;cursor:default}

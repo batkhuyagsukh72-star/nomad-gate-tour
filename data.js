@@ -1,95 +1,9 @@
-/* Nomad Gate Tour — content (EN / MN). Tours are SAMPLE routes built from the places in the company's own videos; replace with their real programme. */
+/* Nomad Gate Tour — site content (EN / MN; other languages in i18n.js). The tours themselves are in tours.js. */
 window.NGT = {
   contact: { phone: '+976 9917 1048', phoneRaw: '+97699171048', email: 'nomadgatetour@gmail.com',
     instagram: 'https://www.instagram.com/nomad_gate_tour', facebook: 'https://www.facebook.com/profile.php?id=61594082454178' },
 
-  tours: [
-    { id: 'terelj', img: 't_terelj', days: 1, route: ['ub', 'terelj', 'ub'],
-      name: { en: 'Terelj Day Escape', mn: 'Тэрэлжийн нэг өдөр' },
-      season: { en: 'All year', mn: 'Жилийн турш' },
-      style: { en: 'Nature · Easy', mn: 'Байгаль · Хөнгөн' },
-      lead: { en: 'Granite towers, larch forest and a nomad family’s welcome, an easy drive from Ulaanbaatar.',
-              mn: 'Боржин хад, шинэсэн ой, нүүдэлчин айлын дулаан угтлага — Улаанбаатараас ойрхон.' },
-      plan: [
-        { en: ['Into Gorkhi-Terelj', 'Morning drive into Gorkhi-Terelj National Park. Walk up to Turtle Rock and among the granite outcrops and larch slopes.'],
-          mn: ['Горхи-Тэрэлж рүү', 'Өглөө Горхи-Тэрэлжийн байгалийн цогцолборт газар руу хөдөлнө. Мэлхий хад болон боржин хадан цохио, шинэсэн энгэрээр алхана.'] },
-        { en: ['Lunch with a herder family', 'Milk tea, dairy treats and a home-cooked lunch in a family ger, then an easy horse ride along the Tuul river valley.'],
-          mn: ['Малчин айлд үдийн хоол', 'Айлын гэрт сүүтэй цай, цагаан идээ, гэрийн хоол. Дараа нь Туул голын хөндийгөөр морь унана.'] },
-        { en: ['Back by evening', 'Return to Ulaanbaatar in the early evening. On request, stop at the Chinggis Khaan Equestrian Statue on the way.'],
-          mn: ['Орой буцна', 'Оройн эхээр Улаанбаатарт буцаж ирнэ. Хүсвэл замдаа Чингис хааны морьт хөшөөнд саатна.'] }
-      ] },
-    { id: 'central', img: 't_semigobi', img2: 't_erdenezuu', days: 5, route: ['ub', 'khustai', 'elsen', 'kharkhorin', 'orkhon', 'ub'],
-      name: { en: 'Semi-Gobi & the Old Capital', mn: 'Сэми Говь ба эртний нийслэл' },
-      season: { en: 'May – Oct', mn: '5–10 сар' },
-      style: { en: 'Classic · Moderate', mn: 'Сонгодог · Дунд' },
-      lead: { en: 'Wild horses, singing sand, the walls of Erdene Zuu and the waterfall of the Orkhon — central Mongolia in five days.',
-              mn: 'Тахь, элсэн манхан, Эрдэнэ Зуугийн хэрэм, Орхоны хүрхрээ — Төв Монголыг таван өдөрт.' },
-      plan: [
-        { en: ['Khustai and the takhi', 'Drive west to Khustain Nuruu National Park and watch the Przewalski’s horses come down to drink at dusk.'],
-          mn: ['Хустай ба тахь', 'Баруун тийш Хустайн нуруу руу явж, орой ус уухаар бууж ирэх тахийн сүргийг харна.'] },
-        { en: ['Elsen Tasarkhai dunes', 'Continue to the Semi-Gobi: a strip of golden dunes in the middle of the green steppe. Camel ride and sunset on the sand.'],
-          mn: ['Элсэн Тасархай', 'Сэми Говь руу үргэлжлүүлнэ: ногоон талын дундах алтан шаргал элсэн манхан. Тэмээ унаж, элсэн дээр нар жаргахыг харна.'] },
-        { en: ['Kharkhorin & Erdene Zuu', 'The old imperial capital and Erdene Zuu Monastery, founded in 1585, with its long wall of white stupas.'],
-          mn: ['Хархорин ба Эрдэнэ Зуу', 'Их Монгол улсын эртний нийслэл, 1585 онд байгуулагдсан Эрдэнэ Зуу хийд, цагаан суврагатай урт хэрэм.'] },
-        { en: ['Orkhon Valley', 'Into the Orkhon Valley to the Ulaan Tsutgalan waterfall. Evening with a herding family in the valley.'],
-          mn: ['Орхоны хөндий', 'Орхоны хөндийгөөр Улаан цутгалан хүрхрээ рүү. Оройг хөндийн малчин айлд өнгөрүүлнэ.'] },
-        { en: ['Return to Ulaanbaatar', 'A long, scenic drive back across the steppe to the capital.'],
-          mn: ['Улаанбаатар руу', 'Тал нутгийг гатлан нийслэл рүү буцна.'] }
-      ] },
-    { id: 'nomad', img: 't_nomad', days: 3, route: ['ub', 'family', 'ub'],
-      name: { en: 'Three Days with a Herder Family', mn: 'Малчин айлд гурван хоног' },
-      season: { en: 'Jun – Sep', mn: '6–9 сар' },
-      style: { en: 'Culture · Easy', mn: 'Соёл · Хөнгөн' },
-      lead: { en: 'Live the day of a nomad family: herding, milking, riding and evenings around the ger stove.',
-              mn: 'Нүүдэлчин айлын өдөр тутмыг хамт өнгөрүүлнэ: мал хариулж, саалинд оролцож, морь унаж, гэрийн зуухны дэргэд орой суух.' },
-      plan: [
-        { en: ['Welcome to the ger', 'Drive out to the family’s summer camp. Milk tea, settling into your own ger, and helping bring the sheep and goats home.'],
-          mn: ['Гэрт тавтай морил', 'Айлын зуслан руу хөдөлнө. Сүүтэй цай, өөрийн гэртээ тухлах, хонь ямаагаа хотондоо оруулахад туслах.'] },
-        { en: ['A herder’s day', 'Morning milking, making dairy treats, a ride with the family’s horses and a long evening under the stars.'],
-          mn: ['Малчны нэг өдөр', 'Өглөөний сааль, цагаан идээ хийх, айлын морьдоор аялах, оддын доорх урт орой.'] },
-        { en: ['Farewell tea', 'A last bowl of tea with the family before the drive back to Ulaanbaatar.'],
-          mn: ['Үдэлтийн цай', 'Айлтайгаа сүүлчийн аяга цай уугаад Улаанбаатар руу буцна.'] }
-      ] },
-    { id: 'autumn', img: 't_autumn', days: 4, route: ['ub', 'terelj', 'chinggis', 'ub'],
-      name: { en: 'Golden Autumn in Terelj', mn: 'Тэрэлжийн алтан намар' },
-      season: { en: 'Mid-Sep – early Oct', mn: '9 сарын дунд – 10 сарын эх' },
-      style: { en: 'Nature · Moderate', mn: 'Байгаль · Дунд' },
-      lead: { en: 'Larch and birch turn gold for a few short weeks. Ride and hike the Tuul valley at its most beautiful.',
-              mn: 'Шинэс, хус хэдхэн долоо хоног алтлаг өнгөтэй болдог. Туулын хөндийг хамгийн үзэсгэлэнтэй үед нь морь унаж, алхаж аялна.' },
-      plan: [
-        { en: ['Into the gold', 'Drive into Terelj as the valleys turn yellow. Afternoon walk to Turtle Rock.'],
-          mn: ['Алтан хөндий рүү', 'Хөндий шарлах үед Тэрэлж рүү явна. Үдээс хойш Мэлхий хад руу алхана.'] },
-        { en: ['Along the Tuul', 'A full day on horseback along the Tuul river through autumn forest, night in a riverside ger camp.'],
-          mn: ['Туул голын дагуу', 'Намрын ойгоор Туул голын дагуу бүтэн өдөр морь унаж, голын эргийн гэр баазад хонох.'] },
-        { en: ['Aryabal and the high trails', 'Hike up to the Aryabal meditation temple for the view over the valley.'],
-          mn: ['Арьяабал ба өндөр зам', 'Хөндийг харсан Арьяабал бясалгалын сүм рүү алхана.'] },
-        { en: ['Return via Tsonjin Boldog', 'Back to Ulaanbaatar with a stop at the Chinggis Khaan Equestrian Statue.'],
-          mn: ['Цонжин Болдогоор буцах', 'Чингис хааны морьт хөшөөнд саатаад Улаанбаатар руу буцна.'] }
-      ] },
-    { id: 'stars', img: 'x_stars', days: 2, route: ['ub', 'elsen', 'ub'],
-      name: { en: 'Steppe Sunsets & Stars', mn: 'Талын нар жаргалт ба од' },
-      season: { en: 'May – Sep', mn: '5–9 сар' },
-      style: { en: 'Photography · Easy', mn: 'Гэрэл зураг · Хөнгөн' },
-      lead: { en: 'Far from city lights, the sky over the Semi-Gobi fills with stars — the same stars that crown our logo.',
-              mn: 'Хотын гэрлээс хол Сэми Говийн тэнгэр одоор дүүрнэ — манай логоны дээрх од шиг.' },
-      plan: [
-        { en: ['Sunset on the dunes', 'Drive to Elsen Tasarkhai, walk the dune ridges at golden hour, then a night of stargazing beside your ger.'],
-          mn: ['Манхан дээрх нар жаргалт', 'Элсэн Тасархай руу явж, алтан цагт манхны оройгоор алхаад, гэрийнхээ дэргэд од ажиглана.'] },
-        { en: ['Sunrise and camels', 'Sunrise over the sand, a short camel ride and the drive back to Ulaanbaatar.'],
-          mn: ['Нар мандалт ба тэмээ', 'Элсэн дээрх нар мандалт, тэмээ унаад Улаанбаатар руу буцна.'] }
-      ] }
-  ],
-
-  places: {
-    ub: { en: 'Ulaanbaatar', mn: 'Улаанбаатар' },
-    terelj: { en: 'Gorkhi-Terelj', mn: 'Горхи-Тэрэлж' },
-    chinggis: { en: 'Chinggis Statue', mn: 'Чингисийн хөшөө' },
-    khustai: { en: 'Khustai', mn: 'Хустай' },
-    elsen: { en: 'Elsen Tasarkhai', mn: 'Элсэн Тасархай' },
-    kharkhorin: { en: 'Kharkhorin', mn: 'Хархорин' },
-    orkhon: { en: 'Orkhon Waterfall', mn: 'Орхоны хүрхрээ' },
-    family: { en: 'Herder family', mn: 'Малчин айл' }
-  },
+  /* tours, places, prices and inclusions: tours.js (generated by tools/build_tours.py) */
 
   experiences: [
     { img: 'x_ger', t: { en: 'Sleep in a ger', mn: 'Гэрт хонох' },
@@ -139,15 +53,15 @@ window.NGT = {
       'hero.sub': 'Ger stays, herder families, dunes and wild horses — planned by a Mongolian team who travel these roads.',
       'hero.cta1': 'Explore journeys', 'hero.cta2': 'Plan a private trip', 'scroll': 'Scroll',
       'statement': 'Behind every ger door in Mongolia there is a welcome waiting: milk tea on the stove, a seat by the fire and a family that has moved with its herds for generations. Nomad Gate Tour opens that door for you.',
-      'j.title': 'Signature journeys', 'j.lead': 'Five routes through the places we film and love. Every one can be changed to suit you.',
-      'j.note': 'Sample routes for this demo — the final programme comes from Nomad Gate Tour.',
+      'j.title': 'Signature journeys', 'j.lead': 'Eight private tours from Ulaanbaatar, from a single day to thirteen. Every one can be changed to suit your group.',
+      'j.note': 'Every tour is private for your group and starts and ends in Ulaanbaatar.',
       'j.day': 'day', 'j.days': 'days', 'j.view': 'View the journey', 'j.drag': 'Scroll to travel',
       'd.overview': 'The journey', 'd.included': 'Included', 'd.inc': ['Private vehicle and driver', 'English-speaking guide', 'Ger camp or family stay', 'Meals on the road', 'Park entrance fees'],
       'd.notinc': 'Not included', 'd.exc': ['International flights', 'Travel insurance', 'Personal expenses'],
       'd.season': 'Season', 'd.style': 'Style', 'd.duration': 'Duration', 'd.route': 'Route',
       'b.title': 'Request this journey', 'b.date': 'Start date', 'b.who': 'Travellers', 'b.stay': 'Stay', 'b.stay1': 'Shared ger', 'b.stay2': 'Private ger',
       'b.send': 'Continue to request', 'b.note': 'No payment now. We reply with a plan and a price.', 'close': 'Close',
-      'm.title': 'Where the gate leads', 'm.lead': 'Our routes fan out from Ulaanbaatar into the heart of Mongolia. Choose a journey to trace it.',
+      'm.title': 'Where the gate leads', 'm.lead': 'From Ulaanbaatar our routes reach the Gobi in the south and Lake Khuvsgul in the north. Choose a tour to trace it.',
       'x.title': 'Experiences', 'x.lead': 'What a day on the road with us feels like.',
       'r.title': 'From the road', 'r.lead': 'Real clips filmed on our journeys and shared on Instagram.', 'r.follow': 'Follow on Instagram',
       'f.title': 'Before you go',
@@ -164,15 +78,15 @@ window.NGT = {
       'hero.sub': 'Гэрт хонох, малчин айл, элсэн манхан, тахь — эдгээр замаар өөрсдөө явдаг монгол багийн төлөвлөсөн аялал.',
       'hero.cta1': 'Аяллуудыг үзэх', 'hero.cta2': 'Хувийн аялал төлөвлөх', 'scroll': 'Гүйлгэх',
       'statement': 'Монголын гэр бүрийн хаалганы цаана зочноо хүлээсэн дулаан угтлага бий: зууханд буцалсан сүүтэй цай, галын дэргэдэх суудал, олон үеэрээ малаа дагаж нүүсэн айл. Nomad Gate Tour тэр хаалгыг танд нээнэ.',
-      'j.title': 'Онцлох аяллууд', 'j.lead': 'Бидний бичлэг хийдэг, хайртай газруудаар дайрах таван маршрут. Бүгдийг нь танд тааруулж өөрчилж болно.',
-      'j.note': 'Demo-д зориулсан жишээ маршрут — эцсийн хөтөлбөрийг Nomad Gate Tour өгнө.',
+      'j.title': 'Онцлох аяллууд', 'j.lead': 'Улаанбаатараас эхэлдэг найман хувийн аялал — нэг өдрөөс арван гурван өдөр хүртэл. Бүгдийг нь танай бүлэгт тааруулж өөрчилж болно.',
+      'j.note': 'Бүх аялал зөвхөн танай бүлэгт зориулагдсан бөгөөд Улаанбаатараас эхэлж, Улаанбаатарт дуусна.',
       'j.day': 'өдөр', 'j.days': 'өдөр', 'j.view': 'Аяллыг үзэх', 'j.drag': 'Гүйлгээд аялаарай',
       'd.overview': 'Аяллын явц', 'd.included': 'Үнэд багтсан', 'd.inc': ['Хувийн унаа, жолооч', 'Англи хэлтэй хөтөч', 'Гэр бааз эсвэл айлд байрлах', 'Замын хоол', 'Цогцолборт газрын хураамж'],
       'd.notinc': 'Үнэд багтаагүй', 'd.exc': ['Олон улсын нислэг', 'Аяллын даатгал', 'Хувийн зардал'],
       'd.season': 'Улирал', 'd.style': 'Төрөл', 'd.duration': 'Хугацаа', 'd.route': 'Маршрут',
       'b.title': 'Энэ аяллыг захиалах', 'b.date': 'Эхлэх өдөр', 'b.who': 'Хүний тоо', 'b.stay': 'Байр', 'b.stay1': 'Хамтын гэр', 'b.stay2': 'Хувийн гэр',
       'b.send': 'Хүсэлт рүү үргэлжлүүлэх', 'b.note': 'Одоо төлбөр төлөхгүй. Бид төлөвлөгөө, үнийг илгээнэ.', 'close': 'Хаах',
-      'm.title': 'Хаалганы цаана', 'm.lead': 'Бидний маршрутууд Улаанбаатараас Монголын зүрх рүү салаалдаг. Аялал сонгоод замыг нь хараарай.',
+      'm.title': 'Хаалганы цаана', 'm.lead': 'Манай маршрутууд Улаанбаатараас урагшаа Говь, хойшоо Хөвсгөл хүрдэг. Аяллаа сонгож замыг нь хараарай.',
       'x.title': 'Туршлага', 'x.lead': 'Бидэнтэй замд гарсан нэг өдөр ямар байдаг вэ.',
       'r.title': 'Замаас', 'r.lead': 'Аяллын үеэр бичиж Instagram-д хуваалцсан жинхэнэ бичлэгүүд.', 'r.follow': 'Instagram-д дагах',
       'f.title': 'Аялахын өмнө',
@@ -189,16 +103,9 @@ window.NGT = {
 /* ---------- Payments ----------
    api: Supabase Edge Functions base, e.g. 'https://<project>.supabase.co/functions/v1'.
         Empty = demo mode (the whole booking + test payment runs in the browser, nothing is charged).
-   Prices are SAMPLE values, per person, and must match the `tours` table (supabase/migrations/001_bookings.sql).
+   Prices live in tours.js (window.NGT.prices) and must match the `tours` table (supabase/migrations/005_real_tours.sql).
    When api is set the site loads live prices from the server, so the server is always the source of truth. */
 window.NGT.payments = { api: 'https://oiaagrrfkwfnnohstzqu.supabase.co/functions/v1/api', mode: 'request' }; // mode: 'request' (book now, pay later) | 'test'; the server's mode wins when api is set
-window.NGT.prices = {
-  terelj:  { usd: 120, mnt: 420000,  privUsd: 0,   privMnt: 0,      depositPct: 20 },
-  central: { usd: 850, mnt: 2950000, privUsd: 120, privMnt: 420000, depositPct: 20 },
-  nomad:   { usd: 480, mnt: 1650000, privUsd: 60,  privMnt: 210000, depositPct: 20 },
-  autumn:  { usd: 690, mnt: 2400000, privUsd: 90,  privMnt: 310000, depositPct: 20 },
-  stars:   { usd: 320, mnt: 1100000, privUsd: 30,  privMnt: 105000, depositPct: 20 }
-};
 
 /* ---------- Booking terms (used by terms.html) ----------
    SAMPLE values until Nomad Gate Tour confirms them. Change the numbers here and every language updates. */
