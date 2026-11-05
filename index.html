@@ -37,6 +37,9 @@
     <symbol id="i-fb" viewBox="0 0 24 24"><path d="M13.5 21v-7.5h2.6l.4-3h-3V8.6c0-.9.3-1.5 1.5-1.5h1.6V4.4c-.3 0-1.2-.1-2.3-.1-2.3 0-3.8 1.4-3.8 3.9v2.3H8v3h2.5V21z" fill="currentColor"/></symbol>
     <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.6 3.5h3l1.5 4-2 1.3a11 11 0 0 0 6.1 6.1l1.3-2 4 1.5v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.6 5.7a2 2 0 0 1 2-2.2z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></symbol>
     <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M4 7l8 6 8-6" fill="none" stroke="currentColor" stroke-width="1.4"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" fill="none" stroke="currentColor" stroke-width="1.4"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></symbol>
   </defs>
 </svg>
@@ -71,7 +74,7 @@
     <a href="#faq" data-i18n="nav.faq">FAQ</a>
   </nav>
   <div class="hdr-r">
-    <div class="lang" role="group" aria-label="Language"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="mn" aria-pressed="false">МН</button></div>
+    <div class="lang" id="lang"><button class="lang-btn" type="button" id="langBtn" aria-haspopup="true" aria-expanded="false" aria-controls="langList"><span class="sr" data-i18n="lang">Language</span><span id="langCur">EN</span><svg><use href="#i-chev"/></svg></button><div class="lang-list" id="langList" role="group" aria-label="Language" hidden></div></div>
     <a class="btn btn-gold hdr-cta magnet" href="#contact"><span data-i18n="nav.cta">Plan a trip</span></a>
     <button class="burger" type="button" aria-expanded="false" aria-controls="mnav"><i></i><i></i><span class="sr" data-i18n="menu">Menu</span></button>
   </div>
@@ -235,15 +238,44 @@
         <img class="tour-img2" id="tourImg2" alt="" hidden>
       </div>
       <aside class="book" aria-labelledby="bookH">
-        <h3 class="h3" id="bookH" data-i18n="b.title">Request this journey</h3>
-        <label class="f"><span data-i18n="b.date">Start date</span><input type="date" id="b-date"></label>
-        <div class="f"><span data-i18n="b.who">Travellers</span>
-          <div class="stepper"><button type="button" id="b-minus" aria-label="−"><svg><use href="#i-minus"/></svg></button><output id="b-who">2</output><button type="button" id="b-plus" aria-label="+"><svg><use href="#i-plus"/></svg></button></div></div>
-        <label class="f"><span data-i18n="b.stay">Stay</span><select id="b-stay"></select></label>
-        <button class="btn btn-gold btn-wide" type="button" id="b-send"><span data-i18n="b.send">Continue to request</span><svg><use href="#i-arrow"/></svg></button>
-        <p class="note" data-i18n="b.note">No payment now.</p>
+        <div class="b-step" id="bStep1">
+          <h3 class="h3" id="bookH" data-i18n="pay.title">Book this journey</h3>
+          <p class="b-price" id="bPrice"></p>
+          <label class="f"><span data-i18n="b.date">Start date</span><input type="date" id="b-date"></label>
+          <div class="f"><span data-i18n="b.who">Travellers</span>
+            <div class="stepper"><button type="button" id="b-minus" aria-label="−"><svg><use href="#i-minus"/></svg></button><output id="b-who">2</output><button type="button" id="b-plus" aria-label="+"><svg><use href="#i-plus"/></svg></button></div></div>
+          <label class="f"><span data-i18n="b.stay">Stay</span><select id="b-stay"></select></label>
+          <div class="f"><span data-i18n="pay.currency">Currency</span>
+            <div class="seg" role="group" id="bCur"><button type="button" data-cur="USD" aria-pressed="true">USD $</button><button type="button" data-cur="MNT" aria-pressed="false">MNT ₮</button></div></div>
+          <dl class="sum" id="bSum"></dl>
+          <button class="btn btn-gold btn-wide" type="button" id="b-book"><span data-i18n="pay.book">Book &amp; pay deposit</span><svg><use href="#i-arrow"/></svg></button>
+          <button class="btn btn-line btn-wide" type="button" id="b-send"><span data-i18n="pay.reqonly">Just send a request</span></button>
+          <p class="note" data-i18n="pay.sample">Sample prices for this demo.</p>
+        </div>
+        <form class="b-step" id="bStep2" novalidate hidden>
+          <button type="button" class="b-back" id="bBack"><svg><use href="#i-arrow"/></svg><span data-i18n="pay.back">Back</span></button>
+          <h3 class="h3" data-i18n="pay.details">Your details</h3>
+          <p class="b-line" id="bLine"></p>
+          <label class="f"><span data-i18n="p.name">Your name</span><input id="bp-name" name="name" autocomplete="name" required></label>
+          <label class="f"><span data-i18n="pay.email">Email</span><input id="bp-email" name="email" type="email" autocomplete="email" required></label>
+          <label class="f"><span data-i18n="pay.phone">Phone / WhatsApp</span><input id="bp-phone" name="phone" type="tel" autocomplete="tel"></label>
+          <label class="hp" aria-hidden="true">Website<input id="bp-web" name="website" tabindex="-1" autocomplete="off"></label>
+          <button class="btn btn-gold btn-wide" type="submit" id="bPay"><span id="bPayTxt">Pay deposit</span><svg><use href="#i-arrow"/></svg></button>
+          <p class="f-note" id="bNote" aria-live="polite"></p>
+          <p class="note b-secure"><svg><use href="#i-lock"/></svg><span data-i18n="pay.secure">You pay on the bank’s secure page.</span></p>
+        </form>
       </aside>
     </div>
+  </div>
+</div>
+
+<div class="res" id="res" role="dialog" aria-modal="true" aria-labelledby="resT" hidden>
+  <div class="res-card">
+    <span class="res-ic" id="resIc"><svg><use href="#i-check"/></svg></span>
+    <h2 class="h3" id="resT"></h2>
+    <p class="res-d" id="resD"></p>
+    <dl class="sum" id="resSum"></dl>
+    <div class="res-btns"><button class="btn btn-gold" type="button" id="resRetry" hidden></button><button class="btn btn-line" type="button" id="resClose" data-i18n="close">Close</button></div>
   </div>
 </div>
 
@@ -251,6 +283,7 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="data.js"></script>
+<script src="i18n.js"></script>
 <script src="map.js"></script>
 <script src="vendor/gsap.min.js" defer></script>
 <script src="vendor/ScrollTrigger.min.js" defer></script>

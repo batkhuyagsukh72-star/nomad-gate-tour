@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Test payment · Nomad Gate Tour</title>
+<link rel="icon" href="assets/favicon.png" type="image/png">
+<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="styles.css">
+<style>
+  html,body{background:var(--night);color:var(--ivory)}
+  body{min-height:100vh;display:grid;place-items:center;padding:32px var(--g)}
+  .pt{width:min(100%,460px);display:grid;gap:22px}
+  .pt-brand{justify-self:center;display:flex;align-items:center;gap:12px}
+  .pt-brand img:first-child{height:38px;width:auto}
+  .pt-brand img:last-child{height:12px;width:auto}
+  .pt-card{background:var(--felt);border:1px solid var(--line);padding:clamp(24px,5vw,40px);display:grid;gap:20px}
+  .pt-badge{justify-self:start;display:inline-flex;align-items:center;gap:8px;font:600 10.5px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--night);background:var(--gold-hi);padding:8px 12px;border-radius:999px}
+  .pt-card .h3{margin:0}
+  .pt-amt{font:300 clamp(38px,9vw,52px)/1 var(--serif);color:var(--gold-hi);margin:0}
+  .pt-btns{display:grid;gap:12px}
+  .pt-card > *,.pt{min-width:0}
+  .pt .btn{white-space:normal;text-align:center;line-height:1.4;padding-top:12px;padding-bottom:12px}
+  .pt .note{line-height:1.6}
+  .pt-err{color:#E8A27A;margin:0}
+</style>
+</head>
+<body>
+<main class="pt">
+  <div class="pt-brand"><img src="assets/logo-mark.png" alt=""><img src="assets/logo-word.png" alt="Nomad Gate Tour"></div>
+  <div class="pt-card">
+    <span class="pt-badge" id="badge">Test payment</span>
+    <h1 class="h3" id="h">Pay the deposit</h1>
+    <p class="pt-amt" id="amt">—</p>
+    <dl class="sum" id="sum"></dl>
+    <div class="pt-btns">
+      <button class="btn btn-gold btn-wide" type="button" id="ok">Simulate successful payment</button>
+      <button class="btn btn-line btn-wide" type="button" id="fail">Simulate failed payment</button>
+    </div>
+    <p class="pt-err" id="err" hidden></p>
+    <p class="note" id="note">This is a test page — no card is charged.</p>
+  </div>
+</main>
+<script src="data.js"></script>
+<script src="i18n.js"></script>
+<script>
+(function () {
+  'use strict';
+  var D = window.NGT, q = new URLSearchParams(location.search);
+  var lang = (D.langs || []).some(function (l) { return l.id === q.get('lang'); }) ? q.get('lang') : 'en';
+  var API = ((D.payments && D.payments.api) || '').replace(/\/$/, '');
+  var ref = q.get('ref') || '', demo = q.get('demo') === '1';
+  var t = function (k) { var v = D.t[lang][k]; return v === undefined ? D.t.en[k] : v; };
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var LOC = { en: 'en-US', mn: 'mn-MN', ru: 'ru-RU', ko: 'ko-KR', ja: 'ja-JP', de: 'de-DE', es: 'es-ES' };
+  function money(v, c) {
+    v = Number(v) || 0;
+    try { return c === 'MNT' ? new Intl.NumberFormat(LOC[lang], { maximumFractionDigits: 0 }).format(Math.round(v)) + ' ₮'
+                             : new Intl.NumberFormat(LOC[lang], { style: 'currency', currency: 'USD', minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2 }).format(v); }
+    catch (e) { return v + ' ' + c; }
+  }
+  document.documentElement.lang = lang;
+  document.title = t('test.badge') + ' · Nomad Gate Tour';
+  ['badge:test.badge', 'h:test.h', 'ok:test.ok', 'fail:test.fail', 'note:test.note'].forEach(function (p) { var a = p.split(':'); document.getElementById(a[0]).textContent = t(a[1]); });
+  var tourName = function (id) { var tr = (D.tours || []).filter(function (x) { return x.id === id; })[0]; return tr ? (tr.name[lang] || tr.name.en) : id; };
+  function show(d) {
+    document.getElementById('amt').textContent = money(d.deposit, d.currency);
+    document.getElementById('sum').innerHTML = [[t('test.tour'), tourName(d.tour_id)], [t('res.ref'), ref], [t('pay.total'), money(d.total, d.currency)]]
+      .map(function (r) { return '<div><dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd></div>'; }).join('');
+  }
+  var data;
+  if (demo) {
+    data = { tour_id: q.get('tour'), currency: q.get('cur') === 'MNT' ? 'MNT' : 'USD', deposit: q.get('dep'), total: q.get('total') };
+    show(data);
+  } else if (API && /^NGT[A-HJ-NP-Z2-9]{8}$/.test(ref)) {
+    fetch(API + '/booking-status?ref=' + encodeURIComponent(ref)).then(function (r) { return r.json(); }).then(function (d) {
+      if (!d.ref) throw new Error('nf'); data = d; show(d);
+      if (d.mode !== 'test' || d.status !== 'pending') { document.getElementById('ok').disabled = true; document.getElementById('fail').disabled = true; }
+    }).catch(function () { var e = document.getElementById('err'); e.textContent = t('pay.err'); e.hidden = false; });
+  }
+  function finish(success) {
+    if (demo) {
+      var p = new URLSearchParams({ booking: ref, demo: '1', status: success ? 'paid' : 'failed', tour: data.tour_id, cur: data.currency, dep: data.deposit, lang: lang });
+      location.href = './?' + p.toString();
+    } else if (API) {
+      location.href = API + '/golomt-return?ref=' + encodeURIComponent(ref) + '&test_result=' + (success ? 'success' : 'fail');
+    }
+  }
+  document.getElementById('ok').addEventListener('click', function () { finish(true); });
+  document.getElementById('fail').addEventListener('click', function () { finish(false); });
+})();
+</script>
+</body>
+</html>

@@ -11,8 +11,10 @@
   var lenis = null;
   var byId = {}; D.tours.forEach(function (t) { byId[t.id] = t; });
 
-  var lang = new URLSearchParams(location.search).get('lang') || store.get('ngt-lang') || 'en';
-  if (lang !== 'mn') lang = 'en';
+  var LANGS = (D.langs || [{ id: 'en' }, { id: 'mn' }]).map(function (l) { return l.id; });
+  var okLang = function (l) { return l && LANGS.indexOf(l) > -1 ? l : null; };
+  var navLang = function () { try { return (navigator.languages || [navigator.language]).map(function (x) { return okLang(String(x).slice(0, 2).toLowerCase()); }).filter(Boolean)[0]; } catch (e) { return null; } };
+  var lang = okLang(new URLSearchParams(location.search).get('lang')) || okLang(store.get('ngt-lang')) || navLang() || 'en';
   function t(k) { var v = D.t[lang][k]; return v === undefined ? D.t.en[k] : v; }
   function L(o) { return o ? (o[lang] || o.en) : ''; }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
@@ -61,7 +63,7 @@
       b = [cx - hw, cy - hh, cx + hw, cy + hh];
     }
     var sx = W / (b[2] - b[0]), P = function (p) { var q = M.pins[p]; return [(q[0] - b[0]) * sx, (q[1] - b[1]) * sx]; };
-    var s = '<svg viewBox="0 0 ' + W + ' ' + H + '"' + (o.fs ? ' style="--fs:' + o.fs + 'px"' : '') + ' role="img" aria-label="' + esc(lang === 'mn' ? 'Төв Монголын аяллын маршрутын газрын зураг' : 'Map of journey routes in central Mongolia') + '"><defs>' +
+    var s = '<svg viewBox="0 0 ' + W + ' ' + H + '"' + (o.fs ? ' style="--fs:' + o.fs + 'px"' : '') + ' role="img" aria-label="' + esc(t('map.aria')) + '"><defs>' +
       '<radialGradient id="glow' + uid + '"><stop offset="0" stop-color="#F1DC9A" stop-opacity=".5"/><stop offset="1" stop-color="#F1DC9A" stop-opacity="0"/></radialGradient>' +
       '<pattern id="dots' + uid + '" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="7" cy="7" r=".9" fill="#C9A04E" fill-opacity=".34"/></pattern>' +
       '<radialGradient id="fade' + uid + '" cx="50%" cy="50%" r="60%"><stop offset=".55" stop-color="#fff"/><stop offset="1" stop-color="#000"/></radialGradient>' +
@@ -182,10 +184,11 @@
     $('#tourExc').innerHTML = t('d.exc').map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('');
     var i2 = $('#tourImg2'); if (tr.img2) { i2.src = 'img/' + tr.img2 + '.webp'; i2.alt = ''; i2.hidden = false; } else i2.hidden = true;
     $('#tourMap').innerHTML = (smallMap.matches ? mapSVG([tr.id], { uid: 't', w: 440, h: 250, fs: 11, locator: false, labels: { ub: [0, 26, 'middle'], orkhon: [-8, 24, 'start'], chinggis: [0, 23, 'middle'] } }) : mapSVG([tr.id], { uid: 't', w: 820, h: 330, locator: false, labels: { ub: [0, 28, 'middle'] } }));
+    if (typeof renderQuote === 'function') renderQuote();
   }
   function openTour(id) {
     var tr = byId[id]; if (!tr) return;
-    lastFocus = document.activeElement; tourOpen = id; fillTour(tr);
+    lastFocus = document.activeElement; tourOpen = id; fillTour(tr); showStep(1);
     var d = new Date(); d.setDate(d.getDate() + 14); $('#b-date').min = new Date().toISOString().slice(0, 10); if (!$('#b-date').value) $('#b-date').value = d.toISOString().slice(0, 10);
     tourEl.hidden = false; $('#tourScroll').scrollTop = 0; document.body.style.overflow = 'hidden'; if (lenis) lenis.stop();
     try { history.replaceState(null, '', '#journey-' + id); } catch (x) {}
@@ -211,18 +214,24 @@
     closeTour(function () {
       $('#f-journey').value = id; $('#f-who').value = String(Math.min(16, who));
       if (date) $('#f-month').value = String(new Date(date + 'T00:00:00').getMonth() + 1);
-      $('#f-msg').value = (date ? (lang === 'mn' ? 'Эхлэх өдөр: ' : 'Start date: ') + date + '\n' : '') + (lang === 'mn' ? 'Байр: ' : 'Stay: ') + stay;
+      $('#f-msg').value = (date ? t('b.datepre') + date + '\n' : '') + t('b.staypre') + stay;
       goTo('#contact'); setTimeout(function () { $('#f-name').focus({ preventScroll: true }); }, 1200);
     });
   });
 
   /* ---------- statement words ---------- */
+  /* Japanese has no spaces between words: segment it so the scrubbed word-lighting still works */
+  function words(s) {
+    if (lang !== 'ja') return s.split(' ');
+    try { if (window.Intl && Intl.Segmenter) { var out = [], seg = new Intl.Segmenter('ja', { granularity: 'word' }); Array.from(seg.segment(s)).forEach(function (x) { if (x.isWordLike || !out.length) out.push(x.segment); else out[out.length - 1] += x.segment; }); return out; } } catch (e) {}
+    return s.match(/[^、。]+[、。]?/g) || [s];
+  }
   function splitStatement() {
-    var el = $('#stText'), words = t('statement').split(' ');
-    var brand = lang === 'mn' ? 'Nomad Gate Tour тэр хаалгыг танд нээнэ.' : 'Nomad Gate Tour opens that door for you.';
-    var full = t('statement'), cut = full.indexOf(brand.split(' ')[0]);
-    var head = full.slice(0, cut).trim().split(' '), tail = full.slice(cut).trim().split(' ');
-    el.innerHTML = head.map(function (w) { return '<span class="w">' + esc(w) + '</span>'; }).join(' ') + ' <span class="gold-text">' + tail.map(function (w) { return '<span class="w">' + esc(w) + '</span>'; }).join(' ') + '</span>';
+    var el = $('#stText'), full = t('statement'), brand = t('st.brand'), J = lang === 'ja' ? '' : ' ';
+    var cut = full.indexOf(brand); if (cut < 0) cut = full.indexOf('Nomad Gate Tour'); if (cut < 0) cut = full.length;
+    var span = function (w) { return '<span class="w">' + esc(w) + '</span>'; };
+    var head = words(full.slice(0, cut).trim()), tail = full.slice(cut).trim();
+    el.innerHTML = head.map(span).join(J) + (tail ? J + '<span class="gold-text">' + words(tail).map(span).join(J) + '</span>' : '');
   }
   function splitH1() {
     var h = $('.hero-h1'); h.setAttribute('aria-label', t('hero.h1').replace('|', ' '));
@@ -233,11 +242,22 @@
   function applyLang() {
     root.lang = lang;
     $$('[data-i18n]').forEach(function (el) { var v = t(el.getAttribute('data-i18n')); if (typeof v === 'string') el.textContent = v; });
-    $$('.lang button').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-lang') === lang); });
+    $$('#langList button').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-lang') === lang); });
+    var cur = (D.langs || []).filter(function (l) { return l.id === lang; })[0]; $('#langCur').textContent = cur ? cur.short : lang.toUpperCase();
     renderTours(); renderMap(); renderExp(); renderFaq(); fillSelects(); splitStatement(); splitH1();
     if (tourOpen) fillTour(byId[tourOpen]);
   }
-  $$('.lang button').forEach(function (b) { b.addEventListener('click', function () { var l = b.getAttribute('data-lang'); if (l === lang) return; lang = l; store.set('ngt-lang', l); applyLang(); if (hasGsap()) { buildScroll(); ScrollTrigger.refresh(); } }); });
+  var langBtn = $('#langBtn'), langList = $('#langList');
+  langList.innerHTML = (D.langs || []).map(function (l) { return '<button type="button" data-lang="' + l.id + '" lang="' + l.id + '" aria-pressed="false"><b>' + esc(l.short) + '</b><span>' + esc(l.name) + '</span></button>'; }).join('');
+  function setLangMenu(open) { langBtn.setAttribute('aria-expanded', open); langList.hidden = !open; }
+  langBtn.addEventListener('click', function (e) { e.stopPropagation(); setLangMenu(langList.hidden); if (!langList.hidden) { var p = $('button[aria-pressed="true"]', langList) || $('button', langList); if (p) p.focus({ preventScroll: true }); } });
+  document.addEventListener('click', function (e) { if (!langList.hidden && !e.target.closest('#lang')) setLangMenu(false); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !langList.hidden) { setLangMenu(false); langBtn.focus(); } });
+  langList.addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-lang]'); if (!b) return;
+    var l = b.getAttribute('data-lang'); setLangMenu(false); langBtn.focus({ preventScroll: true });
+    if (l === lang) return; lang = l; store.set('ngt-lang', l); applyLang(); if (hasGsap()) { buildScroll(); ScrollTrigger.refresh(); }
+  });
 
   /* ---------- header, menu, nav ---------- */
   var hdr = $('#hdr'), burger = $('.burger'), mnav = $('#mnav');
@@ -259,6 +279,108 @@
 
   var onSmall = function () { renderMap(); if (tourOpen) fillTour(byId[tourOpen]); if (hasGsap() && !reduce) { buildScroll(); ScrollTrigger.refresh(); } };
   if (smallMap.addEventListener) smallMap.addEventListener('change', onSmall); else if (smallMap.addListener) smallMap.addListener(onSmall);
+
+  /* ---------- booking + deposit payment ----------
+     API set (data.js NGT.payments.api) -> Supabase functions price the trip on the server and create the bank invoice.
+     API empty -> demo mode: same screens, test payment page, nothing leaves the browser. */
+  var API = ((D.payments && D.payments.api) || '').replace(/\/$/, '');
+  var cur = store.get('ngt-cur') || (lang === 'mn' ? 'MNT' : 'USD'); if (cur !== 'USD' && cur !== 'MNT') cur = 'USD';
+  var LOC = { en: 'en-US', mn: 'mn-MN', ru: 'ru-RU', ko: 'ko-KR', ja: 'ja-JP', de: 'de-DE', es: 'es-ES' };
+  function money(v, c) {
+    v = Number(v) || 0;
+    try {
+      if (c === 'MNT') return new Intl.NumberFormat(LOC[lang] || 'en-US', { maximumFractionDigits: 0 }).format(Math.round(v)) + ' ₮';
+      return new Intl.NumberFormat(LOC[lang] || 'en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2 }).format(v);
+    } catch (e) { return c === 'MNT' ? Math.round(v) + ' ₮' : '$' + v; }
+  }
+  /* must match priceFor() in supabase/functions/_shared/core.ts */
+  function quote(id, stay, n, c) {
+    var p = D.prices && D.prices[id]; if (!p) return null;
+    var per = c === 'USD' ? p.usd + (stay === 'private' ? p.privUsd : 0) : p.mnt + (stay === 'private' ? p.privMnt : 0);
+    var total = per * n, dep = c === 'USD' ? Math.round(total * p.depositPct) / 100 : Math.round(total * p.depositPct / 100);
+    return { from: c === 'USD' ? p.usd : p.mnt, total: total, dep: dep, pct: p.depositPct };
+  }
+  function sumRows(rows) { return rows.map(function (r) { return '<div' + (r[2] ? ' class="' + r[2] + '"' : '') + '><dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd></div>'; }).join(''); }
+  function renderQuote() {
+    if (!tourOpen) return;
+    $$('#bCur button').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-cur') === cur); });
+    var q = quote(tourOpen, $('#b-stay').value || 'shared', who, cur);
+    $('#b-book').hidden = !q; $('#bPrice').hidden = !q; $('#bSum').hidden = !q;
+    if (!q) return;
+    $('#bPrice').innerHTML = '<small>' + esc(t('pay.from')) + '</small> <b>' + esc(money(q.from, cur)) + '</b> <small>' + esc(t('pay.pp')) + '</small>';
+    $('#bSum').innerHTML = sumRows([[t('pay.total'), money(q.total, cur)], [t('pay.deposit').replace('{p}', q.pct), money(q.dep, cur), 'dep'], [t('pay.balance'), money(q.total - q.dep, cur)]]);
+    $('#bPayTxt').textContent = t('pay.paybtn').replace('{amt}', money(q.dep, cur));
+  }
+  function showStep(n) {
+    $('#bStep1').hidden = n !== 1; $('#bStep2').hidden = n !== 2; $('#bNote').textContent = ''; $('#bNote').classList.remove('err');
+    if (n === 2) {
+      var tr = byId[tourOpen], date = $('#b-date').value;
+      $('#bLine').textContent = [L(tr.name), who + ' ' + (who === 1 ? t('person') : t('people')), date].filter(Boolean).join(' · ');
+      setTimeout(function () { $('#bp-name').focus({ preventScroll: true }); }, 30);
+    }
+  }
+  $('#bCur').addEventListener('click', function (e) { var b = e.target.closest('button[data-cur]'); if (!b) return; cur = b.getAttribute('data-cur'); store.set('ngt-cur', cur); renderQuote(); });
+  $('#b-minus').addEventListener('click', renderQuote); $('#b-plus').addEventListener('click', renderQuote); $('#b-stay').addEventListener('change', renderQuote);
+  $('#b-book').addEventListener('click', function () { renderQuote(); showStep(2); });
+  $('#bBack').addEventListener('click', function () { showStep(1); $('#b-book').focus({ preventScroll: true }); });
+  $('#bStep2').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var note = $('#bNote'), btn = $('#bPay'), name = $('#bp-name').value.trim(), email = $('#bp-email').value.trim();
+    if (!name || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { note.textContent = t('pay.req'); note.classList.add('err'); (name ? $('#bp-email') : $('#bp-name')).focus(); return; }
+    var q = quote(tourOpen, $('#b-stay').value, who, cur); if (!q) return;
+    note.classList.remove('err'); note.textContent = t('pay.wait'); btn.disabled = true;
+    var body = { tour_id: tourOpen, start_date: $('#b-date').value || null, travellers: who, stay: $('#b-stay').value, currency: cur, name: name, email: email,
+                 phone: $('#bp-phone').value.trim(), website: $('#bp-web').value, lang: lang };
+    var fail = function () { btn.disabled = false; note.textContent = t('pay.err'); note.classList.add('err'); };
+    if (!API) {
+      var A = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789', ref = 'NGT'; for (var i = 0; i < 8; i++) ref += A[Math.floor(Math.random() * A.length)];
+      var p = new URLSearchParams({ demo: '1', ref: ref, tour: tourOpen, cur: cur, dep: q.dep, total: q.total, lang: lang });
+      location.href = 'pay-test.html?' + p.toString();
+      return;
+    }
+    fetch(API + '/create-booking', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      .then(function (r) { return r.json().then(function (j) { if (!r.ok || !j.redirect) throw new Error(j.error || r.status); return j; }); })
+      .then(function (j) { location.href = j.redirect; })
+      .catch(fail);
+  });
+
+  /* result after returning from the bank: ?booking=REF */
+  var resEl = $('#res'), resTour = null;
+  function closeRes() { resEl.hidden = true; document.body.style.overflow = ''; if (lenis) lenis.start(); }
+  function showRes(d) {
+    var ok = d.status === 'paid'; resTour = d.tour_id && byId[d.tour_id] ? d.tour_id : null;
+    if (d.currency === 'USD' || d.currency === 'MNT') cur = d.currency;
+    resEl.classList.toggle('bad', !ok);
+    $('#resIc').innerHTML = '<svg><use href="#' + (ok ? 'i-check' : 'i-close') + '"/></svg>';
+    $('#resT').textContent = t(ok ? 'res.ok.t' : 'res.fail.t'); $('#resD').textContent = t(ok ? 'res.ok.d' : 'res.fail.d');
+    var rows = [[t('res.ref'), d.ref]]; if (resTour) rows.push([t('test.tour'), L(byId[resTour].name)]);
+    if (ok && d.deposit) rows.push([t('res.paid'), money(d.deposit, d.currency), 'dep']);
+    $('#resSum').innerHTML = d.ref && d.ref !== 'unknown' ? sumRows(rows) : '';
+    $('#resRetry').hidden = ok || !resTour; $('#resRetry').textContent = t('res.retry');
+    resEl.hidden = false; document.body.style.overflow = 'hidden'; if (lenis) lenis.stop();
+    setTimeout(function () { (ok ? $('#resClose') : ($('#resRetry').hidden ? $('#resClose') : $('#resRetry'))).focus({ preventScroll: true }); }, 60);
+  }
+  $('#resClose').addEventListener('click', closeRes);
+  $('#resRetry').addEventListener('click', function () { var id = resTour; closeRes(); if (id) openTour(id); });
+  resEl.addEventListener('click', function (e) { if (e.target === resEl) closeRes(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !resEl.hidden) closeRes(); });
+  function checkReturn() {
+    var q = new URLSearchParams(location.search), ref = q.get('booking'); if (!ref) return;
+    try { q.delete('booking'); ['demo', 'status', 'tour', 'cur', 'dep'].forEach(function (k) { q.delete(k); }); history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : '')); } catch (x) {}
+    var whenIn = function (fn) { var iv = setInterval(function () { if (root.classList.contains('entered')) { clearInterval(iv); fn(); } }, 200); };
+    if (retParams.demo) return whenIn(function () { showRes(retParams); });
+    if (!API || !/^NGT[A-HJ-NP-Z2-9]{8}$/.test(ref)) return whenIn(function () { showRes({ ref: ref, status: 'failed' }); });
+    fetch(API + '/booking-status?ref=' + encodeURIComponent(ref)).then(function (r) { return r.json(); })
+      .then(function (d) { whenIn(function () { showRes(d.ref ? d : { ref: ref, status: 'failed' }); }); })
+      .catch(function () { whenIn(function () { showRes({ ref: ref, status: 'failed' }); }); });
+  }
+  var retParams = (function () { var q = new URLSearchParams(location.search); return q.get('demo') ? { demo: true, ref: q.get('booking'), status: q.get('status'), tour_id: q.get('tour'), currency: q.get('cur'), deposit: Number(q.get('dep')) } : {}; })();
+  /* live prices from the server, so the page always shows what will be charged */
+  if (API) fetch(API + '/tours').then(function (r) { return r.json(); }).then(function (list) {
+    if (!Array.isArray(list)) return; D.prices = D.prices || {};
+    list.forEach(function (p) { D.prices[p.id] = { usd: +p.usd, mnt: +p.mnt, privUsd: +p.privUsd, privMnt: +p.privMnt, depositPct: +p.depositPct }; });
+    renderQuote();
+  }).catch(function () {});
 
   /* ---------- first render ---------- */
   applyLang();
@@ -413,6 +535,7 @@
     runGate();
     var m = location.hash.match(/^#journey-(\w+)/);
     if (m && byId[m[1]]) { var iv = setInterval(function () { if (root.classList.contains('entered')) { clearInterval(iv); openTour(m[1]); } }, 200); }
+    checkReturn();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();
