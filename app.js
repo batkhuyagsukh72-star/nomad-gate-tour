@@ -241,6 +241,7 @@
   /* ---------- i18n ---------- */
   function applyLang() {
     root.lang = lang;
+    try { document.title = 'Nomad Gate Tour — ' + t('hero.kicker'); var md = document.querySelector('meta[name="description"]'); if (md) md.setAttribute('content', t('hero.sub')); } catch (e) {}
     $$('[data-i18n]').forEach(function (el) { var v = t(el.getAttribute('data-i18n')); if (typeof v === 'string') el.textContent = v; });
     $$('#langList button').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-lang') === lang); });
     var cur = (D.langs || []).filter(function (l) { return l.id === lang; })[0]; $('#langCur').textContent = cur ? cur.short : lang.toUpperCase();
