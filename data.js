@@ -191,7 +191,7 @@ window.NGT = {
         Empty = demo mode (the whole booking + test payment runs in the browser, nothing is charged).
    Prices are SAMPLE values, per person, and must match the `tours` table (supabase/migrations/001_bookings.sql).
    When api is set the site loads live prices from the server, so the server is always the source of truth. */
-window.NGT.payments = { api: '' };
+window.NGT.payments = { api: 'https://oiaagrrfkwfnnohstzqu.supabase.co/functions/v1/api' };
 window.NGT.prices = {
   terelj:  { usd: 120, mnt: 420000,  privUsd: 0,   privMnt: 0,      depositPct: 30 },
   central: { usd: 850, mnt: 2950000, privUsd: 120, privMnt: 420000, depositPct: 30 },

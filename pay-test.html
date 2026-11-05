@@ -50,6 +50,7 @@
   var D = window.NGT, q = new URLSearchParams(location.search);
   var lang = (D.langs || []).some(function (l) { return l.id === q.get('lang'); }) ? q.get('lang') : 'en';
   var API = ((D.payments && D.payments.api) || '').replace(/\/$/, '');
+  if (/claudeusercontent\.com$|^localhost$|^127\./.test(location.hostname) && !/[?&]api=1/.test(location.search)) API = '';
   var ref = q.get('ref') || '', demo = q.get('demo') === '1';
   var t = function (k) { var v = D.t[lang][k]; return v === undefined ? D.t.en[k] : v; };
   var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };

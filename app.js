@@ -284,6 +284,7 @@
      API set (data.js NGT.payments.api) -> Supabase functions price the trip on the server and create the bank invoice.
      API empty -> demo mode: same screens, test payment page, nothing leaves the browser. */
   var API = ((D.payments && D.payments.api) || '').replace(/\/$/, '');
+  if (/claudeusercontent\.com$|^localhost$|^127\./.test(location.hostname) && !/[?&]api=1/.test(location.search)) API = ''; // artifact preview / local file: demo mode
   var cur = store.get('ngt-cur') || (lang === 'mn' ? 'MNT' : 'USD'); if (cur !== 'USD' && cur !== 'MNT') cur = 'USD';
   var LOC = { en: 'en-US', mn: 'mn-MN', ru: 'ru-RU', ko: 'ko-KR', ja: 'ja-JP', de: 'de-DE', es: 'es-ES' };
   function money(v, c) {
