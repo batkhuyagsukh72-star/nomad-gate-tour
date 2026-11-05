@@ -244,7 +244,7 @@
     $$('[data-i18n]').forEach(function (el) { var v = t(el.getAttribute('data-i18n')); if (typeof v === 'string') el.textContent = v; });
     $$('#langList button').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-lang') === lang); });
     var cur = (D.langs || []).filter(function (l) { return l.id === lang; })[0]; $('#langCur').textContent = cur ? cur.short : lang.toUpperCase();
-    renderTours(); renderMap(); renderExp(); renderFaq(); fillSelects(); splitStatement(); splitH1();
+    renderTours(); renderMap(); renderExp(); renderFaq(); fillSelects(); splitStatement(); splitH1(); if (typeof payTexts === 'function' && $('#bBookTxt')) payTexts();
     if (tourOpen) fillTour(byId[tourOpen]);
   }
   var langBtn = $('#langBtn'), langList = $('#langList');
@@ -284,7 +284,8 @@
      API set (data.js NGT.payments.api) -> Supabase functions price the trip on the server and create the bank invoice.
      API empty -> demo mode: same screens, test payment page, nothing leaves the browser. */
   var API = ((D.payments && D.payments.api) || '').replace(/\/$/, '');
-  if (/claudeusercontent\.com$|^localhost$|^127\./.test(location.hostname) && !/[?&]api=1/.test(location.search)) API = ''; // artifact preview / local file: demo mode
+  if (/claudeusercontent\.com$/.test(location.hostname)) API = ''; // artifact preview / local file: demo mode
+  var payMode = (D.payments && D.payments.mode) === 'request' ? 'request' : 'test';
   var cur = store.get('ngt-cur') || (lang === 'mn' ? 'MNT' : 'USD'); if (cur !== 'USD' && cur !== 'MNT') cur = 'USD';
   var LOC = { en: 'en-US', mn: 'mn-MN', ru: 'ru-RU', ko: 'ko-KR', ja: 'ja-JP', de: 'de-DE', es: 'es-ES' };
   function money(v, c) {
@@ -310,7 +311,13 @@
     if (!q) return;
     $('#bPrice').innerHTML = '<small>' + esc(t('pay.from')) + '</small> <b>' + esc(money(q.from, cur)) + '</b> <small>' + esc(t('pay.pp')) + '</small>';
     $('#bSum').innerHTML = sumRows([[t('pay.total'), money(q.total, cur)], [t('pay.deposit').replace('{p}', q.pct), money(q.dep, cur), 'dep'], [t('pay.balance'), money(q.total - q.dep, cur)]]);
-    $('#bPayTxt').textContent = t('pay.paybtn').replace('{amt}', money(q.dep, cur));
+    $('#bPayTxt').textContent = payMode === 'request' ? t('pay.sendreq') : t('pay.paybtn').replace('{amt}', money(q.dep, cur));
+  }
+  function payTexts() {
+    $('#bBookTxt').textContent = t(payMode === 'request' ? 'pay.bookreq' : 'pay.book');
+    $('#bSecTxt').textContent = t(payMode === 'request' ? 'pay.laternote' : 'pay.secure');
+    $$('.terms-link').forEach(function (a) { a.href = 'terms.html?lang=' + lang + (a.getAttribute('data-hash') ? '#' + a.getAttribute('data-hash') : ''); });
+    renderQuote();
   }
   function showStep(n) {
     $('#bStep1').hidden = n !== 1; $('#bStep2').hidden = n !== 2; $('#bNote').textContent = ''; $('#bNote').classList.remove('err');
@@ -335,6 +342,7 @@
     var fail = function () { btn.disabled = false; note.textContent = t('pay.err'); note.classList.add('err'); };
     if (!API) {
       var A = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789', ref = 'NGT'; for (var i = 0; i < 8; i++) ref += A[Math.floor(Math.random() * A.length)];
+      if (payMode === 'request') { location.href = './?' + new URLSearchParams({ booking: ref, demo: '1', status: 'requested', tour: tourOpen, cur: cur, dep: q.dep, lang: lang }).toString(); return; }
       var p = new URLSearchParams({ demo: '1', ref: ref, tour: tourOpen, cur: cur, dep: q.dep, total: q.total, lang: lang });
       location.href = 'pay-test.html?' + p.toString();
       return;
@@ -349,13 +357,13 @@
   var resEl = $('#res'), resTour = null;
   function closeRes() { resEl.hidden = true; document.body.style.overflow = ''; if (lenis) lenis.start(); }
   function showRes(d) {
-    var ok = d.status === 'paid'; resTour = d.tour_id && byId[d.tour_id] ? d.tour_id : null;
+    var req = d.status === 'requested', ok = d.status === 'paid' || req; resTour = d.tour_id && byId[d.tour_id] ? d.tour_id : null;
     if (d.currency === 'USD' || d.currency === 'MNT') cur = d.currency;
     resEl.classList.toggle('bad', !ok);
     $('#resIc').innerHTML = '<svg><use href="#' + (ok ? 'i-check' : 'i-close') + '"/></svg>';
-    $('#resT').textContent = t(ok ? 'res.ok.t' : 'res.fail.t'); $('#resD').textContent = t(ok ? 'res.ok.d' : 'res.fail.d');
+    $('#resT').textContent = t(req ? 'res.req.t' : ok ? 'res.ok.t' : 'res.fail.t'); $('#resD').textContent = t(req ? 'res.req.d' : ok ? 'res.ok.d' : 'res.fail.d');
     var rows = [[t('res.ref'), d.ref]]; if (resTour) rows.push([t('test.tour'), L(byId[resTour].name)]);
-    if (ok && d.deposit) rows.push([t('res.paid'), money(d.deposit, d.currency), 'dep']);
+    if (ok && d.deposit) rows.push([t(req ? 'res.due' : 'res.paid'), money(d.deposit, d.currency), 'dep']);
     $('#resSum').innerHTML = d.ref && d.ref !== 'unknown' ? sumRows(rows) : '';
     $('#resRetry').hidden = ok || !resTour; $('#resRetry').textContent = t('res.retry');
     resEl.hidden = false; document.body.style.overflow = 'hidden'; if (lenis) lenis.stop();
@@ -378,6 +386,7 @@
   var retParams = (function () { var q = new URLSearchParams(location.search); return q.get('demo') ? { demo: true, ref: q.get('booking'), status: q.get('status'), tour_id: q.get('tour'), currency: q.get('cur'), deposit: Number(q.get('dep')) } : {}; })();
   /* live prices from the server, so the page always shows what will be charged */
   if (API) fetch(API + '/tours').then(function (r) { return r.json(); }).then(function (list) {
+    if (list && list.mode) { payMode = list.mode === 'request' ? 'request' : 'test'; list = list.tours; payTexts(); }
     if (!Array.isArray(list)) return; D.prices = D.prices || {};
     list.forEach(function (p) { D.prices[p.id] = { usd: +p.usd, mnt: +p.mnt, privUsd: +p.privUsd, privMnt: +p.privMnt, depositPct: +p.depositPct }; });
     renderQuote();
