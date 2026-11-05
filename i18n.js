@@ -67,7 +67,7 @@
       months: ['Гибко', 'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
       t: {
         'nav.journeys': 'Туры', 'nav.map': 'Карта', 'nav.exp': 'Впечатления', 'nav.road': 'Истории', 'nav.faq': 'Вопросы', 'nav.cta': 'Спланировать', 'menu': 'Меню',
-        'hero.kicker': 'Частные путешествия по Монголии', 'hero.h1': 'Создайте|незабываемые воспоминания',
+        'hero.kicker': 'Частные путешествия по Монголии', 'hero.h1': 'Создайте незабываемые|воспоминания',
         'hero.sub': 'Ночи в юртах, семьи кочевников, дюны и дикие лошади — маршруты от монгольской команды, которая сама ездит этими дорогами.',
         'hero.cta1': 'Смотреть туры', 'hero.cta2': 'Частная поездка', 'scroll': 'Вниз',
         'statement': 'За каждой дверью монгольской юрты вас ждёт радушный приём: чай с молоком на печи, место у огня и семья, которая поколениями кочует вместе со стадами. Nomad Gate Tour открывает эту дверь для вас.',
@@ -461,4 +461,19 @@
     es: { 'pay.bookreq': 'Reserve ahora, pague después', 'pay.sendreq': 'Enviar solicitud de reserva', 'pay.laternote': 'Sin pago ahora. Comprobamos la disponibilidad y le enviamos la factura del depósito por correo en 24 horas.', 'res.req.t': 'Solicitud de reserva recibida', 'res.req.d': 'Comprobaremos la disponibilidad y le enviaremos la factura del depósito por correo en 24 horas.', 'res.due': 'Depósito a pagar', 'pay.terms': 'Condiciones de reserva y privacidad', 'foot.terms': 'Condiciones de reserva', 'foot.privacy': 'Privacidad' }
   };
   Object.keys(PAY2).forEach(function (l) { Object.keys(PAY2[l]).forEach(function (k) { D.t[l][k] = PAY2[l][k]; }); });
+
+  /* floating WhatsApp button */
+  var WA = {
+    en: ['Chat on WhatsApp', 'Hello Nomad Gate Tour! I would like to ask about a trip in Mongolia.'],
+    mn: ['WhatsApp-аар асуух', 'Сайн байна уу, Nomad Gate Tour! Аяллын талаар асуух зүйл байна.'],
+    ru: ['Написать в WhatsApp', 'Здравствуйте, Nomad Gate Tour! Хочу узнать о поездке по Монголии.'],
+    ko: ['WhatsApp으로 문의', '안녕하세요, Nomad Gate Tour! 몽골 여행에 대해 문의하고 싶습니다.'],
+    ja: ['WhatsAppで相談', 'こんにちは、Nomad Gate Tour！モンゴル旅行について相談したいです。'],
+    de: ['Auf WhatsApp schreiben', 'Hallo Nomad Gate Tour! Ich möchte mich nach einer Reise in die Mongolei erkundigen.'],
+    es: ['Escríbenos por WhatsApp', '¡Hola, Nomad Gate Tour! Quisiera preguntar por un viaje a Mongolia.']
+  };
+  Object.keys(WA).forEach(function (l) { D.t[l]['wa.label'] = WA[l][0]; D.t[l]['wa.msg'] = WA[l][1]; });
+  var STEP = { en: ['Fewer travellers', 'More travellers'], mn: ['Хүний тоог хасах', 'Хүний тоог нэмэх'], ru: ['Меньше путешественников', 'Больше путешественников'],
+    ko: ['인원 줄이기', '인원 늘리기'], ja: ['人数を減らす', '人数を増やす'], de: ['Weniger Reisende', 'Mehr Reisende'], es: ['Menos viajeros', 'Más viajeros'] };
+  Object.keys(STEP).forEach(function (l) { D.t[l]['pay.less'] = STEP[l][0]; D.t[l]['pay.more'] = STEP[l][1]; });
 })();

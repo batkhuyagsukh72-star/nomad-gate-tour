@@ -190,7 +190,7 @@
     var tr = byId[id]; if (!tr) return;
     lastFocus = document.activeElement; tourOpen = id; fillTour(tr); showStep(1);
     var d = new Date(); d.setDate(d.getDate() + 14); $('#b-date').min = new Date().toISOString().slice(0, 10); if (!$('#b-date').value) $('#b-date').value = d.toISOString().slice(0, 10);
-    tourEl.hidden = false; $('#tourScroll').scrollTop = 0; document.body.style.overflow = 'hidden'; if (lenis) lenis.stop();
+    tourEl.hidden = false; $('#tourScroll').scrollTop = 0; document.body.style.overflow = 'hidden'; document.body.classList.add('modal-open'); if (lenis) lenis.stop();
     try { history.replaceState(null, '', '#journey-' + id); } catch (x) {}
     if (hasGsap() && !reduce) {
       gsap.fromTo(tourEl, { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.05, ease: 'expo.inOut' });
@@ -202,7 +202,7 @@
   }
   function closeTour(cb) {
     if (!tourOpen) return;
-    var finish = function () { tourEl.hidden = true; tourOpen = null; document.body.style.overflow = ''; if (lenis) lenis.start(); try { history.replaceState(null, '', location.pathname + location.search); } catch (x) {} if (cb) cb(); else if (lastFocus) lastFocus.focus({ preventScroll: true }); };
+    var finish = function () { tourEl.hidden = true; tourOpen = null; document.body.style.overflow = ''; document.body.classList.remove('modal-open'); if (lenis) lenis.start(); try { history.replaceState(null, '', location.pathname + location.search); } catch (x) {} if (cb) cb(); else if (lastFocus) lastFocus.focus({ preventScroll: true }); };
     if (hasGsap() && !reduce) gsap.to(tourEl, { clipPath: 'inset(0% 0% 100% 0%)', duration: .8, ease: 'expo.inOut', onComplete: finish }); else finish();
   }
   $('#tourClose').addEventListener('click', function () { closeTour(); });
@@ -235,12 +235,23 @@
   }
   function splitH1() {
     var h = $('.hero-h1'); h.setAttribute('aria-label', t('hero.h1').replace('|', ' '));
-    h.innerHTML = t('hero.h1').split('|').map(function (line) { return '<span class="hl" aria-hidden="true">' + line.split(' ').map(function (w) { return '<span class="ln"><span>' + esc(w) + '</span></span>'; }).join(' ') + '</span>'; }).join('');
+    h.innerHTML = t('hero.h1').split('|').map(function (line) { return '<span class="hl" aria-hidden="true">' + line.split(' ').map(function (w) { return '<span class="ln"><span>' + esc(w) + '</span></span>'; }).join(' ') + '</span>'; }).join('');    fitHero();
   }
+  /* keep each hero line on one line in every language: shrink the font until no line wraps */
+  function fitHero() {
+    var h = $('.hero-h1'); if (!h) return; h.style.fontSize = '';
+    var fs = parseFloat(getComputedStyle(h).fontSize), lines = $$('.hl', h);
+    var wraps = function () { return lines.some(function (l) { return l.getBoundingClientRect().height > fs * 1.45; }); };
+    for (var i = 0; i < 14 && fs > 28 && wraps(); i++) { fs = Math.round(fs * 0.93); h.style.fontSize = fs + 'px'; }
+  }
+  var fitT; window.addEventListener('resize', function () { clearTimeout(fitT); fitT = setTimeout(fitHero, 150); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitHero);
 
   /* ---------- i18n ---------- */
   function applyLang() {
     root.lang = lang;
+    $('#b-minus').setAttribute('aria-label', t('pay.less')); $('#b-plus').setAttribute('aria-label', t('pay.more'));
+    var wa = $('#wa'); if (wa) { $('#waTxt').textContent = t('wa.label'); wa.setAttribute('aria-label', t('wa.label')); wa.href = 'https://wa.me/' + D.contact.phoneRaw.replace('+', '') + '?text=' + encodeURIComponent(t('wa.msg')); }
     try { document.title = 'Nomad Gate Tour — ' + t('hero.kicker'); var md = document.querySelector('meta[name="description"]'); if (md) md.setAttribute('content', t('hero.sub')); } catch (e) {}
     $$('[data-i18n]').forEach(function (el) { var v = t(el.getAttribute('data-i18n')); if (typeof v === 'string') el.textContent = v; });
     $$('#langList button').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-lang') === lang); });
@@ -263,7 +274,7 @@
   /* ---------- header, menu, nav ---------- */
   var hdr = $('#hdr'), burger = $('.burger'), mnav = $('#mnav');
   window.addEventListener('scroll', function () { hdr.classList.toggle('scrolled', window.scrollY > 40); }, { passive: true });
-  function setMenu(open) { burger.setAttribute('aria-expanded', open); mnav.hidden = !open; document.body.style.overflow = open ? 'hidden' : ''; if (lenis) { open ? lenis.stop() : lenis.start(); } }
+  function setMenu(open) { burger.setAttribute('aria-expanded', open); mnav.hidden = !open; document.body.style.overflow = open ? 'hidden' : ''; document.body.classList.toggle('modal-open', !!open); if (lenis) { open ? lenis.stop() : lenis.start(); } }
   burger.addEventListener('click', function () { setMenu(burger.getAttribute('aria-expanded') !== 'true'); });
   function goTo(sel) { var el = $(sel); if (!el) return; if (lenis) lenis.scrollTo(el, { offset: sel === '#top' ? 0 : -40, duration: 1.6 }); else el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); }
   document.addEventListener('click', function (e) {
@@ -356,7 +367,7 @@
 
   /* result after returning from the bank: ?booking=REF */
   var resEl = $('#res'), resTour = null;
-  function closeRes() { resEl.hidden = true; document.body.style.overflow = ''; if (lenis) lenis.start(); }
+  function closeRes() { resEl.hidden = true; document.body.style.overflow = ''; document.body.classList.remove('modal-open'); if (lenis) lenis.start(); }
   function showRes(d) {
     var req = d.status === 'requested', ok = d.status === 'paid' || req; resTour = d.tour_id && byId[d.tour_id] ? d.tour_id : null;
     if (d.currency === 'USD' || d.currency === 'MNT') cur = d.currency;
@@ -367,7 +378,7 @@
     if (ok && d.deposit) rows.push([t(req ? 'res.due' : 'res.paid'), money(d.deposit, d.currency), 'dep']);
     $('#resSum').innerHTML = d.ref && d.ref !== 'unknown' ? sumRows(rows) : '';
     $('#resRetry').hidden = ok || !resTour; $('#resRetry').textContent = t('res.retry');
-    resEl.hidden = false; document.body.style.overflow = 'hidden'; if (lenis) lenis.stop();
+    resEl.hidden = false; document.body.style.overflow = 'hidden'; document.body.classList.add('modal-open'); if (lenis) lenis.stop();
     setTimeout(function () { (ok ? $('#resClose') : ($('#resRetry').hidden ? $('#resClose') : $('#resRetry'))).focus({ preventScroll: true }); }, 60);
   }
   $('#resClose').addEventListener('click', closeRes);
