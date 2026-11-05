@@ -130,6 +130,7 @@
         var len = path.getTotalLength(); if (!len) return;
         var c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         c.setAttribute('class', 'm-trav'); c.setAttribute('r', svg.classList.contains('mfull') ? 4.2 : 3.6); c.setAttribute('data-route', path.getAttribute('data-route'));
+        var p0 = path.getPointAtLength(0); c.setAttribute('cx', p0.x.toFixed(1)); c.setAttribute('cy', p0.y.toFixed(1)); // start on the route, never at 0,0
         svg.insertBefore(c, svg.querySelector('.m-pin'));
         items.push({ c: c, p: path, len: len, dur: Math.max(4200, len * 38), off: i * 0.23 });
       });
