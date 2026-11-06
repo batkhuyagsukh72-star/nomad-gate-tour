@@ -288,7 +288,7 @@
   var MODE = { test: 'Тест горим', request: 'Төлбөргүй захиалга', live: 'Golomt (жинхэнэ)' };
   var TABS = [['all', 'Бүгд'], ['paid', 'Төлсөн'], ['open', 'Хүсэлт / хүлээгдэж буй'], ['closed', 'Цуцалсан / амжилтгүй']];
   var CMS = { tours: [], places: {}, mediaBase: '' };
-  var tourName = function (id) { var t = CMS.tours.filter(function (x) { return x.id === id; })[0] || (D.tours || []).filter(function (x) { return x.id === id; })[0]; return t ? (t.name.mn || t.name.en) : id; };
+  var tourName = function (id) { var t = CMS.tours.filter(function (x) { return x.id === id; })[0] || (D.tours || []).filter(function (x) { return x.id === id; })[0]; var n = t && t.name || {}; return n.mn || n.en || id; };
   var money = function (v, c) { v = Number(v) || 0; return c === 'MNT' ? Math.round(v).toLocaleString('en-US') + ' ₮' : '$' + v.toLocaleString('en-US', { maximumFractionDigits: 2 }); };
   var dt = function (s) { if (!s) return ''; var d = new Date(s); var p = function (n) { return String(n).padStart(2, '0'); }; return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()); };
   var imgUrl = function (v) { v = String(v || ''); return /^https?:\/\//.test(v) ? v : (v ? 'img/' + v + '.webp' : ''); };
@@ -431,9 +431,9 @@
   function renderTours() {
     var n = CMS.tours.length;
     $('#tRows').innerHTML = CMS.tours.map(function (t, i) {
-      var p = t.price || {}, first = (p.tiers || [])[0] || [1, p.usd, p.mnt];
+      var p = t.price || {}, first = (p.tiers || [])[0] || [1, p.usd, p.mnt], nm = t.name || {};
       return '<tr><td data-l="Зураг"><div><img class="thumb" src="' + esc(imgUrl(t.img)) + '" alt=""></div></td>' +
-        '<td data-l="Аялал"><div><b>' + esc(t.name.mn || t.name.en) + '</b><small>' + esc(t.name.en || '') + ' · #' + esc(t.id) + '</small></div></td>' +
+        '<td data-l="Аялал"><div><b>' + esc(nm.mn || nm.en || ('Нэргүй аялал (' + t.id + ')')) + '</b><small>' + esc(nm.en || '') + ' · #' + esc(t.id) + '</small></div></td>' +
         '<td data-l="Хоног"><div>' + esc(t.days) + '<small>' + esc((t.route || []).length) + ' газар</small></div></td>' +
         '<td data-l="Үнэ" class="num"><div><b>' + esc(money(first[1], 'USD')) + '</b><small>' + esc(money(first[2], 'MNT')) + ((p.tiers || []).length > 1 ? ' · бүлгийн хямдралтай' : '') + '</small></div></td>' +
         '<td data-l="Төлөв"><div><span class="st ' + (t.active ? 'on' : 'off') + '">' + (t.active ? 'Харагдана' : 'Нуусан') + '</span></div></td>' +
