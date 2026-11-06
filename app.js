@@ -16,8 +16,15 @@
   var navLang = function () { try { return (navigator.languages || [navigator.language]).map(function (x) { return okLang(String(x).slice(0, 2).toLowerCase()); }).filter(Boolean)[0]; } catch (e) { return null; } };
   var lang = okLang(new URLSearchParams(location.search).get('lang')) || okLang(store.get('ngt-lang')) || navLang() || 'en';
   function t(k) { var v = D.t[lang][k]; return v === undefined ? D.t.en[k] : v; }
-  function L(o) { return o ? (o[lang] || o.en) : ''; }
+  function L(o) { return o ? (o[lang] || o.en || o.mn || '') : ''; }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  /* tour photos: a built-in name ("t_terelj" -> img/t_terelj.webp) or a photo uploaded in the admin panel (same host as the API) */
+  function imgSrc(v) {
+    v = String(v || '');
+    var apiHost = ((D.payments && D.payments.api) || '').replace(/^(https?:\/\/[^\/]+).*$/, '$1');
+    if (/^https?:\/\//.test(v)) return apiHost && v.indexOf(apiHost + '/') === 0 && /^[\w:\/.-]+$/.test(v) ? v : '';
+    return /^[\w-]+$/.test(v) ? 'img/' + v + '.webp' : '';
+  }
   function dayWord(n) { return n === 1 ? t('j.day') : t('j.days'); }
 
   var toastEl = $('#toast'), toastT;
@@ -28,7 +35,7 @@
   function renderTours() {
     $('#jTrack').innerHTML = D.tours.map(function (tr) {
       return '<article class="jc" role="listitem">' +
-        '<div class="jc-img" data-open="' + tr.id + '"><img src="img/' + tr.img + '.webp" alt="' + esc(L(tr.name)) + '" width="1000" height="1250" loading="lazy" decoding="async">' +
+        '<div class="jc-img" data-open="' + tr.id + '"><img src="' + esc(imgSrc(tr.img)) + '" alt="' + esc(L(tr.name)) + '" width="1000" height="1250" loading="lazy" decoding="async">' +
         '<span class="jc-days"><span><b>' + tr.days + '</b><small>' + esc(dayWord(tr.days)) + '</small></span></span></div>' +
         '<div class="jc-body"><p class="jc-meta"><span>' + esc(L(tr.season)) + '</span><span>' + esc(L(tr.style)) + '</span></p>' +
         '<h3 class="jc-name">' + esc(L(tr.name)) + '</h3><p class="jc-route">' + routeHTML(tr.route) + '</p>' +
@@ -129,7 +136,7 @@
     var ubp = P('ub'); s += '<circle class="m-pulse" cx="' + ubp[0] + '" cy="' + ubp[1] + '" r="12"/><circle class="m-pulse m-pulse2" cx="' + ubp[0] + '" cy="' + ubp[1] + '" r="12"/>';
     // every place has a label; the default set is visible, the rest appear when their tour is highlighted
     Object.keys(used).forEach(function (p) {
-      var xy = P(p), ub = p === 'ub', lp = fullLabels[p], x = xy[0].toFixed(1), y = xy[1].toFixed(1);
+      var xy = P(p), ub = p === 'ub', lp = fullLabels[p] || [Math.round(xy[0] + 14), Math.round(xy[1] - 12), 'start'], x = xy[0].toFixed(1), y = xy[1].toFixed(1);
       var def = labels === true ? fullDefault.indexOf(p) > -1 : Array.isArray(labels) && labels.indexOf(p) > -1, hov = labels === true;
       var cls = 'lab' + (def ? '' : ' opt'), routes = ids.filter(function (id) { return byId[id].route.indexOf(p) > -1; }).join(' ');
       s += '<g class="m-pin' + (ub ? ' m-ub' : '') + '" data-pin="' + p + '" data-routes=" ' + routes + ' ">';
@@ -269,7 +276,7 @@
   }
   function maxPax() { var p = D.prices && D.prices[tourOpen], tr = byId[tourOpen]; return (p && p.maxPax) || (tr && tr.maxPax) || 12; }
   function fillTour(tr) {
-    $('#tourImg').src = 'img/' + tr.img + '.webp'; $('#tourImg').alt = L(tr.name);
+    $('#tourImg').src = imgSrc(tr.img); $('#tourImg').alt = L(tr.name);
     $('#tourKick').innerHTML = '<svg class="star"><use href="#i-star"/></svg>' + esc(tr.days + ' ' + dayWord(tr.days) + ' · ' + L(tr.season));
     $('#tourName').textContent = L(tr.name); $('#tourLead').textContent = L(tr.lead);
     $('#tourFacts').innerHTML = [[t('d.duration'), tr.days + ' ' + dayWord(tr.days)], [t('d.season'), L(tr.season)], [t('d.style'), L(tr.style)], [t('d.route'), tr.route.length - 1 + ' · ' + L(D.places[tr.route[1]])]]
@@ -278,7 +285,7 @@
     var li = function (s) { return s ? '<li>' + esc(s) + '</li>' : ''; };
     $('#tourInc').innerHTML = (tr.inc ? tr.inc.map(inclText) : t('d.inc')).map(li).join('');
     $('#tourExc').innerHTML = (tr.exc ? tr.exc.map(inclText) : t('d.exc')).map(li).join('');
-    var i2 = $('#tourImg2'); if (tr.img2) { i2.src = 'img/' + tr.img2 + '.webp'; i2.alt = ''; i2.hidden = false; } else i2.hidden = true;
+    var i2 = $('#tourImg2'); if (tr.img2 && imgSrc(tr.img2)) { i2.src = imgSrc(tr.img2); i2.alt = ''; i2.hidden = false; } else i2.hidden = true;
     $('#tourMap').innerHTML = (smallMap.matches ? mapSVG([tr.id], { uid: 't', w: 440, h: 250, fs: 11, locator: false, labels: { ub: [0, 26, 'middle'], orkhon: [-8, 24, 'start'], chinggis: [0, 23, 'middle'] } }) : mapSVG([tr.id], { uid: 't', w: 820, h: 330, locator: false, labels: { ub: [0, 28, 'middle'] } }));
     if (typeof renderQuote === 'function') renderQuote();
   }
@@ -512,6 +519,51 @@
     renderQuote();
   }).catch(function () {});
 
+  /* ---------- tours from the database (edited in admin.html); tours.js is the built-in copy shown first ---------- */
+  function stable(v) { // JSON with sorted keys, so the database copy and tours.js compare equal when nothing changed
+    if (Array.isArray(v)) return '[' + v.map(stable).join(',') + ']';
+    if (v && typeof v === 'object') return '{' + Object.keys(v).sort().map(function (k) { return JSON.stringify(k) + ':' + stable(v[k]); }).join(',') + '}';
+    return JSON.stringify(v === undefined ? null : v);
+  }
+  var TK = ['id', 'img', 'img2', 'days', 'maxPax', 'route', 'name', 'season', 'style', 'lead', 'plan', 'inc', 'exc'];
+  function sigOf(tours, prices) {
+    return stable([tours.map(function (t) { var o = {}; TK.forEach(function (k) { if (t[k] !== undefined && t[k] !== '') o[k] = t[k]; }); return o; }),
+      Object.keys(prices || {}).sort().map(function (k) { var p = prices[k]; return [k, p.tiers, p.depositPct, p.maxPax]; })]);
+  }
+  var shownSig = sigOf(D.tours, D.prices), pendingTour = null;
+  function updateLd() {
+    var el = document.querySelector('script[type="application/ld+json"]'); if (!el) return;
+    try {
+      var d = JSON.parse(el.textContent), base = 'https://nomadgatetour.com/';
+      d['@graph'][1] = { '@type': 'ItemList', name: 'Tours', itemListElement: D.tours.map(function (tr, i) {
+        var p = D.prices[tr.id] || {}, low = Math.min.apply(null, (p.tiers || [[1, p.usd || 0]]).map(function (x) { return x[1]; })), im = imgSrc(tr.img);
+        return { '@type': 'ListItem', position: i + 1, item: { '@type': 'TouristTrip', name: tr.name.en || tr.name.mn, description: (tr.lead && (tr.lead.en || tr.lead.mn)) || '',
+          url: base + '#journey-' + tr.id, image: /^https?:/.test(im) ? im : base + im, provider: { '@id': base + '#agency' },
+          offers: { '@type': 'Offer', price: low, priceCurrency: 'USD', url: base + '#journey-' + tr.id, availability: 'https://schema.org/InStock' } } };
+      }) };
+      el.textContent = JSON.stringify(d);
+    } catch (e) {}
+  }
+  function applyContent(c) {
+    if (!c || !Array.isArray(c.tours) || !c.tours.length || !c.prices) return;
+    Object.keys(c.places || {}).forEach(function (id) { var p = c.places[id]; if (p && p.pin && p.names) { D.places[id] = p.names; M.pins[id] = p.pin; } });
+    var tours = c.tours.filter(function (t) { return t && t.id && t.name && Array.isArray(t.route) && t.route.length > 1 && t.route.every(function (p) { return M.pins[p]; }) && c.prices[t.id]; });
+    if (!tours.length) return;
+    var prices = {};
+    tours.forEach(function (t) { var p = c.prices[t.id];
+      prices[t.id] = { usd: +p.usd, mnt: +p.mnt, privUsd: +p.privUsd || 0, privMnt: +p.privMnt || 0, depositPct: +p.depositPct, maxPax: +p.maxPax || 12,
+        tiers: (p.tiers || []).map(function (x) { return [+x[0], +x[1], +x[2]]; }).sort(function (a, b) { return a[0] - b[0]; }) }; });
+    var sig = sigOf(tours, prices);
+    if (sig === shownSig) return;
+    shownSig = sig; D.tours = tours; D.prices = prices;
+    Object.keys(byId).forEach(function (k) { delete byId[k]; }); tours.forEach(function (t) { byId[t.id] = t; });
+    updateLd();
+    applyLang(); if (hasGsap()) { buildScroll(); ScrollTrigger.refresh(); }
+    if (tourOpen && byId[tourOpen]) { fillTour(byId[tourOpen]); renderQuote(); }
+    if (pendingTour && byId[pendingTour]) { var id = pendingTour; pendingTour = null; var iv = setInterval(function () { if (root.classList.contains('entered')) { clearInterval(iv); openTour(id); } }, 200); }
+  }
+  if (API) fetch(API + '/content').then(function (r) { return r.ok ? r.json() : null; }).then(applyContent).catch(function () {});
+
   /* ---------- first render ---------- */
   applyLang();
   renderReels();
@@ -669,6 +721,7 @@
     runGate();
     var m = location.hash.match(/^#journey-([\w-]+)/);
     if (m && byId[m[1]]) { var iv = setInterval(function () { if (root.classList.contains('entered')) { clearInterval(iv); openTour(m[1]); } }, 200); }
+    else if (m) pendingTour = m[1]; // a tour added in the admin panel: opens once the database copy arrives
     checkReturn();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
