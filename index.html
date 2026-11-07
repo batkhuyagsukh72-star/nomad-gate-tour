@@ -42,8 +42,8 @@
 <link rel="preload" as="image" href="img/hero-poster.jpg" fetchpriority="high">
 <link rel="preconnect" href="https://oiaagrrfkwfnnohstzqu.supabase.co" crossorigin>
 <style>html{background:#0D0B09}html[data-theme="light"]{background:#F6F1E7}html.js:not(.entered) body{overflow:hidden}</style>
-<link rel="stylesheet" href="fonts.css?v=20261107f">
-<link rel="stylesheet" href="styles.css?v=20261107f">
+<link rel="stylesheet" href="fonts.css?v=20261107g">
+<link rel="stylesheet" href="styles.css?v=20261107g">
 <script>document.documentElement.classList.add('js');try{var th=localStorage.getItem('ngt-theme');if(th==='light'){document.documentElement.setAttribute('data-theme','light');document.getElementById('themeColor').setAttribute('content','#F6F1E7')}}catch(e){}try{if(matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('rm')}catch(e){}setTimeout(function(){document.documentElement.classList.add('entered')},12000);</script>
 </head>
 <body>
@@ -109,7 +109,7 @@
     <a href="#journeys" data-i18n="nav.journeys">Journeys</a><a href="#map" data-i18n="nav.map">Map</a><a href="#experiences" data-i18n="nav.exp">Experiences</a><a href="#road" data-i18n="nav.road">Stories</a><a href="#guests" data-i18n="nav.guests">Travellers</a><a href="#team" id="qTeam" data-i18n="nav.team" hidden>Team</a><a href="#faq" data-i18n="nav.faq">FAQ</a>
   </nav>
 </header>
-<div class="mnav" id="mnav" hidden>
+<div class="mnav" data-lenis-prevent id="mnav" hidden>
   <div class="mnav-in">
     <nav class="mnav-grid" aria-label="Mobile">
       <a class="mcard mcard-big" href="#journeys"><img src="img/t_semigobi.webp" alt="" loading="lazy" decoding="async"><b>01</b><span class="mc-t" data-i18n="nav.journeys">Journeys</span><span class="mc-d" data-i18n="menu.d.journeys"></span></a>
@@ -210,7 +210,7 @@
     <a class="btn btn-line magnet" href="https://www.instagram.com/nomad_gate_tour" target="_blank" rel="noopener" data-reveal><svg><use href="#i-ig"/></svg><span data-i18n="r.follow">Follow on Instagram</span></a>
   </div>
   <div class="reels" id="reels"></div>
-  <div class="sv" id="sv" role="dialog" aria-modal="true" aria-labelledby="svPlace" hidden>
+  <div class="sv" data-lenis-prevent id="sv" role="dialog" aria-modal="true" aria-labelledby="svPlace" hidden>
     <button class="lb-x" type="button" id="svClose" aria-label="Close"><svg><use href="#i-close"/></svg></button>
     <div class="sv-in">
       <div class="sv-media"><video id="svVideo" playsinline controls loop preload="metadata"></video></div>
@@ -235,7 +235,7 @@
   <div class="wrap"><div class="gal" id="gal"></div></div>
   <div class="wrap"><div class="rv-list" id="rvList"></div>
     <div class="rv-cta"><p class="note" data-i18n="rv.lead">Travelled with us? Tell future travellers how it was.</p><button class="btn btn-line magnet" type="button" id="rvOpen"><svg><use href="#i-rate"/></svg><span data-i18n="rv.btn">Leave a review</span></button></div></div>
-  <div class="lb" id="lb" role="dialog" aria-modal="true" aria-labelledby="lbCap" hidden>
+  <div class="lb" data-lenis-prevent id="lb" role="dialog" aria-modal="true" aria-labelledby="lbCap" hidden>
     <button class="lb-x" type="button" id="lbClose" aria-label="Close"><svg><use href="#i-close"/></svg></button>
     <button class="lb-nav lb-prev" type="button" id="lbPrev" aria-label="Previous photo"><svg><use href="#i-arrow"/></svg></button>
     <figure class="lb-fig"><img id="lbImg" alt=""><figcaption id="lbCap"></figcaption><div class="lb-rev" id="lbRev" hidden></div></figure>
@@ -276,6 +276,7 @@
       <div class="c-social" data-reveal>
         <a href="https://www.instagram.com/nomad_gate_tour" target="_blank" rel="noopener" aria-label="Instagram"><svg><use href="#i-ig"/></svg></a>
         <a href="https://www.facebook.com/profile.php?id=61594082454178" target="_blank" rel="noopener" aria-label="Facebook"><svg><use href="#i-fb"/></svg></a>
+        <a href="https://wa.me/97688422241" target="_blank" rel="noopener" aria-label="WhatsApp"><svg><use href="#i-wa"/></svg></a>
       </div>
     </div>
     <form class="c-form" id="cform" novalidate>
@@ -355,7 +356,7 @@
   </div>
 </div>
 
-<div class="res rvm" id="rvm" role="dialog" aria-modal="true" aria-labelledby="rvT" hidden>
+<div class="res rvm" data-lenis-prevent id="rvm" role="dialog" aria-modal="true" aria-labelledby="rvT" hidden>
   <form class="res-card rv-form" id="rvForm" novalidate>
     <button class="lb-x" type="button" id="rvClose" aria-label="Close"><svg><use href="#i-close"/></svg></button>
     <h2 class="h3" id="rvT" data-i18n="rv.title">Leave a review</h2>
@@ -375,7 +376,7 @@
   </form>
 </div>
 
-<div class="res" id="res" role="dialog" aria-modal="true" aria-labelledby="resT" hidden>
+<div class="res" data-lenis-prevent id="res" role="dialog" aria-modal="true" aria-labelledby="resT" hidden>
   <div class="res-card">
     <span class="res-ic" id="resIc"><svg><use href="#i-check"/></svg></span>
     <h2 class="h3" id="resT"></h2>
@@ -390,13 +391,13 @@
 <div class="cursor" aria-hidden="true"><i></i></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="data.js?v=20261107f"></script>
-<script src="tours.js?v=20261107f"></script>
-<script src="i18n.js?v=20261107f"></script>
-<script src="map.js?v=20261107f"></script>
+<script src="data.js?v=20261107g"></script>
+<script src="tours.js?v=20261107g"></script>
+<script src="i18n.js?v=20261107g"></script>
+<script src="map.js?v=20261107g"></script>
 <script src="vendor/gsap.min.js" defer></script>
 <script src="vendor/ScrollTrigger.min.js" defer></script>
 <script src="vendor/lenis.min.js" defer></script>
-<script src="app.js?v=20261107f" defer></script>
+<script src="app.js?v=20261107g" defer></script>
 </body>
 </html>

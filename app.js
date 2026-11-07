@@ -978,7 +978,7 @@
     if (hasGsap() && !reduce) {
       gsap.registerPlugin(ScrollTrigger);
       if (window.Lenis) {
-        lenis = new Lenis({ lerp: .085, smoothWheel: true, prevent: function (n) { return !!(n.closest && n.closest('.tour')); } });
+        lenis = new Lenis({ lerp: .085, smoothWheel: true, prevent: function (n) { return !!(n.closest && n.closest('.tour, .res, .mnav, .lb, .sv, [data-lenis-prevent]')); } });
         lenis.on('scroll', ScrollTrigger.update);
         gsap.ticker.add(function (time) { lenis.raf(time * 1000); }); gsap.ticker.lagSmoothing(0);
       }
