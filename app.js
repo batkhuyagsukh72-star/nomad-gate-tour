@@ -327,7 +327,7 @@
     box.innerHTML = s;
   }
   function rvOpen() {
-    rvFocus = document.activeElement; $('#rvForm').classList.remove('sent'); $('#rvNote').textContent = ''; $('#rvNote').classList.remove('err');
+    rvFocus = document.activeElement; $('#rvForm').classList.remove('sent'); rvPhotoReset(); $('#rvNote').textContent = ''; $('#rvNote').classList.remove('err');
     $('#rv-tour').innerHTML = '<option value="">' + esc(t('rv.any')) + '</option>' + D.tours.map(function (tr) { return '<option value="' + esc(tr.id) + '">' + esc(L(tr.name)) + '</option>'; }).join('');
     rvStars(); rvm.hidden = false; lockPage(true); setTimeout(function () { var b = $('.rv-stars button[tabindex="0"]', rvm); if (b) b.focus({ preventScroll: true }); }, 40);
   }
@@ -341,15 +341,42 @@
     var d = e.key === 'ArrowRight' || e.key === 'ArrowUp' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowDown' ? -1 : 0; if (!d) return;
     e.preventDefault(); rvRate = Math.max(1, Math.min(5, (rvRate || 0) + d)); rvStars(); $('.rv-stars [data-r="' + rvRate + '"]', rvm).focus();
   });
+  /* optional trip photo: resized here (max 1400 px, WebP or JPEG) before it is sent */
+  var rvPhoto = null;
+  function rvPhotoReset() { rvPhoto = null; var pv = $('#rvPv'); if (pv.src) URL.revokeObjectURL(pv.src); pv.removeAttribute('src'); pv.hidden = true; $('#rvPhotoX').hidden = true; $('#rv-file').value = ''; }
+  function shrink(file) {
+    return new Promise(function (res, rej) {
+      var img = new Image(), url = URL.createObjectURL(file);
+      img.onload = function () {
+        var sc = Math.min(1, 1400 / Math.max(img.naturalWidth, img.naturalHeight)), c = document.createElement('canvas');
+        c.width = Math.round(img.naturalWidth * sc); c.height = Math.round(img.naturalHeight * sc); c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+        c.toBlob(function (b) { if (b && b.type === 'image/webp' && b.size < 1000000) return res(b); c.toBlob(function (j) { j ? res(j) : rej(new Error('encode')); }, 'image/jpeg', .82); }, 'image/webp', .8);
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); rej(new Error('read')); };
+      img.src = url;
+    });
+  }
+  $('#rv-file').addEventListener('change', function () {
+    var f = this.files && this.files[0], note = $('#rvNote'); if (!f) return;
+    note.textContent = ''; note.classList.remove('err');
+    if (!/^image\//.test(f.type)) { rvPhotoReset(); note.textContent = t('rv.photoErr'); note.classList.add('err'); return; }
+    shrink(f).then(function (b) { rvPhoto = b; var pv = $('#rvPv'); if (pv.src) URL.revokeObjectURL(pv.src); pv.src = URL.createObjectURL(b); pv.hidden = false; $('#rvPhotoX').hidden = false; })
+      .catch(function () { rvPhotoReset(); note.textContent = t('rv.photoErr'); note.classList.add('err'); });
+  });
+  $('#rvPhotoX').addEventListener('click', rvPhotoReset);
+  function b64(blob) { return new Promise(function (res) { var r = new FileReader(); r.onload = function () { res(String(r.result).split(',')[1]); }; r.readAsDataURL(blob); }); }
   $('#rvForm').addEventListener('submit', function (e) {
     e.preventDefault();
     var note = $('#rvNote'), btn = $('#rvSend'), name = $('#rv-name').value.trim(), text = $('#rv-text').value.trim(), email = $('#rv-email').value.trim();
     if (!name || !rvRate || text.length < 10 || (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email))) { note.textContent = t('rv.err'); note.classList.add('err'); return; }
     note.classList.remove('err'); btn.disabled = true;
-    var done = function () { $('#rvForm').classList.add('sent'); note.textContent = t('rv.thanks'); ['#rv-name', '#rv-country', '#rv-text', '#rv-email'].forEach(function (s) { $(s).value = ''; }); rvRate = 0; btn.disabled = false; $('#rvClose').focus(); };
+    var done = function () { $('#rvForm').classList.add('sent'); note.textContent = t('rv.thanks'); ['#rv-name', '#rv-country', '#rv-text', '#rv-email'].forEach(function (s) { $(s).value = ''; }); rvRate = 0; rvPhotoReset(); btn.disabled = false; $('#rvClose').focus(); };
     if (!API) return setTimeout(done, 400); // demo / preview: nothing is sent
-    fetch(API + '/review', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: name, country: $('#rv-country').value.trim(), rating: rvRate, text: text,
-      tour: $('#rv-tour').value, email: email, website: $('#rv-web').value, lang: lang }) })
+    (rvPhoto ? b64(rvPhoto) : Promise.resolve(null)).then(function (data) {
+      var body = { name: name, country: $('#rv-country').value.trim(), rating: rvRate, text: text, tour: $('#rv-tour').value, email: email, website: $('#rv-web').value, lang: lang };
+      if (data) body.photo = { data: data, type: rvPhoto.type };
+      return fetch(API + '/review', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    })
       .then(function (r) { if (r.status === 429) throw new Error('later'); if (!r.ok) throw new Error('fail'); done(); })
       .catch(function (er) { btn.disabled = false; note.textContent = t(er.message === 'later' ? 'rv.later' : 'rv.fail'); note.classList.add('err'); });
   });
@@ -887,7 +914,7 @@
 
       // reels
       gsap.from('.reel', { y: 100, opacity: 0, duration: 1.4, stagger: .08, ease: 'expo.out', scrollTrigger: { trigger: '#reels', start: 'top 88%' } });
-      if (desk) { var rl = $('#reels'); gsap.fromTo(rl, { x: 0 }, { x: function () { return -Math.max(0, rl.scrollWidth - window.innerWidth); }, ease: 'none', scrollTrigger: { trigger: '.road', start: 'top bottom', end: 'bottom top', scrub: .6, invalidateOnRefresh: true } }); }
+      if (desk && !matchMedia('(pointer: fine)').matches) { var rl = $('#reels'); /* with a mouse the clip row follows the pointer instead (drift) */ gsap.fromTo(rl, { x: 0 }, { x: function () { return -Math.max(0, rl.scrollWidth - window.innerWidth); }, ease: 'none', scrollTrigger: { trigger: '.road', start: 'top bottom', end: 'bottom top', scrub: .6, invalidateOnRefresh: true } }); }
 
       // generic reveals
       $$('[data-reveal]').forEach(function (el) {
@@ -921,17 +948,23 @@
      Uses the CSS "translate" property, so it adds to the GSAP scroll transforms instead of fighting them. */
   function drift() {
     if (reduce || !matchMedia('(pointer: fine)').matches) return;
-    var wide = matchMedia('(min-width: 1024px)'), mx = .5, my = .5;
-    var rows = [{ sec: $('#journeys'), el: $('#jTrack'), kids: '.jc', ax: 84, ay: 12, d: [1.4, -.9] }, { sec: $('#road'), el: $('#reels'), kids: '.reel', ax: 150, ay: 18, d: [-1.3, 1.1] }];
+    var wide = matchMedia('(min-width: 1024px)'), mx = .5, my = .5, moved = false;
+    // journeys: the cards swing toward the pointer; clips: the whole row pans with the pointer (left edge = first clip, right edge = last)
+    var rows = [{ sec: $('#journeys'), el: $('#jTrack'), kids: '.jc', d: [1.5, -1],
+                  tx: function () { return (.5 - mx) * window.innerWidth * .3; }, ay: 26 },
+                { sec: $('#road'), el: $('#reels'), kids: '.reel', d: [-1.4, 1.2],
+                  tx: function (r) { return -mx * Math.max(0, r.el.scrollWidth - window.innerWidth); }, ay: 22 }];
     rows.forEach(function (r) { r.x = 0; r.y = 0; r.on = false; });
-    window.addEventListener('mousemove', function (e) { mx = e.clientX / window.innerWidth; my = e.clientY / window.innerHeight; }, { passive: true });
+    window.addEventListener('mousemove', function (e) { mx = e.clientX / window.innerWidth; my = e.clientY / window.innerHeight; moved = true; }, { passive: true });
     if ('IntersectionObserver' in window) { var io = new IntersectionObserver(function (ents) { ents.forEach(function (en) { rows.forEach(function (r) { if (r.sec === en.target) r.on = en.isIntersecting; }); }); }); rows.forEach(function (r) { io.observe(r.sec); }); }
     else rows.forEach(function (r) { r.on = true; });
     var tick = function () {
       rows.forEach(function (r) {
-        var tx = wide.matches && r.on && !document.body.classList.contains('modal-open') ? (.5 - mx) * r.ax : 0, ty = wide.matches && r.on ? (.5 - my) * r.ay : 0;
+        if (!wide.matches) { if (r.x || r.y) { r.x = r.y = 0; r.el.style.translate = ''; $$(r.kids, r.el).forEach(function (k) { k.style.translate = ''; }); } return; }
+        if (!r.on || !moved || document.body.classList.contains('modal-open')) return;
+        var tx = r.tx(r), ty = (.5 - my) * r.ay;
         if (Math.abs(tx - r.x) < .05 && Math.abs(ty - r.y) < .05) return;
-        r.x += (tx - r.x) * .09; r.y += (ty - r.y) * .09; // follows the pointer (higher = quicker)
+        r.x += (tx - r.x) * .12; r.y += (ty - r.y) * .12; // quick, smooth follow
         r.el.style.translate = r.x.toFixed(2) + 'px 0';
         $$(r.kids, r.el).forEach(function (k, i) { k.style.translate = '0 ' + (r.y * r.d[i % 2]).toFixed(2) + 'px'; });
       });

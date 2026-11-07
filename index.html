@@ -42,8 +42,8 @@
 <link rel="preload" as="image" href="img/hero-poster.jpg" fetchpriority="high">
 <link rel="preconnect" href="https://oiaagrrfkwfnnohstzqu.supabase.co" crossorigin>
 <style>html{background:#0D0B09}html[data-theme="light"]{background:#F6F1E7}html.js:not(.entered) body{overflow:hidden}</style>
-<link rel="stylesheet" href="fonts.css?v=20261107c">
-<link rel="stylesheet" href="styles.css?v=20261107c">
+<link rel="stylesheet" href="fonts.css?v=20261107d">
+<link rel="stylesheet" href="styles.css?v=20261107d">
 <script>document.documentElement.classList.add('js');try{var th=localStorage.getItem('ngt-theme');if(th==='light'){document.documentElement.setAttribute('data-theme','light');document.getElementById('themeColor').setAttribute('content','#F6F1E7')}}catch(e){}try{if(matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('rm')}catch(e){}setTimeout(function(){document.documentElement.classList.add('entered')},12000);</script>
 </head>
 <body>
@@ -365,6 +365,9 @@
     <label class="f"><span data-i18n="rv.country">Country</span><input id="rv-country" name="country" autocomplete="country-name" maxlength="60"></label></div>
     <label class="f"><span data-i18n="rv.tour">Journey</span><select id="rv-tour" name="tour"></select></label>
     <label class="f"><span data-i18n="rv.text">Your review</span><textarea id="rv-text" name="text" rows="4" maxlength="1500" required></textarea></label>
+    <div class="f rv-photo"><span data-i18n="rv.photo">Trip photo (optional)</span>
+      <label class="rv-drop" id="rvDrop"><input type="file" id="rv-file" accept="image/*" class="sr"><img id="rvPv" alt="" hidden><span class="rv-drop-t"><svg aria-hidden="true"><use href="#i-plus"/></svg><span data-i18n="rv.photoAdd">Add a photo</span></span></label>
+      <button type="button" class="rv-photo-x" id="rvPhotoX" hidden data-i18n="rv.photoRemove">Remove photo</button></div>
     <label class="f"><span data-i18n="rv.email">Email (optional)</span><input id="rv-email" name="email" type="email" autocomplete="email" maxlength="200"></label>
     <label class="hp" aria-hidden="true">Website<input id="rv-web" name="website" tabindex="-1" autocomplete="off"></label>
     <button class="btn btn-gold btn-wide" type="submit" id="rvSend"><span data-i18n="rv.send">Send review</span><svg><use href="#i-arrow"/></svg></button>
@@ -387,13 +390,13 @@
 <div class="cursor" aria-hidden="true"><i></i></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="data.js?v=20261107c"></script>
-<script src="tours.js?v=20261107c"></script>
-<script src="i18n.js?v=20261107c"></script>
-<script src="map.js?v=20261107c"></script>
+<script src="data.js?v=20261107d"></script>
+<script src="tours.js?v=20261107d"></script>
+<script src="i18n.js?v=20261107d"></script>
+<script src="map.js?v=20261107d"></script>
 <script src="vendor/gsap.min.js" defer></script>
 <script src="vendor/ScrollTrigger.min.js" defer></script>
 <script src="vendor/lenis.min.js" defer></script>
-<script src="app.js?v=20261107c" defer></script>
+<script src="app.js?v=20261107d" defer></script>
 </body>
 </html>

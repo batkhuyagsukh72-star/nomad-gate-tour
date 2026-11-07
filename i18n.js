@@ -385,4 +385,13 @@
       'Nuestro equipo', 'Las personas que planifican, conducen y guían tu viaje.', 'Abrir foto']
   };
   Object.keys(NEW).forEach(function (l) { if (NEW[l].length !== K.length) throw new Error('i18n ' + l); K.forEach(function (k, i) { D.t[l][k] = NEW[l][i]; }); });
+
+  var PH = { en: ['Trip photo (optional)', 'Add a photo', 'Remove photo', 'Could not read this photo. Please try another one.'],
+    mn: ['Аяллын зураг (заавал биш)', 'Зураг нэмэх', 'Зураг хасах', 'Энэ зургийг уншиж чадсангүй. Өөр зураг сонгоно уу.'],
+    ru: ['Фото из поездки (необязательно)', 'Добавить фото', 'Убрать фото', 'Не удалось прочитать фото. Попробуйте другое.'],
+    ko: ['여행 사진 (선택)', '사진 추가', '사진 삭제', '이 사진을 읽을 수 없습니다. 다른 사진을 선택해 주세요.'],
+    ja: ['旅の写真（任意）', '写真を追加', '写真を削除', 'この写真を読み込めませんでした。別の写真をお試しください。'],
+    de: ['Reisefoto (optional)', 'Foto hinzufügen', 'Foto entfernen', 'Dieses Foto konnte nicht gelesen werden. Bitte wählen Sie ein anderes.'],
+    es: ['Foto del viaje (opcional)', 'Añadir una foto', 'Quitar la foto', 'No se pudo leer esta foto. Prueba con otra.'] };
+  Object.keys(PH).forEach(function (l) { ['rv.photo', 'rv.photoAdd', 'rv.photoRemove', 'rv.photoErr'].forEach(function (k, i) { D.t[l][k] = PH[l][i]; }); });
 })();
