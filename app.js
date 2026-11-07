@@ -922,7 +922,7 @@
   function drift() {
     if (reduce || !matchMedia('(pointer: fine)').matches) return;
     var wide = matchMedia('(min-width: 1024px)'), mx = .5, my = .5;
-    var rows = [{ sec: $('#journeys'), el: $('#jTrack'), kids: '.jc', ax: 64, ay: 10, d: [1.4, -.9] }, { sec: $('#road'), el: $('#reels'), kids: '.reel', ax: 120, ay: 16, d: [-1.3, 1.1] }];
+    var rows = [{ sec: $('#journeys'), el: $('#jTrack'), kids: '.jc', ax: 84, ay: 12, d: [1.4, -.9] }, { sec: $('#road'), el: $('#reels'), kids: '.reel', ax: 150, ay: 18, d: [-1.3, 1.1] }];
     rows.forEach(function (r) { r.x = 0; r.y = 0; r.on = false; });
     window.addEventListener('mousemove', function (e) { mx = e.clientX / window.innerWidth; my = e.clientY / window.innerHeight; }, { passive: true });
     if ('IntersectionObserver' in window) { var io = new IntersectionObserver(function (ents) { ents.forEach(function (en) { rows.forEach(function (r) { if (r.sec === en.target) r.on = en.isIntersecting; }); }); }); rows.forEach(function (r) { io.observe(r.sec); }); }
@@ -931,7 +931,7 @@
       rows.forEach(function (r) {
         var tx = wide.matches && r.on && !document.body.classList.contains('modal-open') ? (.5 - mx) * r.ax : 0, ty = wide.matches && r.on ? (.5 - my) * r.ay : 0;
         if (Math.abs(tx - r.x) < .05 && Math.abs(ty - r.y) < .05) return;
-        r.x += (tx - r.x) * .045; r.y += (ty - r.y) * .045; // slow follow
+        r.x += (tx - r.x) * .09; r.y += (ty - r.y) * .09; // follows the pointer (higher = quicker)
         r.el.style.translate = r.x.toFixed(2) + 'px 0';
         $$(r.kids, r.el).forEach(function (k, i) { k.style.translate = '0 ' + (r.y * r.d[i % 2]).toFixed(2) + 'px'; });
       });
