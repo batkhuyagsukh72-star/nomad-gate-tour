@@ -395,3 +395,9 @@
     es: ['Foto del viaje (opcional)', 'Añadir una foto', 'Quitar la foto', 'No se pudo leer esta foto. Prueba con otra.'] };
   Object.keys(PH).forEach(function (l) { ['rv.photo', 'rv.photoAdd', 'rv.photoRemove', 'rv.photoErr'].forEach(function (k, i) { D.t[l][k] = PH[l][i]; }); });
 })();
+/* journeys hint when the row follows the mouse */
+(function () {
+  var D = window.NGT; if (!D || !D.t) return;
+  var M = { en: 'Move the mouse', mn: 'Хулганаа хөдөлгө', ru: 'Ведите мышью', ko: '마우스를 움직이세요', ja: 'マウスを動かす', de: 'Maus bewegen', es: 'Mueve el ratón' };
+  Object.keys(M).forEach(function (l) { if (D.t[l]) D.t[l]['j.move'] = M[l]; });
+})();

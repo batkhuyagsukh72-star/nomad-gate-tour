@@ -561,6 +561,7 @@
 
   /* ---------- i18n ---------- */
   function applyLang() {
+    var jh = $('.j-drag span'); if (jh) jh.setAttribute('data-i18n', !reduce && matchMedia('(pointer: fine) and (min-width: 1024px)').matches ? 'j.move' : 'j.drag');
     root.lang = lang;
     $('#b-minus').setAttribute('aria-label', t('pay.less')); $('#b-plus').setAttribute('aria-label', t('pay.more'));
     var wa = $('#wa'); if (wa) { $('#waTxt').textContent = t('wa.label'); wa.setAttribute('aria-label', t('wa.label')); wa.href = 'https://wa.me/' + D.contact.phoneRaw.replace('+', '') + '?text=' + encodeURIComponent(t('wa.msg')); }
@@ -893,10 +894,14 @@
       if (desk) {
         var track = $('#jTrack');
         var dist = function () { var last = track.lastElementChild; if (!last) return 0; var base = last.offsetParent === track ? track.offsetLeft : 0; return Math.max(0, base + last.offsetLeft + last.offsetWidth + parseFloat(getComputedStyle(track).paddingRight) - window.innerWidth); };
+        jDist = dist;
+        // with a mouse the row follows the pointer (see drift), so no pinned wheel-scroll here
+        if (!matchMedia('(pointer: fine)').matches) {
         var tw = gsap.to(track, { x: function () { return -dist(); }, ease: 'none',
           scrollTrigger: { trigger: '#jPin', start: 'top top', end: function () { return '+=' + dist(); }, pin: true, scrub: 1, invalidateOnRefresh: true, anticipatePin: 1,
             onUpdate: function (st) { $('#jProg').style.transform = 'scaleX(' + st.progress.toFixed(3) + ')'; } } });
         $$('.jc-img img').forEach(function (im) { gsap.fromTo(im, { xPercent: -5, scale: 1.12 }, { xPercent: 5, scale: 1.12, ease: 'none', scrollTrigger: { trigger: im.parentNode, containerAnimation: tw, start: 'left right', end: 'right left', scrub: true } }); });
+        }
       }
       gsap.from('.jc', { y: 80, opacity: 0, duration: 1.3, stagger: .1, ease: 'expo.out', scrollTrigger: { trigger: '#jTrack', start: 'top 85%' } });
 
@@ -946,15 +951,16 @@
 
   /* ---------- the journey cards and the clips drift slowly with the mouse (desktop) ----------
      Uses the CSS "translate" property, so it adds to the GSAP scroll transforms instead of fighting them. */
+  var jDist = null;
   function drift() {
     if (reduce || !matchMedia('(pointer: fine)').matches) return;
     var wide = matchMedia('(min-width: 1024px)'), mx = .5, my = .5, moved = false;
     // journeys: the cards swing toward the pointer; clips: the whole row pans with the pointer (left edge = first clip, right edge = last)
     var rows = [{ sec: $('#journeys'), el: $('#jTrack'), kids: '.jc', d: [1.5, -1],
-                  tx: function () { return (.5 - mx) * window.innerWidth * .3; }, ay: 26 },
+                  tx: function () { var d = jDist ? jDist() : 0; return d ? -mx * d : (.5 - mx) * window.innerWidth * .3; }, ay: 26 },
                 { sec: $('#road'), el: $('#reels'), kids: '.reel', d: [-1.4, 1.2],
                   tx: function (r) { return -mx * Math.max(0, r.el.scrollWidth - window.innerWidth); }, ay: 22 }];
-    rows.forEach(function (r) { r.x = 0; r.y = 0; r.on = false; });
+    rows.forEach(function (r) { r.x = 0; r.y = 0; r.on = false; }); rows[0].prog = $('#jProg');
     window.addEventListener('mousemove', function (e) { mx = e.clientX / window.innerWidth; my = e.clientY / window.innerHeight; moved = true; }, { passive: true });
     if ('IntersectionObserver' in window) { var io = new IntersectionObserver(function (ents) { ents.forEach(function (en) { rows.forEach(function (r) { if (r.sec === en.target) r.on = en.isIntersecting; }); }); }); rows.forEach(function (r) { io.observe(r.sec); }); }
     else rows.forEach(function (r) { r.on = true; });
@@ -966,6 +972,7 @@
         if (Math.abs(tx - r.x) < .05 && Math.abs(ty - r.y) < .05) return;
         r.x += (tx - r.x) * .12; r.y += (ty - r.y) * .12; // quick, smooth follow
         r.el.style.translate = r.x.toFixed(2) + 'px 0';
+        if (r.prog) { var dd = jDist ? jDist() : 0; if (dd) r.prog.style.transform = 'scaleX(' + Math.min(1, Math.max(0, -r.x / dd)).toFixed(3) + ')'; }
         $$(r.kids, r.el).forEach(function (k, i) { k.style.translate = '0 ' + (r.y * r.d[i % 2]).toFixed(2) + 'px'; });
       });
       requestAnimationFrame(tick);
