@@ -7,8 +7,8 @@
 <title>Админ самбар · Nomad Gate Tour</title>
 <meta name="theme-color" content="#0D0B09">
 <link rel="icon" href="assets/favicon.png" type="image/png">
-<link rel="stylesheet" href="fonts.css?v=20261107a">
-<link rel="stylesheet" href="styles.css?v=20261107a">
+<link rel="stylesheet" href="fonts.css?v=20261107b">
+<link rel="stylesheet" href="styles.css?v=20261107b">
 <style>
   html,body{background:var(--night);color:var(--ivory)}
   body{min-height:100vh}
@@ -110,6 +110,20 @@
   .day-h b{font:400 18px/1 var(--serif);color:var(--gold-hi)}
   .savebar{position:sticky;bottom:0;z-index:15;display:flex;gap:12px;align-items:center;justify-content:flex-end;flex-wrap:wrap;padding:14px var(--g);margin:0 calc(var(--g) * -1);background:rgba(13,11,9,.94);border-top:1px solid var(--line-2);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
   .savebar .msg{margin-right:auto;font-size:14px;color:var(--muted)}
+  .ad-nav{flex-wrap:wrap}
+  .nb{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 5px;margin-left:6px;border-radius:999px;background:#E8A27A;color:#0D0B09;font-size:10px;letter-spacing:0}
+  .acts button.ok{border-color:#9FD49F;color:#9FD49F}
+  .thumb-none{display:grid;place-items:center;color:var(--faint)}
+  .vbox{display:grid;grid-template-columns:minmax(0,240px) minmax(0,1fr);gap:20px;align-items:start}
+  .vpv{aspect-ratio:9/16;background:var(--night);border:1px solid var(--line-2);display:grid;place-items:center;overflow:hidden}
+  .vpv video{width:100%;height:100%;object-fit:contain;background:#000}
+  .vside{display:grid;gap:12px;align-content:start;justify-items:start}
+  .vside select{min-height:36px;max-width:100%;background:var(--night);border:1px solid var(--line-2);border-radius:999px;padding:0 12px;color:var(--ivory);font:400 13px/1 var(--sans)}
+  .vside .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .pthumb{width:54px;height:72px;object-fit:cover;border:1px solid var(--line-2)}
+  .prog{width:100%;max-width:360px;height:6px;border-radius:99px;background:var(--line-2);overflow:hidden}.prog i{display:block;height:100%;width:0;background:var(--gg);transition:width .2s}
+  .imgbox.one{max-width:320px}
+  @media (max-width:640px){ .vbox{grid-template-columns:1fr} .vpv{max-width:220px} }
   @media (max-width:1100px){ .ad-tiles{grid-template-columns:repeat(3,1fr)} }
   @media (max-width:820px){
     .ad-top{flex-wrap:wrap}
@@ -129,6 +143,9 @@
   <nav class="ad-nav" id="nav" hidden aria-label="Хэсэг">
     <button type="button" data-view="bookings" aria-pressed="true">Захиалга</button>
     <button type="button" data-view="tours" aria-pressed="false">Аяллууд</button>
+    <button type="button" data-view="stories" aria-pressed="false">Бичлэгүүд</button>
+    <button type="button" data-view="reviews" aria-pressed="false">Аялагчид</button>
+    <button type="button" data-view="team" aria-pressed="false">Хамт олон</button>
   </nav>
   <div class="ad-top-r" id="topR" hidden>
     <span class="ad-who" id="who"></span>
@@ -185,6 +202,28 @@
       <tbody id="tRows"></tbody>
     </table>
     <p class="ad-err" id="tErr" aria-live="polite"></p>
+  </section>
+
+  <!-- stories / travellers / team -->
+  <section id="itemsView" hidden>
+    <div id="iListBox">
+      <div class="ad-bar">
+        <div><h2 class="ed-title" id="iTitle" style="font:300 clamp(26px,3vw,36px)/1.1 var(--serif);margin:0 0 8px">Бичлэгүүд</h2><p class="ad-note" id="iNote" style="max-width:80ch"></p></div>
+        <button class="ad-btn gold" type="button" id="iNew">+ Нэмэх</button>
+      </div>
+      <div class="ad-tabs" id="iTabs" role="group" aria-label="Шүүлтүүр" hidden style="margin:0 0 14px"></div>
+      <table class="ad">
+        <thead><tr><th>Зураг</th><th>Агуулга</th><th>Огноо</th><th>Төлөв</th><th>Үйлдэл</th></tr></thead>
+        <tbody id="iRows"></tbody>
+      </table>
+      <p class="ad-empty" id="iEmpty" hidden></p>
+    </div>
+    <div id="iEditor" hidden>
+      <div class="ed-head"><button class="ad-btn" type="button" id="iBack">← Жагсаалт руу</button><h2 id="iEdTitle">Засах</h2><a class="ad-btn" href="./?lang=mn" target="_blank" rel="noopener">Сайтад харах ↗</a></div>
+      <div class="ed" id="iForm"></div>
+      <div class="savebar"><span class="msg" id="iMsg" aria-live="polite"></span><label class="chk" id="iPubRow"><input type="checkbox" id="iPub"> <span>Сайтад харагдана</span></label><button class="ad-btn warn" type="button" id="iDel">Устгах</button><button class="ad-btn gold" type="button" id="iSave">Хадгалах</button></div>
+    </div>
+    <p class="ad-err" id="iErr" aria-live="polite"></p>
   </section>
 
   <!-- tour editor -->
@@ -267,9 +306,9 @@
   </section>
 </main>
 
-<script src="data.js?v=20261107a"></script>
-<script src="tours.js?v=20261107a"></script>
-<script src="map.js?v=20261107a"></script>
+<script src="data.js?v=20261107b"></script>
+<script src="tours.js?v=20261107b"></script>
+<script src="map.js?v=20261107b"></script>
 <script>
 (function () {
   'use strict';
@@ -304,12 +343,12 @@
   }
   function signedOut(msg) {
     token = null; key = null; ls.set('ngt-admin-token', null); ss.set('ngt-admin', null);
-    ['#dash', '#toursView', '#editor', '#topR', '#nav'].forEach(function (s) { $(s).hidden = true; });
+    ['#dash', '#toursView', '#editor', '#itemsView', '#topR', '#nav'].forEach(function (s) { $(s).hidden = true; }); ITEMS.list = []; ITEMS.loaded = false;
     $('#loginMail').hidden = false; $('#login').hidden = true; resetMail(); if (msg) $('#mailErr').textContent = msg;
   }
   function signedIn(who) {
     $('#loginMail').hidden = true; $('#login').hidden = true; $('#topR').hidden = false; $('#nav').hidden = false;
-    $('#who').textContent = who && who !== 'passphrase' ? who : ''; show(view);
+    $('#who').textContent = who && who !== 'passphrase' ? who : ''; show(view); if (!ITEMS.loaded && view !== 'stories' && view !== 'reviews' && view !== 'team') loadItems();
   }
 
   /* ---------------------------------------------------------------- login */
@@ -352,14 +391,17 @@
   /* ---------------------------------------------------------------- views */
   function show(v) {
     if (v !== 'tours-edit' && $('#editor').hidden === false && dirty && !confirmLeave()) return;
+    if (ITEMS.E && ITEMS.dirty && !confirmLeaveItem()) return;
+    var itemView = v === 'stories' || v === 'reviews' || v === 'team';
     view = v === 'tours-edit' ? 'tours' : v;
     $$('#nav button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-view') === view)); });
-    $('#dash').hidden = v !== 'bookings'; $('#toursView').hidden = v !== 'tours'; $('#editor').hidden = v !== 'tours-edit';
+    $('#dash').hidden = v !== 'bookings'; $('#toursView').hidden = v !== 'tours'; $('#editor').hidden = v !== 'tours-edit'; $('#itemsView').hidden = !itemView;
     $('#csv').hidden = v !== 'bookings'; $('#mode').hidden = v !== 'bookings';
+    if (itemView) { ITEMS.kind = v === 'stories' ? 'story' : v === 'reviews' ? 'review' : 'team'; ITEMS.E = null; ITEMS.dirty = false; renderItems(); loadItems(); if (!CMS.tours.length) call({ action: 'content-get' }).then(function (c) { CMS = c; }).catch(function () {}); }
     if (v === 'bookings') loadBookings(); else if (v === 'tours') loadTours();
   }
   $('#nav').addEventListener('click', function (e) { var b = e.target.closest('button[data-view]'); if (b) show(b.getAttribute('data-view')); });
-  $('#refresh').addEventListener('click', function () { if (view === 'bookings') loadBookings(); else if ($('#editor').hidden) loadTours(); });
+  $('#refresh').addEventListener('click', function () { if (view === 'bookings') loadBookings(); else if (view === 'stories' || view === 'reviews' || view === 'team') { if (!ITEMS.E) loadItems(); } else if ($('#editor').hidden) loadTours(); });
 
   /* ---------------------------------------------------------------- bookings */
   function loadBookings() {
@@ -439,7 +481,8 @@
         '<td data-l="Төлөв"><div><span class="st ' + (t.active ? 'on' : 'off') + '">' + (t.active ? 'Харагдана' : 'Нуусан') + '</span></div></td>' +
         '<td data-l="Үйлдэл"><div class="acts"><button type="button" data-t="up" data-id="' + esc(t.id) + '"' + (i === 0 ? ' disabled' : '') + ' aria-label="Дээш">↑</button><button type="button" data-t="down" data-id="' + esc(t.id) + '"' + (i === n - 1 ? ' disabled' : '') + ' aria-label="Доош">↓</button>' +
         '<button type="button" data-t="edit" data-id="' + esc(t.id) + '">Засах</button><button type="button" data-t="toggle" data-id="' + esc(t.id) + '">' + (t.active ? 'Нуух' : 'Харуулах') + '</button>' +
-        '<button type="button" data-t="copy" data-id="' + esc(t.id) + '">Хуулбарлах</button></div></div></td></tr>';
+        '<button type="button" data-t="copy" data-id="' + esc(t.id) + '">Хуулбарлах</button>' +
+        '<button type="button" data-t="del" data-id="' + esc(t.id) + '"' + (tArmed === t.id ? ' class="confirm"' : '') + '>' + (tArmed === t.id ? 'Устгахыг баталгаажуулах' : 'Устгах') + '</button></div></div></td></tr>';
     }).join('');
   }
   function tourPayload(t) { // list item -> tour-save body
@@ -457,6 +500,13 @@
       var j = a === 'up' ? i - 1 : i + 1; if (j < 0 || j >= CMS.tours.length) return;
       CMS.tours.splice(j, 0, CMS.tours.splice(i, 1)[0]); renderTours();
       return call({ action: 'tour-order', ids: CMS.tours.map(function (x) { return x.id; }) }).catch(function () { $('#tErr').textContent = 'Дарааллыг хадгалж чадсангүй.'; loadTours(); });
+    }
+    if (a === 'del') {
+      if (tArmed !== id) { tArmed = id; renderTours(); setTimeout(function () { if (tArmed === id) { tArmed = null; renderTours(); } }, 4000); return; }
+      tArmed = null; b.disabled = true;
+      var nm = tourName(id);
+      return call({ action: 'tour-delete', id: id }).then(function (j) { return loadTours().then(function () { $('#tErr').textContent = j.result === 'hidden' ? '"' + nm + '" аялалд захиалга байгаа тул устгахгүйгээр нууллаа.' : '"' + nm + '" аялал устлаа.'; }); })
+        .catch(function () { $('#tErr').textContent = 'Устгаж чадсангүй.'; renderTours(); });
     }
     if (a === 'toggle') { var body = tourPayload(t); body.active = !t.active; b.disabled = true; return call({ action: 'tour-save', tour: body }).then(loadTours).catch(function () { $('#tErr').textContent = 'Хадгалж чадсангүй.'; b.disabled = false; }); }
   });
@@ -695,6 +745,233 @@
     }).catch(function () { $('#edMsg').textContent = 'Устгаж чадсангүй.'; }).finally(function () { b.disabled = false; });
   });
   window.addEventListener('beforeunload', function (e) { if (dirty && !$('#editor').hidden) { e.preventDefault(); e.returnValue = ''; } });
+
+  /* ---------------------------------------------------------------- stories, travellers (reviews), team */
+  var ITEMS = { list: [], loaded: false, kind: 'story', rf: 'pending', E: null, lang: 'mn', dirty: false };
+  var KIND = {
+    story: { title: 'Бичлэгүүд', one: 'бичлэг', add: '+ Шинэ бичлэг', note: 'Сайтын "Замын дурсамж" хэсэг. Бичлэг дээр газрын нэр харагдаж, дарахад бичлэг томоор гарч доор нь дурсамж/тайлбар харагдана.' },
+    review: { title: 'Аялагчид', one: 'сэтгэгдэл', add: '+ Зураг / сэтгэгдэл нэмэх', note: 'Сайтын "Манай аялагчид" хэсэг. Нэр, улс, үнэлгээ бөглөсөн зураг дээр од болон нэр харагдана. Сайтаас ирсэн сэтгэгдэл "Хүлээгдэж буй" хэсэгт орж, та баталгаажуулсны дараа сайтад гарна.' },
+    team: { title: 'Хамт олон', one: 'хүн', add: '+ Хүн нэмэх', note: 'Сайтын "Манай хамт олон" хэсэг. Нэг ч хүн нэмээгүй үед энэ хэсэг сайтад харагдахгүй.' }
+  };
+  var VIDEOS = [['reel-herds', 'Мал сүрэг (сайтын бичлэг)'], ['reel-dunes', 'Элсэн манхан'], ['reel-sunset', 'Нар жаргах'], ['reel-terelj', 'Мэлхий хад'], ['reel-autumn', 'Намар'], ['reel-steppe', 'Тал ба манхан']];
+  var GUESTS = []; for (var gi = 1; gi <= 10; gi++) GUESTS.push(['guests/g' + (gi < 10 ? '0' : '') + gi, 'Аялагчдын зураг ' + gi]);
+  var FIELDS = {
+    story: [{ k: 'video', t: 'video' }, { k: 'place', t: 'ml', l: 'Газрын нэр (бичлэг дээр харагдана)', max: 80 }, { k: 'text', t: 'mlarea', l: 'Дурсамж / тайлбар (бичлэгийн доор)', max: 1500 }],
+    review: [{ k: 'photo', t: 'photo', guests: true }, { k: 'name', t: 'text', l: 'Нэр', max: 60 }, { k: 'country', t: 'text', l: 'Улс', max: 60 },
+      { k: 'rating', t: 'select', l: 'Үнэлгээ', opts: [[0, 'Үнэлгээгүй'], [5, '★★★★★  5'], [4, '★★★★  4'], [3, '★★★  3'], [2, '★★  2'], [1, '★  1']] },
+      { k: 'tour', t: 'tour', l: 'Аялал' }, { k: 'cls', t: 'select', l: 'Зургийн хэмжээ', opts: [['', 'Энгийн'], ['big', 'Том (2×2)'], ['tall', 'Өндөр'], ['wide', 'Өргөн']] },
+      { k: 'text', t: 'area', l: 'Сэтгэгдэл (аялагчийн бичсэн хэлээр)', max: 1500 }, { k: 'place', t: 'ml', l: 'Газар (зургийн доор)', max: 80 }],
+    team: [{ k: 'photo', t: 'photo' }, { k: 'name', t: 'text', l: 'Нэр', max: 80 }, { k: 'role', t: 'ml', l: 'Албан тушаал', max: 80 }, { k: 'bio', t: 'mlarea', l: 'Товч танилцуулга', max: 700 }]
+  };
+  var ITST = { published: 'Сайтад харагдана', pending: 'Хүлээгдэж буй', hidden: 'Нуусан' };
+  var stars = function (n) { n = +n || 0; return n ? '★★★★★'.slice(0, n) + '<span style="opacity:.3">' + '★★★★★'.slice(n) + '</span>' : ''; };
+  var mlv = function (o) { o = o || {}; return o.mn || o.en || Object.keys(o).map(function (k) { return o[k]; })[0] || ''; };
+  function posterOf(d) { return d.poster ? imgUrl(d.poster) : (/^[\w-]+$/.test(d.video || '') ? 'media/' + d.video + '.jpg' : ''); }
+  function videoOf(v) { v = String(v || ''); return /^https?:\/\//.test(v) ? v : v ? 'media/' + v + '.mp4' : ''; }
+  function pendingCount() { return ITEMS.list.filter(function (i) { return i.kind === 'review' && i.status === 'pending'; }).length; }
+  function badge() { var n = pendingCount(), b = $('#nav button[data-view="reviews"]'); if (b) b.innerHTML = 'Аялагчид' + (n ? ' <span class="nb">' + n + '</span>' : ''); }
+  function loadItems() {
+    $('#refresh').disabled = true; $('#iErr').textContent = '';
+    return call({ action: 'items-get' }).then(function (j) { ITEMS.list = j.items || []; ITEMS.loaded = true; badge(); if (!$('#itemsView').hidden) renderItems(); })
+      .catch(function (e) { if (e.message === 'auth') signedOut('Нэвтрэх хугацаа дууссан байна. Дахин нэвтэрнэ үү.'); else $('#iErr').textContent = 'Ачаалж чадсангүй. Хэсэг хүлээгээд "Шинэчлэх" дарна уу.'; })
+      .finally(function () { $('#refresh').disabled = false; });
+  }
+  function itemsOf(kind) {
+    return ITEMS.list.filter(function (i) { return i.kind === kind && (kind !== 'review' || ITEMS.rf === 'all' || i.status === ITEMS.rf); })
+      .sort(function (a, b) { return (a.sort || 0) - (b.sort || 0) || String(b.created_at).localeCompare(String(a.created_at)); });
+  }
+  function renderItems() {
+    var k = ITEMS.kind, K = KIND[k];
+    $('#iTitle').textContent = K.title; $('#iNote').textContent = K.note; $('#iNew').textContent = K.add;
+    $('#iEditor').hidden = !ITEMS.E; $('#iListBox').hidden = !!ITEMS.E;
+    if (ITEMS.E) return;
+    var rt = $('#iTabs'); rt.hidden = k !== 'review';
+    if (k === 'review') {
+      var cnt = function (st) { return ITEMS.list.filter(function (i) { return i.kind === 'review' && (st === 'all' || i.status === st); }).length; };
+      rt.innerHTML = [['pending', 'Хүлээгдэж буй'], ['published', 'Сайтад харагдаж буй'], ['hidden', 'Нуусан'], ['all', 'Бүгд']].map(function (x) {
+        return '<button type="button" data-rf="' + x[0] + '" aria-pressed="' + (ITEMS.rf === x[0]) + '">' + esc(x[1]) + '<i>' + cnt(x[0]) + '</i></button>'; }).join('');
+    }
+    var list = itemsOf(k), n = list.length;
+    $('#iEmpty').hidden = n > 0; $('#iEmpty').textContent = k === 'review' && ITEMS.rf === 'pending' ? 'Хүлээгдэж буй сэтгэгдэл алга.' : 'Одоогоор хоосон байна.';
+    $('#iRows').innerHTML = list.map(function (it, i) {
+      var d = it.data || {}, th = k === 'story' ? posterOf(d) : d.photo ? imgUrl(d.photo) : '', main = '', sub = '';
+      if (k === 'story') { main = mlv(d.place) || '(газрын нэргүй)'; sub = (mlv(d.text) || '').slice(0, 120); }
+      if (k === 'review') { main = [d.name, d.country].filter(Boolean).join(' · ') || '(нэр, улс бөглөөгүй)'; sub = (d.rating ? stars(d.rating) + ' ' : '') + esc((d.text || mlv(d.place) || '').slice(0, 140)); }
+      if (k === 'team') { main = d.name || ''; sub = esc(mlv(d.role)); }
+      var acts = '<button type="button" data-a="up" data-id="' + it.id + '"' + (i === 0 ? ' disabled' : '') + ' aria-label="Дээш">↑</button><button type="button" data-a="down" data-id="' + it.id + '"' + (i === n - 1 ? ' disabled' : '') + ' aria-label="Доош">↓</button>' +
+        '<button type="button" data-a="edit" data-id="' + it.id + '">Засах</button>' +
+        (it.status === 'pending' ? '<button type="button" data-a="publish" data-id="' + it.id + '" class="ok">Баталгаажуулах</button>' : '<button type="button" data-a="' + (it.status === 'published' ? 'hide' : 'publish') + '" data-id="' + it.id + '">' + (it.status === 'published' ? 'Нуух' : 'Харуулах') + '</button>') +
+        '<button type="button" data-a="del" data-id="' + it.id + '"' + (armed === 'i' + it.id ? ' class="confirm"' : '') + '>' + (armed === 'i' + it.id ? 'Устгахыг баталгаажуулах' : 'Устгах') + '</button>';
+      return '<tr><td data-l="Зураг"><div>' + (th ? '<img class="thumb" src="' + esc(th) + '" alt="" loading="lazy">' : '<span class="thumb thumb-none">—</span>') + '</div></td>' +
+        '<td data-l="' + esc(KIND[k].one) + '"><div><b>' + esc(main) + '</b><small>' + (k === 'review' ? sub : esc(sub)) + '</small>' + (it.email ? '<small><a href="mailto:' + esc(it.email) + '">' + esc(it.email) + '</a></small>' : '') + '</div></td>' +
+        '<td data-l="Огноо"><div>' + esc(dt(it.created_at)) + '</div></td>' +
+        '<td data-l="Төлөв"><div><span class="st ' + (it.status === 'published' ? 'on' : it.status === 'pending' ? 'requested' : 'off') + '">' + esc(ITST[it.status] || it.status) + '</span></div></td>' +
+        '<td data-l="Үйлдэл"><div class="acts">' + acts + '</div></td></tr>';
+    }).join('');
+  }
+  function itemSave(it, data, status) {
+    return call({ action: 'item-save', item: { id: it.id, kind: it.kind, status: status || it.status, sort: it.sort, data: data || it.data } }).then(function (j) {
+      var i = ITEMS.list.findIndex(function (x) { return x.id === j.item.id; });
+      var row = Object.assign({}, i > -1 ? ITEMS.list[i] : { created_at: new Date().toISOString() }, j.item);
+      if (i > -1) ITEMS.list[i] = row; else ITEMS.list.push(row);
+      badge(); return row;
+    });
+  }
+  $('#iTabs').addEventListener('click', function (e) { var b = e.target.closest('[data-rf]'); if (b) { ITEMS.rf = b.getAttribute('data-rf'); renderItems(); } });
+  $('#iRows').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-a]'); if (!b) return;
+    var a = b.getAttribute('data-a'), id = b.getAttribute('data-id'), it = ITEMS.list.filter(function (x) { return x.id === id; })[0]; if (!it) return;
+    $('#iErr').textContent = '';
+    if (a === 'edit') return openItem(it);
+    if (a === 'publish' || a === 'hide') { b.disabled = true; return itemSave(it, null, a === 'publish' ? 'published' : 'hidden').then(renderItems).catch(function () { $('#iErr').textContent = 'Хадгалж чадсангүй.'; b.disabled = false; }); }
+    if (a === 'del') {
+      if (armed !== 'i' + id) { armed = 'i' + id; renderItems(); setTimeout(function () { if (armed === 'i' + id) { armed = null; renderItems(); } }, 4000); return; }
+      armed = null; b.disabled = true;
+      return call({ action: 'item-delete', id: id }).then(function () { ITEMS.list = ITEMS.list.filter(function (x) { return x.id !== id; }); badge(); renderItems(); })
+        .catch(function () { $('#iErr').textContent = 'Устгаж чадсангүй.'; renderItems(); });
+    }
+    if (a === 'up' || a === 'down') {
+      var list = itemsOf(it.kind), i = list.indexOf(it), j = a === 'up' ? i - 1 : i + 1; if (j < 0 || j >= list.length) return;
+      list.splice(j, 0, list.splice(i, 1)[0]); list.forEach(function (x, k) { x.sort = (k + 1) * 10; }); renderItems();
+      // keep the other statuses after the reordered group
+      var all = ITEMS.list.filter(function (x) { return x.kind === it.kind; }).sort(function (p, q) { return (p.sort || 0) - (q.sort || 0); });
+      call({ action: 'item-order', ids: all.map(function (x) { return x.id; }) }).catch(function () { $('#iErr').textContent = 'Дарааллыг хадгалж чадсангүй.'; loadItems(); });
+    }
+  });
+  $('#iNew').addEventListener('click', function () {
+    var k = ITEMS.kind, d = k === 'story' ? { video: '', place: {}, text: {} } : k === 'review' ? { photo: '', cls: '', name: '', country: '', rating: 5, text: '', place: {}, tour: '' } : { photo: '', name: '', role: {}, bio: {} };
+    openItem({ kind: k, status: 'published', data: d });
+  });
+
+  /* editor */
+  function openItem(it) {
+    ITEMS.E = JSON.parse(JSON.stringify(it)); ITEMS.lang = 'mn'; ITEMS.dirty = false;
+    $('#iEdTitle').textContent = (it.id ? 'Засах — ' : 'Шинэ ') + KIND[it.kind].one; $('#iMsg').textContent = ''; $('#iMsg').classList.remove('ad-ok');
+    $('#iPub').checked = it.status !== 'hidden'; $('#iPubRow').querySelector('span').textContent = it.status === 'pending' ? 'Баталгаажуулж сайтад гаргах' : 'Сайтад харагдана';
+    $('#iDel').hidden = !it.id;
+    renderItemForm(); renderItems(); window.scrollTo(0, 0);
+  }
+  function closeItem() { ITEMS.E = null; ITEMS.dirty = false; renderItems(); }
+  function renderItemForm() {
+    var E = ITEMS.E, d = E.data, F = FIELDS[E.kind], hasMl = F.some(function (f) { return f.t === 'ml' || f.t === 'mlarea'; }), h = '';
+    F.forEach(function (f) {
+      var v = d[f.k];
+      if (f.t === 'video') {
+        h += '<div class="card"><h3>Бичлэг</h3><div class="vbox"><div class="vpv">' + (videoOf(v) ? '<video src="' + esc(videoOf(v)) + '" poster="' + esc(posterOf(d)) + '" controls muted playsinline preload="metadata"></video>' : '<span class="ad-note">Бичлэг сонгоогүй</span>') + '</div>' +
+          '<div class="vside"><label class="ad-btn gold">Бичлэг оруулах (MP4)<input type="file" accept="video/mp4,video/webm,video/quicktime" data-up="video" hidden></label>' +
+          '<select class="builtin" data-pick="video" aria-label="Сайтын бичлэг"><option value="">Сайтын бичлэгээс сонгох…</option>' + VIDEOS.map(function (x) { return '<option value="' + x[0] + '"' + (x[0] === v ? ' selected' : '') + '>' + esc(x[1]) + '</option>'; }).join('') + '</select>' +
+          '<p class="ad-note">Босоо (9:16) MP4 бичлэг хамгийн сайн. 50 MB хүртэл. Утсаар бичсэн бичлэгийг шууд оруулж болно. Бичлэгийн эхний хэсгээс нүүр зургийг автоматаар авна.</p>' +
+          '<div class="row"><img class="pthumb" src="' + esc(posterOf(d)) + '" alt=""' + (posterOf(d) ? '' : ' hidden') + '><label class="ad-btn sm">Нүүр зураг солих<input type="file" accept="image/*" data-up="poster" hidden></label></div>' +
+          '<div class="prog" hidden><i></i></div><small class="ad-note up-msg" aria-live="polite"></small></div></div></div>';
+      } else if (f.t === 'photo') {
+        var opts = (f.guests ? GUESTS : []).concat(BUILTIN);
+        h += '<div class="card"><h3>Зураг</h3><div class="imgbox one"><img class="pv" alt=""' + (v ? ' src="' + esc(imgUrl(v)) + '"' : ' style="visibility:hidden"') + '>' +
+          '<div class="row"><label class="ad-btn sm">Зураг оруулах<input type="file" accept="image/*" data-up="photo" hidden></label>' +
+          '<select class="builtin" data-pick="photo" aria-label="Сайтын зураг"><option value="">Сайтын зургаас сонгох…</option>' + opts.map(function (x) { return '<option value="' + x[0] + '"' + (x[0] === v ? ' selected' : '') + '>' + esc(x[1]) + '</option>'; }).join('') + '</select>' +
+          (v ? '<button class="ad-btn sm" type="button" data-clearphoto>Зураг хасах</button>' : '') + '</div><small class="ad-note up-msg" aria-live="polite"></small></div></div>';
+      }
+    });
+    h += '<div class="card"><h3>Мэдээлэл</h3>';
+    if (hasMl) h += '<p class="ad-note">Олон хэлтэй талбарыг хэл бүрээр бичнэ. Хоосон хэлэнд англи (байхгүй бол монгол) хувилбар харагдана.</p><div class="ad-tabs" data-iltabs role="group" aria-label="Хэл">' +
+      LANGS.map(function (x) { var full = F.filter(function (f) { return f.t === 'ml' || f.t === 'mlarea'; }).every(function (f) { return (d[f.k] || {})[x[0]]; });
+        return '<button type="button" data-il="' + x[0] + '" aria-pressed="' + (x[0] === ITEMS.lang) + '">' + esc(x[1]) + '<span class="dot' + (full ? ' ok' : '') + '"></span></button>'; }).join('') + '</div>';
+    h += '<div class="grid">';
+    F.forEach(function (f) {
+      var v = d[f.k];
+      if (f.t === 'text') h += '<label class="fl"><span>' + esc(f.l) + '</span><input data-f="' + f.k + '" maxlength="' + f.max + '" value="' + esc(v || '') + '"></label>';
+      if (f.t === 'select') h += '<label class="fl"><span>' + esc(f.l) + '</span><select data-f="' + f.k + '" data-num="' + (typeof f.opts[0][0] === 'number' ? 1 : '') + '">' + f.opts.map(function (o) { return '<option value="' + o[0] + '"' + (String(o[0]) === String(v || (typeof o[0] === 'number' ? 0 : '')) ? ' selected' : '') + '>' + esc(o[1]) + '</option>'; }).join('') + '</select></label>';
+      if (f.t === 'tour') h += '<label class="fl"><span>' + esc(f.l) + '</span><select data-f="tour"><option value="">—</option>' + (CMS.tours.length ? CMS.tours : (D.tours || [])).map(function (t) { var nm = t.name || {}; return '<option value="' + esc(t.id) + '"' + (t.id === v ? ' selected' : '') + '>' + esc(nm.mn || nm.en || t.id) + '</option>'; }).join('') + '</select></label>';
+    });
+    h += '</div>';
+    F.forEach(function (f) {
+      var v = d[f.k], cur = (v || {})[ITEMS.lang] || '';
+      if (f.t === 'area') h += '<label class="fl"><span>' + esc(f.l) + '</span><textarea data-f="' + f.k + '" maxlength="' + f.max + '" rows="5">' + esc(v || '') + '</textarea></label>';
+      if (f.t === 'ml') h += '<label class="fl"><span>' + esc(f.l) + ' · ' + esc(ITEMS.lang.toUpperCase()) + '</span><input data-ml="' + f.k + '" maxlength="' + f.max + '" value="' + esc(cur) + '"></label>';
+      if (f.t === 'mlarea') h += '<label class="fl"><span>' + esc(f.l) + ' · ' + esc(ITEMS.lang.toUpperCase()) + '</span><textarea data-ml="' + f.k + '" maxlength="' + f.max + '" rows="5">' + esc(cur) + '</textarea></label>';
+    });
+    $('#iForm').innerHTML = h + '</div>';
+  }
+  var imark = function () { ITEMS.dirty = true; };
+  $('#iForm').addEventListener('input', function (e) {
+    var el = e.target, d = ITEMS.E && ITEMS.E.data; if (!d) return;
+    if (el.hasAttribute('data-f')) { var k = el.getAttribute('data-f'); d[k] = el.getAttribute('data-num') ? +el.value : el.value; imark(); }
+    else if (el.hasAttribute('data-ml')) { var m = el.getAttribute('data-ml'); d[m] = d[m] || {}; d[m][ITEMS.lang] = el.value; imark(); }
+  });
+  $('#iForm').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-il]'); if (b) { ITEMS.lang = b.getAttribute('data-il'); renderItemForm(); return; }
+    if (e.target.closest('[data-clearphoto]')) { ITEMS.E.data.photo = ''; imark(); renderItemForm(); }
+  });
+  $('#iForm').addEventListener('change', function (e) {
+    var el = e.target, d = ITEMS.E && ITEMS.E.data; if (!d) return;
+    if (el.hasAttribute('data-pick') && el.value) { var k = el.getAttribute('data-pick'); d[k] = el.value; if (k === 'video') delete d.poster; imark(); renderItemForm(); return; }
+    if (el.hasAttribute('data-up')) { var f = el.files && el.files[0], kind = el.getAttribute('data-up'); el.value = ''; if (f) upload(kind, f, el.closest('.card').querySelector('.up-msg')); }
+  });
+  function toB64(b) { return new Promise(function (res) { var r = new FileReader(); r.onload = function () { res(String(r.result).split(',')[1]); }; r.readAsDataURL(b); }); }
+  function upImage(blob) { return toB64(blob).then(function (data) { return call({ action: 'image-upload', data: data, type: blob.type }); }).then(function (j) { return j.url; }); }
+  function frameOf(file) { // poster from the clip itself: a frame ~1 s in, max 900 px
+    return new Promise(function (res) {
+      var v = document.createElement('video'), url = URL.createObjectURL(file), done = function (b) { URL.revokeObjectURL(url); res(b); };
+      v.muted = true; v.playsInline = true; v.preload = 'auto'; v.src = url;
+      v.onloadeddata = function () { v.currentTime = Math.min(1, (v.duration || 2) / 3); };
+      v.onseeked = function () { var sc = Math.min(1, 900 / Math.max(v.videoWidth, v.videoHeight)), c = document.createElement('canvas'); c.width = Math.round(v.videoWidth * sc); c.height = Math.round(v.videoHeight * sc);
+        try { c.getContext('2d').drawImage(v, 0, 0, c.width, c.height); c.toBlob(function (b) { if (b && b.type === 'image/webp') return done(b); c.toBlob(done, 'image/jpeg', .84); }, 'image/webp', .82); } catch (er) { done(null); } };
+      v.onerror = function () { done(null); }; setTimeout(function () { done(null); }, 15000);
+    });
+  }
+  function putFile(url, file, onp, form) { // raw body first; multipart (what supabase-js sends) as a fallback
+    return new Promise(function (res, rej) {
+      var x = new XMLHttpRequest(); x.open('PUT', url); x.setRequestHeader('x-upsert', 'false');
+      var body = file; if (form) { body = new FormData(); body.append('cacheControl', '31536000'); body.append('', file); } else x.setRequestHeader('Content-Type', file.type);
+      x.upload.onprogress = function (e) { if (e.lengthComputable) onp(e.loaded / e.total); };
+      x.onload = function () { if (x.status >= 200 && x.status < 300) return res(); if (!form && x.status >= 400 && x.status < 500 && x.status !== 413) return putFile(url, file, onp, true).then(res, rej); rej(new Error('put ' + x.status)); };
+      x.onerror = function () { rej(new Error('net')); }; x.send(body);
+    });
+  }
+  function upload(kind, file, msg) {
+    var d = ITEMS.E.data, bar = msg && msg.parentNode.querySelector('.prog');
+    var fail = function (t) { if (msg) msg.textContent = t; if (bar) bar.hidden = true; };
+    if (kind === 'video') {
+      if (!/^video\/(mp4|webm|quicktime)$/.test(file.type)) return fail('MP4 (эсвэл MOV, WebM) бичлэг оруулна уу.');
+      if (file.size > 50 * 1024 * 1024) return fail('Бичлэг 50 MB-аас том байна (' + Math.round(file.size / 1048576) + ' MB). Богиносгох эсвэл шахаад дахин оруулна уу.');
+      msg.textContent = 'Хуулах эрх авч байна…'; bar.hidden = false; bar.firstChild.style.width = '0%';
+      var vurl;
+      call({ action: 'upload-url', type: file.type, size: file.size }).then(function (j) { vurl = j.url; msg.textContent = 'Бичлэгийг хуулж байна…';
+        return putFile(j.upload, file, function (p) { bar.firstChild.style.width = Math.round(p * 100) + '%'; msg.textContent = 'Бичлэгийг хуулж байна… ' + Math.round(p * 100) + '%'; }); })
+        .then(function () { msg.textContent = 'Нүүр зураг бэлдэж байна…'; return frameOf(file); })
+        .then(function (b) { return b ? upImage(b) : ''; })
+        .then(function (poster) { d.video = vurl; if (poster) d.poster = poster; else delete d.poster; imark(); renderItemForm(); var m = $('#iForm .up-msg'); if (m) m.textContent = 'Бичлэг орлоо. Доорх "Хадгалах" товчийг дарахаа мартуузай.'; })
+        .catch(function (e) { fail(e.message === 'auth' ? 'Нэвтрэх хугацаа дууссан.' : 'Бичлэг оруулж чадсангүй. Интернэтээ шалгаад дахин оролдоно уу.'); });
+      return;
+    }
+    if (!/^image\//.test(file.type)) return fail('Зөвхөн зураг оруулна.');
+    if (msg) msg.textContent = 'Зургийг бэлдэж байна…';
+    toImage(file).then(upImage).then(function (u) { if (kind === 'poster') d.poster = u; else d.photo = u; imark(); renderItemForm(); var m = $('#iForm .up-msg'); if (m) m.textContent = 'Зураг орлоо. "Хадгалах" товчийг дарна уу.'; })
+      .catch(function (e) { fail(e.message === 'auth' ? 'Нэвтрэх хугацаа дууссан.' : 'Зураг оруулж чадсангүй.'); });
+  }
+  $('#iBack').addEventListener('click', function () { if (ITEMS.dirty && !confirmLeaveItem()) return; closeItem(); });
+  var iLeave = false;
+  function confirmLeaveItem() { if (iLeave) { iLeave = false; return true; } iLeave = true; $('#iMsg').textContent = 'Хадгалаагүй өөрчлөлт байна. Хадгалахгүйгээр гарах бол дахин дарна уу.'; setTimeout(function () { iLeave = false; }, 5000); return false; }
+  $('#iSave').addEventListener('click', function () {
+    var E = ITEMS.E, d = E.data, msg = $('#iMsg'); msg.classList.remove('ad-ok');
+    var clean = function (o) { var r = {}; Object.keys(o || {}).forEach(function (k) { var v = String(o[k] || '').trim(); if (v) r[k] = v; }); return r; };
+    FIELDS[E.kind].forEach(function (f) { if (f.t === 'ml' || f.t === 'mlarea') d[f.k] = clean(d[f.k]); else if (typeof d[f.k] === 'string') d[f.k] = d[f.k].trim(); });
+    var err = E.kind === 'story' && !d.video ? 'Бичлэгээ оруулна уу.' : E.kind === 'story' && !d.place.mn && !d.place.en ? 'Газрын нэрийг монгол эсвэл англиар бичнэ үү.'
+      : E.kind === 'team' && !d.name ? 'Нэрийг бичнэ үү.' : E.kind === 'review' && !d.photo && !d.text ? 'Зураг эсвэл сэтгэгдлийн аль нэгийг оруулна уу.' : '';
+    if (err) { msg.textContent = err; return; }
+    var st = $('#iPub').checked ? 'published' : (E.status === 'pending' ? 'pending' : 'hidden');
+    $('#iSave').disabled = true; msg.textContent = 'Хадгалж байна…';
+    itemSave(E, d, st).then(function (row) { ITEMS.E = JSON.parse(JSON.stringify(row)); ITEMS.dirty = false; $('#iDel').hidden = false; msg.textContent = 'Хадгаллаа. Сайтад нэг минутын дотор харагдана.'; msg.classList.add('ad-ok'); })
+      .catch(function (e) { var M = { video: 'Бичлэгээ шалгана уу.', photo: 'Зургаа шалгана уу.', name: 'Нэрийг бичнэ үү.', rating: 'Үнэлгээг шалгана уу.', auth: 'Нэвтрэх хугацаа дууссан. Дахин нэвтэрнэ үү.' }; msg.textContent = M[e.message] || 'Хадгалж чадсангүй. Дахин оролдоно уу.'; })
+      .finally(function () { $('#iSave').disabled = false; });
+  });
+  var iDelArmed = false;
+  $('#iDel').addEventListener('click', function () {
+    var b = this, id = ITEMS.E && ITEMS.E.id; if (!id) return;
+    if (!iDelArmed) { iDelArmed = true; b.textContent = 'Устгахыг баталгаажуулах'; setTimeout(function () { iDelArmed = false; b.textContent = 'Устгах'; }, 4000); return; }
+    iDelArmed = false; b.textContent = 'Устгах'; b.disabled = true;
+    call({ action: 'item-delete', id: id }).then(function () { ITEMS.list = ITEMS.list.filter(function (x) { return x.id !== id; }); badge(); closeItem(); })
+      .catch(function () { $('#iMsg').textContent = 'Устгаж чадсангүй.'; }).finally(function () { b.disabled = false; });
+  });
 
   /* ---------------------------------------------------------------- start */
   if (token || key) call({ action: 'whoami' }).then(function (j) { signedIn(j.who); }).catch(function (e) { if (e.message === 'auth') signedOut(); else $('#mailErr').textContent = 'Холбогдож чадсангүй.'; });

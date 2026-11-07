@@ -3,7 +3,7 @@
   var D = window.NGT;
   D.langs = [
     { id: 'en', short: 'EN', name: 'English' },
-    { id: 'mn', short: 'МН', name: 'Монгол' },
+    { id: 'mn', short: 'MN', name: 'Монгол' },
     { id: 'ru', short: 'RU', name: 'Русский' },
     { id: 'ko', short: 'KO', name: '한국어' },
     { id: 'ja', short: 'JA', name: '日本語' },
@@ -23,7 +23,7 @@
       tours: {}, places: {},
       experiences: [
         ['Ночь в юрте', 'Деревянная решётка, жерди, сходящиеся к куполу-тооно, и толстые войлочные стены: юрта веками укрывает кочевые семьи и хранит тепло в суровом монгольском климате.'],
-        ['Чай с молоком и радушный приём', 'Гостей встречают чаем с молоком, молочными угощениями и настоящим монгольским гостеприимством. У каждой части юрты свой обычай — мы покажем, где сесть.'],
+        ['Радушный приём', 'Гостей встречают чаем с молоком, молочными угощениями и настоящим монгольским гостеприимством. У каждой части юрты свой обычай — мы покажем, где сесть.'],
         ['Верхом со скотоводами', 'Переходите реки и широкие долины на выносливых монгольских лошадях в удобном для вас темпе.'],
         ['Дюны посреди степи', 'В полупустыне золотой песок поднимается из зелёной травы. Пройдите по гребням босиком или пересеките их на верблюде.'],
         ['Ночное небо', 'На сотни километров ни одного городского огня — над юртой встаёт Млечный Путь. Возьмите тёплую одежду и не ложитесь рано.']
@@ -69,7 +69,7 @@
       tours: {}, places: {},
       experiences: [
         ['게르에서 하룻밤', '나무 격자 벽, 천창 토오노로 모이는 서까래, 두꺼운 펠트 벽. 게르는 수백 년 동안 유목민 가족의 집이었고 몽골의 혹독한 기후에서도 따뜻합니다.'],
-        ['수테차와 환대', '손님은 수테차와 유제품 간식, 진심 어린 몽골식 환대로 맞이합니다. 게르의 모든 자리에는 풍습이 있어요 — 어디에 앉는지 알려 드릴게요.'],
+        ['따뜻한 환대', '손님은 수테차와 유제품 간식, 진심 어린 몽골식 환대로 맞이합니다. 게르의 모든 자리에는 풍습이 있어요 — 어디에 앉는지 알려 드릴게요.'],
         ['유목민과 함께 승마', '튼튼한 몽골 말을 타고 강을 건너 넓은 계곡을 달립니다. 속도는 여러분에게 맞춥니다.'],
         ['초원 속의 사구', '세미고비에서는 초록 초원 위로 황금빛 모래가 솟아 있습니다. 맨발로 능선을 걷거나 낙타로 건너 보세요.'],
         ['밤하늘', '수백 킬로미터 안에 도시 불빛이 없어 게르 위로 은하수가 떠오릅니다. 따뜻한 옷을 챙기고 늦게까지 깨어 있어 보세요.']
@@ -115,7 +115,7 @@
       tours: {}, places: {},
       experiences: [
         ['ゲルに泊まる', '木の格子壁、天窓トーノに集まる垂木、厚いフェルトの壁。ゲルは何世紀にもわたり遊牧民の家族を守り、モンゴルの厳しい気候でも暖かさを保ちます。'],
-        ['ミルクティーとおもてなし', 'お客様はミルクティーと乳製品、心からのモンゴル流のおもてなしで迎えられます。ゲルの中にはそれぞれ習わしがあります — どこに座るかお教えします。'],
+        ['温かいおもてなし', 'お客様はミルクティーと乳製品、心からのモンゴル流のおもてなしで迎えられます。ゲルの中にはそれぞれ習わしがあります — どこに座るかお教えします。'],
         ['遊牧民と乗馬', '足腰の強いモンゴル馬で川を渡り、広い谷を進みます。ペースはあなたに合わせて。'],
         ['草原の中の砂丘', 'セミゴビでは緑の草原から黄金の砂が立ち上がります。裸足で稜線を歩くか、ラクダで越えてみてください。'],
         ['夜空', '数百キロ先まで街の灯りがなく、ゲルの上に天の川が昇ります。暖かい上着を持って、夜更かししてください。']
@@ -161,7 +161,7 @@
       tours: {}, places: {},
       experiences: [
         ['In der Jurte schlafen', 'Ein Holzgitter, Dachstangen, die im Toono-Kranz zusammenlaufen, und dicke Filzwände: Die Jurte schützt Nomadenfamilien seit Jahrhunderten und bleibt im extremen Klima der Mongolei warm.'],
-        ['Milchtee und Gastfreundschaft', 'Gäste werden mit Milchtee, Milchspezialitäten und echter mongolischer Gastfreundschaft empfangen. Jeder Platz in der Jurte hat seinen Brauch – wir zeigen Ihnen, wo Sie sitzen.'],
+        ['Herzlicher Empfang', 'Gäste werden mit Milchtee, Milchspezialitäten und echter mongolischer Gastfreundschaft empfangen. Jeder Platz in der Jurte hat seinen Brauch – wir zeigen Ihnen, wo Sie sitzen.'],
         ['Reiten mit Hirten', 'Durchqueren Sie Flüsse und weite Täler auf trittsicheren mongolischen Pferden, in Ihrem eigenen Tempo.'],
         ['Dünen in der Steppe', 'In der Halbwüste steigt goldener Sand aus grünem Grasland auf. Laufen Sie barfuß über die Kämme oder überqueren Sie sie auf dem Kamel.'],
         ['Nachthimmel', 'Hunderte Kilometer ohne Stadtlicht – die Milchstraße steigt über der Jurte auf. Nehmen Sie eine warme Schicht mit und bleiben Sie lange wach.']
@@ -207,7 +207,7 @@
       tours: {}, places: {},
       experiences: [
         ['Dormir en un ger', 'Un enrejado de madera, varas que se unen en la corona toono y gruesas paredes de fieltro: el ger ha protegido a las familias nómadas durante siglos y se mantiene cálido en el clima extremo de Mongolia.'],
-        ['Té con leche y bienvenida', 'A los huéspedes se les recibe con té con leche, lácteos y auténtica hospitalidad mongola. Cada parte del ger tiene su costumbre: le mostraremos dónde sentarse.'],
+        ['Una cálida bienvenida', 'A los huéspedes se les recibe con té con leche, lácteos y auténtica hospitalidad mongola. Cada parte del ger tiene su costumbre: le mostraremos dónde sentarse.'],
         ['Cabalgar con pastores', 'Cruce ríos y amplios valles a lomos de caballos mongoles de paso firme, al ritmo que le convenga.'],
         ['Dunas en la estepa', 'En el semidesierto, la arena dorada surge de la pradera verde. Camine descalzo por las crestas o crúcelas en camello.'],
         ['Cielos nocturnos', 'Sin luz urbana en cientos de kilómetros, la Vía Láctea se alza sobre el ger. Lleve ropa de abrigo y quédese despierto hasta tarde.']
@@ -308,7 +308,7 @@
   /* pay-later mode + terms links */
   var PAY2 = {
     en: { 'pay.bookreq': 'Book now, pay later', 'pay.sendreq': 'Send booking request', 'pay.laternote': 'No payment now. We confirm availability and email you the invoice for the deposit within 24 hours.', 'res.req.t': 'Booking request received', 'res.req.d': 'We will check availability and email you the deposit invoice within 24 hours.', 'res.due': 'Deposit to pay', 'pay.terms': 'Booking terms & privacy policy', 'foot.terms': 'Booking terms', 'foot.privacy': 'Privacy' },
-    mn: { 'pay.bookreq': 'Захиалах, төлбөрийг дараа', 'pay.sendreq': 'Захиалгын хүсэлт илгээх', 'pay.laternote': 'Одоо төлбөр төлөхгүй. Бид сул орон тоог шалгаад урьдчилгааны нэхэмжлэхийг 24 цагийн дотор имэйлээр илгээнэ.', 'res.req.t': 'Захиалгын хүсэлт хүлээн авлаа', 'res.req.d': 'Бид сул орон тоог шалгаад урьдчилгааны нэхэмжлэхийг 24 цагийн дотор имэйлээр илгээнэ.', 'res.due': 'Төлөх урьдчилгаа', 'pay.terms': 'Захиалгын нөхцөл ба нууцлалын бодлого', 'foot.terms': 'Захиалгын нөхцөл', 'foot.privacy': 'Нууцлал' },
+    mn: { 'pay.bookreq': 'Одоо захиалж, дараа төлөх', 'pay.sendreq': 'Захиалгын хүсэлт илгээх', 'pay.laternote': 'Одоо төлбөр төлөхгүй. Бид боломжтой эсэхийг шалгаад урьдчилгааны нэхэмжлэхийг 24 цагийн дотор имэйлээр илгээнэ.', 'res.req.t': 'Захиалгын хүсэлт хүлээн авлаа', 'res.req.d': 'Бид боломжтой эсэхийг шалгаад урьдчилгааны нэхэмжлэхийг 24 цагийн дотор имэйлээр илгээнэ.', 'res.due': 'Төлөх урьдчилгаа', 'pay.terms': 'Захиалгын нөхцөл ба нууцлалын бодлого', 'foot.terms': 'Захиалгын нөхцөл', 'foot.privacy': 'Нууцлал' },
     ru: { 'pay.bookreq': 'Забронировать, оплатить позже', 'pay.sendreq': 'Отправить заявку на бронирование', 'pay.laternote': 'Оплата сейчас не нужна. Мы проверим наличие мест и в течение 24 часов пришлём счёт на предоплату.', 'res.req.t': 'Заявка на бронирование получена', 'res.req.d': 'Мы проверим наличие мест и в течение 24 часов пришлём счёт на предоплату.', 'res.due': 'Предоплата к оплате', 'pay.terms': 'Условия бронирования и конфиденциальность', 'foot.terms': 'Условия бронирования', 'foot.privacy': 'Конфиденциальность' },
     ko: { 'pay.bookreq': '지금 예약, 결제는 나중에', 'pay.sendreq': '예약 요청 보내기', 'pay.laternote': '지금은 결제하지 않습니다. 예약 가능 여부를 확인한 뒤 24시간 이내에 예약금 청구서를 이메일로 보내 드립니다.', 'res.req.t': '예약 요청이 접수되었습니다', 'res.req.d': '예약 가능 여부를 확인한 뒤 24시간 이내에 예약금 청구서를 이메일로 보내 드립니다.', 'res.due': '결제할 예약금', 'pay.terms': '예약 약관 및 개인정보 처리방침', 'foot.terms': '예약 약관', 'foot.privacy': '개인정보' },
     ja: { 'pay.bookreq': '今すぐ予約、支払いは後で', 'pay.sendreq': '予約リクエストを送る', 'pay.laternote': '今お支払いは不要です。空き状況を確認し、24時間以内に予約金の請求書をメールでお送りします。', 'res.req.t': '予約リクエストを受け付けました', 'res.req.d': '空き状況を確認し、24時間以内に予約金の請求書をメールでお送りします。', 'res.due': 'お支払いいただく予約金', 'pay.terms': '予約規約とプライバシーポリシー', 'foot.terms': '予約規約', 'foot.privacy': 'プライバシー' },
@@ -334,4 +334,55 @@
   var COUNTRY = { en: 'MONGOLIA', mn: 'МОНГОЛ УЛС', ru: 'МОНГОЛИЯ', ko: '몽골', ja: 'モンゴル', de: 'MONGOLEI', es: 'MONGOLIA' };
   Object.keys(COUNTRY).forEach(function (l) { D.t[l]['map.country'] = COUNTRY[l]; });
   ['en','ko','ja','de','es'].forEach(function (l) { D.t[l]['map.km'] = 'km'; }); D.t.mn['map.km'] = 'км'; D.t.ru['map.km'] = 'км';
+
+  /* theme, mobile menu, stories viewer, reviews, team (2026-11) */
+  var K = ['theme.toLight', 'theme.toDark', 'theme.light', 'theme.dark', 'nav.guests', 'nav.team', 'menu.close', 'menu.lang', 'menu.theme', 'menu.follow',
+    'menu.d.journeys', 'menu.d.map', 'menu.d.exp', 'menu.d.road', 'menu.d.guests', 'menu.d.team', 'menu.d.faq', 'r.lead', 'r.open', 'sv.prev', 'sv.next',
+    'rv.btn', 'rv.title', 'rv.lead', 'rv.name', 'rv.country', 'rv.rating', 'rv.tour', 'rv.any', 'rv.text', 'rv.email', 'rv.send', 'rv.thanks', 'rv.err', 'rv.later', 'rv.fail', 'rv.stars',
+    'team.title', 'team.lead', 'g.view'];
+  var NEW = {
+    en: ['Switch to light mode', 'Switch to dark mode', 'Light', 'Dark', 'Travellers', 'Team', 'Close menu', 'Language', 'Theme', 'Follow us',
+      'Private routes from Ulaanbaatar', 'Every route on the map', 'A day on the road with us', 'Clips and memories from our trips', 'Photos and reviews', 'The people behind your trip', 'Visas, seasons, ger stays',
+      'Real moments from our journeys. Tap a clip to watch it large and read the story behind it.', 'Watch clip', 'Previous clip', 'Next clip',
+      'Leave a review', 'Leave a review', 'Travelled with us? Tell future travellers how it was. Reviews appear on the site after we check them.', 'Your name', 'Country', 'Your rating', 'Journey', 'Other', 'Your review', 'Email (optional, never shown)', 'Send review',
+      'Thank you! Your review will appear once we have checked it.', 'Please add your name, a rating and a few words.', 'Too many reviews from this connection. Please try again later.', 'Could not send. Please try again.', '{n} out of 5',
+      'Our team', 'The people who plan, drive and guide your journey.', 'Open photo'],
+    mn: ['Цайвар горимд шилжих', 'Бараан горимд шилжих', 'Цайвар', 'Бараан', 'Аялагчид', 'Хамт олон', 'Цэс хаах', 'Хэл', 'Өнгө', 'Биднийг дагаарай',
+      'Улаанбаатараас эхлэх хувийн аяллууд', 'Маршрут бүрийг газрын зураг дээр', 'Бидэнтэй замд гарсан нэг өдөр', 'Аяллын бичлэг, дурсамж', 'Зураг, сэтгэгдэл', 'Таны аяллыг зохион байгуулагчид', 'Виз, улирал, гэрт хоноглох',
+      'Аяллаас үлдсэн жинхэнэ бичлэгүүд. Дээр нь дарж томоор үзэн, тухайн мөчийн дурсамжийг уншаарай.', 'Бичлэг үзэх', 'Өмнөх бичлэг', 'Дараах бичлэг',
+      'Сэтгэгдэл үлдээх', 'Сэтгэгдэл үлдээх', 'Бидэнтэй аялсан уу? Аялал тань ямар байсныг ирээдүйн аялагчдад хуваалцаарай. Бид шалгасны дараа сэтгэгдэл сайтад гарна.', 'Таны нэр', 'Улс', 'Үнэлгээ', 'Аялал', 'Бусад', 'Таны сэтгэгдэл', 'Имэйл (заавал биш, нийтлэгдэхгүй)', 'Илгээх',
+      'Баярлалаа! Бид шалгасны дараа таны сэтгэгдэл сайтад гарна.', 'Нэр, үнэлгээ болон хэдэн үг бичнэ үү.', 'Энэ сүлжээнээс олон сэтгэгдэл ирсэн байна. Хэсэг хугацааны дараа дахин оролдоно уу.', 'Илгээж чадсангүй. Дахин оролдоно уу.', '5-аас {n}',
+      'Манай хамт олон', 'Таны аяллыг төлөвлөж, жолоодож, хөтлөх хүмүүс.', 'Зураг нээх'],
+    ru: ['Светлая тема', 'Тёмная тема', 'Светлая', 'Тёмная', 'Путешественники', 'Команда', 'Закрыть меню', 'Язык', 'Тема', 'Мы в соцсетях',
+      'Индивидуальные туры из Улан-Батора', 'Все маршруты на карте', 'Один день в дороге с нами', 'Видео и истории из поездок', 'Фото и отзывы', 'Люди, которые готовят вашу поездку', 'Визы, сезоны, ночёвки в юрте',
+      'Настоящие моменты из наших поездок. Нажмите на видео, чтобы посмотреть его крупно и прочитать историю.', 'Смотреть видео', 'Предыдущее видео', 'Следующее видео',
+      'Оставить отзыв', 'Оставить отзыв', 'Путешествовали с нами? Расскажите будущим гостям, как всё прошло. Отзыв появится на сайте после проверки.', 'Ваше имя', 'Страна', 'Ваша оценка', 'Тур', 'Другое', 'Ваш отзыв', 'Эл. почта (необязательно, не публикуется)', 'Отправить отзыв',
+      'Спасибо! Ваш отзыв появится после проверки.', 'Укажите имя, оценку и напишите несколько слов.', 'Слишком много отзывов с этого подключения. Попробуйте позже.', 'Не удалось отправить. Попробуйте ещё раз.', '{n} из 5',
+      'Наша команда', 'Люди, которые планируют, ведут машину и сопровождают вас в пути.', 'Открыть фото'],
+    ko: ['라이트 모드로 전환', '다크 모드로 전환', '라이트', '다크', '여행자', '팀', '메뉴 닫기', '언어', '테마', '팔로우하기',
+      '울란바토르 출발 프라이빗 투어', '지도에서 보는 모든 경로', '우리와 함께하는 길 위의 하루', '여행 영상과 추억', '사진과 후기', '여행을 만드는 사람들', '비자, 계절, 게르 숙박',
+      '여행에서 담은 진짜 순간들. 영상을 누르면 크게 보고 그 순간의 이야기를 읽을 수 있습니다.', '영상 보기', '이전 영상', '다음 영상',
+      '후기 남기기', '후기 남기기', '저희와 여행하셨나요? 다음 여행자에게 여행이 어땠는지 알려 주세요. 후기는 확인 후 사이트에 게시됩니다.', '이름', '국가', '평점', '투어', '기타', '후기', '이메일 (선택, 공개되지 않음)', '후기 보내기',
+      '감사합니다! 확인 후 후기가 게시됩니다.', '이름, 평점, 짧은 후기를 입력해 주세요.', '이 연결에서 후기가 너무 많이 전송되었습니다. 잠시 후 다시 시도해 주세요.', '전송하지 못했습니다. 다시 시도해 주세요.', '5점 만점에 {n}점',
+      '우리 팀', '여행을 계획하고, 운전하고, 안내하는 사람들.', '사진 열기'],
+    ja: ['ライトモードに切り替え', 'ダークモードに切り替え', 'ライト', 'ダーク', '旅行者', 'チーム', 'メニューを閉じる', '言語', 'テーマ', 'フォローする',
+      'ウランバートル発のプライベートツアー', 'すべてのルートを地図で', '私たちと過ごす旅の一日', '旅の動画と思い出', '写真とレビュー', '旅をつくる人たち', 'ビザ、季節、ゲル泊',
+      '旅で出会った本物の瞬間。動画をタップすると大きく再生され、その時の物語を読めます。', '動画を見る', '前の動画', '次の動画',
+      'レビューを書く', 'レビューを書く', '私たちと旅をしましたか？これから旅する人に、旅の感想を伝えてください。レビューは確認後にサイトに掲載されます。', 'お名前', '国', '評価', 'ツアー', 'その他', 'レビュー', 'メール（任意・公開されません）', 'レビューを送信',
+      'ありがとうございます！確認後にレビューが掲載されます。', 'お名前、評価、短いコメントを入力してください。', 'この接続からのレビューが多すぎます。しばらくしてからお試しください。', '送信できませんでした。もう一度お試しください。', '5つ星中{n}つ星',
+      '私たちのチーム', '旅を計画し、運転し、案内する人たち。', '写真を開く'],
+    de: ['Zum hellen Modus wechseln', 'Zum dunklen Modus wechseln', 'Hell', 'Dunkel', 'Reisende', 'Team', 'Menü schließen', 'Sprache', 'Darstellung', 'Folgen Sie uns',
+      'Private Reisen ab Ulaanbaatar', 'Alle Routen auf der Karte', 'Ein Tag unterwegs mit uns', 'Clips und Erinnerungen unserer Reisen', 'Fotos und Bewertungen', 'Die Menschen hinter Ihrer Reise', 'Visum, Reisezeit, Jurten',
+      'Echte Momente von unseren Reisen. Tippen Sie auf einen Clip, um ihn groß zu sehen und die Geschichte dazu zu lesen.', 'Clip ansehen', 'Vorheriger Clip', 'Nächster Clip',
+      'Bewertung schreiben', 'Bewertung schreiben', 'Sind Sie mit uns gereist? Erzählen Sie künftigen Reisenden, wie es war. Bewertungen erscheinen, nachdem wir sie geprüft haben.', 'Ihr Name', 'Land', 'Ihre Bewertung', 'Reise', 'Andere', 'Ihr Erfahrungsbericht', 'E-Mail (optional, wird nicht angezeigt)', 'Bewertung senden',
+      'Vielen Dank! Ihre Bewertung erscheint, sobald wir sie geprüft haben.', 'Bitte geben Sie Ihren Namen, eine Bewertung und ein paar Worte an.', 'Zu viele Bewertungen von dieser Verbindung. Bitte versuchen Sie es später erneut.', 'Senden fehlgeschlagen. Bitte versuchen Sie es erneut.', '{n} von 5',
+      'Unser Team', 'Die Menschen, die Ihre Reise planen, fahren und begleiten.', 'Foto öffnen'],
+    es: ['Cambiar a modo claro', 'Cambiar a modo oscuro', 'Claro', 'Oscuro', 'Viajeros', 'Equipo', 'Cerrar menú', 'Idioma', 'Tema', 'Síguenos',
+      'Viajes privados desde Ulán Bator', 'Todas las rutas en el mapa', 'Un día en el camino con nosotros', 'Vídeos y recuerdos de nuestros viajes', 'Fotos y reseñas', 'Las personas detrás de tu viaje', 'Visados, temporadas, noches en ger',
+      'Momentos reales de nuestros viajes. Toca un vídeo para verlo en grande y leer la historia que hay detrás.', 'Ver vídeo', 'Vídeo anterior', 'Vídeo siguiente',
+      'Dejar una reseña', 'Dejar una reseña', '¿Viajaste con nosotros? Cuéntales a los futuros viajeros cómo fue. Las reseñas se publican después de revisarlas.', 'Tu nombre', 'País', 'Tu valoración', 'Viaje', 'Otro', 'Tu reseña', 'Correo (opcional, no se publica)', 'Enviar reseña',
+      '¡Gracias! Tu reseña aparecerá cuando la hayamos revisado.', 'Añade tu nombre, una valoración y unas palabras.', 'Demasiadas reseñas desde esta conexión. Inténtalo más tarde.', 'No se pudo enviar. Inténtalo de nuevo.', '{n} de 5',
+      'Nuestro equipo', 'Las personas que planifican, conducen y guían tu viaje.', 'Abrir foto']
+  };
+  Object.keys(NEW).forEach(function (l) { if (NEW[l].length !== K.length) throw new Error('i18n ' + l); K.forEach(function (k, i) { D.t[l][k] = NEW[l][i]; }); });
 })();
