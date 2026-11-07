@@ -223,6 +223,46 @@
     }
   }
 
+  /* ---------- guest photos + lightbox ---------- */
+  var lbAt = 0, lbFocus = null;
+  function renderGallery() {
+    var g = D.guests || [], box = $('#gal'); if (!box) return;
+    box.innerHTML = g.map(function (p, i) {
+      return '<button type="button" class="gal-i ' + esc(p.cls || '') + '" data-gi="' + i + '"><img src="img/guests/' + esc(p.img) + '-s.webp" alt="' + esc(L(p.cap)) + '" loading="lazy" decoding="async"><span>' + esc(L(p.cap)) + '</span></button>';
+    }).join('');
+    ['lbClose:g.close', 'lbPrev:g.prev', 'lbNext:g.next'].forEach(function (x) { var a = x.split(':'), el = $('#' + a[0]); if (el) el.setAttribute('aria-label', t(a[1])); });
+    if (!$('#lb').hidden) lbShow(lbAt);
+  }
+  function lbShow(i) {
+    var g = D.guests || []; if (!g.length) return;
+    lbAt = (i + g.length) % g.length;
+    var p = g[lbAt], img = $('#lbImg');
+    img.src = 'img/guests/' + p.img + '.webp'; img.alt = L(p.cap); $('#lbCap').textContent = L(p.cap) + '  ·  ' + (lbAt + 1) + ' / ' + g.length;
+  }
+  function lbOpen(i) {
+    lbFocus = document.activeElement; lbShow(i); $('#lb').hidden = false;
+    document.body.style.overflow = 'hidden'; document.body.classList.add('modal-open'); if (lenis) lenis.stop(); $('#lbClose').focus();
+  }
+  function lbClose() {
+    $('#lb').hidden = true; document.body.style.overflow = ''; document.body.classList.remove('modal-open'); if (lenis) lenis.start();
+    if (lbFocus) lbFocus.focus({ preventScroll: true });
+  }
+  if ($('#gal')) {
+    $('#gal').addEventListener('click', function (e) { var b = e.target.closest('[data-gi]'); if (b) lbOpen(+b.getAttribute('data-gi')); });
+    $('#lbClose').addEventListener('click', lbClose);
+    $('#lbPrev').addEventListener('click', function () { lbShow(lbAt - 1); });
+    $('#lbNext').addEventListener('click', function () { lbShow(lbAt + 1); });
+    $('#lb').addEventListener('click', function (e) { if (e.target === this) lbClose(); });
+    document.addEventListener('keydown', function (e) {
+      if ($('#lb').hidden) return;
+      if (e.key === 'Escape') lbClose(); else if (e.key === 'ArrowLeft') lbShow(lbAt - 1); else if (e.key === 'ArrowRight') lbShow(lbAt + 1);
+      else if (e.key === 'Tab') { var f = [$('#lbClose'), $('#lbPrev'), $('#lbNext')], k = f.indexOf(document.activeElement); e.preventDefault(); f[(k + (e.shiftKey ? f.length - 1 : 1)) % f.length].focus(); }
+    });
+    var sx = null;
+    $('#lb').addEventListener('touchstart', function (e) { sx = e.touches[0].clientX; }, { passive: true });
+    $('#lb').addEventListener('touchend', function (e) { if (sx == null) return; var dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 50) lbShow(lbAt + (dx < 0 ? 1 : -1)); sx = null; });
+  }
+
   /* ---------- faq ---------- */
   function renderFaq() {
     $('#faqList').innerHTML = D.faq.map(function (q, i) {
@@ -359,7 +399,7 @@
     $$('[data-i18n]').forEach(function (el) { var v = t(el.getAttribute('data-i18n')); if (typeof v === 'string') el.textContent = v; });
     $$('#langList button').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-lang') === lang); });
     var cur = (D.langs || []).filter(function (l) { return l.id === lang; })[0]; $('#langCur').textContent = cur ? cur.short : lang.toUpperCase();
-    renderTours(); renderMap(); renderExp(); renderFaq(); fillSelects(); splitStatement(); splitH1(); if (typeof payTexts === 'function' && $('#bBookTxt')) payTexts();
+    renderTours(); renderMap(); renderExp(); renderGallery(); renderFaq(); fillSelects(); splitStatement(); splitH1(); if (typeof payTexts === 'function' && $('#bBookTxt')) payTexts();
     if (tourOpen) fillTour(byId[tourOpen]);
   }
   var langBtn = $('#langBtn'), langList = $('#langList');

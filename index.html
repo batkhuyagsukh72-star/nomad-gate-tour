@@ -42,8 +42,8 @@
 <link rel="preload" as="image" href="img/hero-poster.jpg" fetchpriority="high">
 <link rel="preconnect" href="https://oiaagrrfkwfnnohstzqu.supabase.co" crossorigin>
 <style>html{background:#0D0B09}html.js:not(.entered) body{overflow:hidden}</style>
-<link rel="stylesheet" href="fonts.css?v=20261106b">
-<link rel="stylesheet" href="styles.css?v=20261106b">
+<link rel="stylesheet" href="fonts.css?v=20261107a">
+<link rel="stylesheet" href="styles.css?v=20261107a">
 <script>document.documentElement.classList.add('js');try{if(matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('rm')}catch(e){}setTimeout(function(){document.documentElement.classList.add('entered')},12000);</script>
 </head>
 <body>
@@ -191,6 +191,23 @@
   <div class="reels" id="reels"></div>
 </section>
 
+<!-- ===== GUESTS ===== -->
+<section class="guests" id="guests" aria-labelledby="g-h">
+  <div class="wrap road-head">
+    <div>
+      <h2 class="h2" id="g-h" data-i18n="g.title" data-reveal>Our travellers</h2>
+      <p class="lead" data-i18n="g.lead" data-reveal>Guests from around the world on Nomad Gate Tour journeys.</p>
+    </div>
+  </div>
+  <div class="wrap"><div class="gal" id="gal"></div></div>
+  <div class="lb" id="lb" role="dialog" aria-modal="true" aria-labelledby="lbCap" hidden>
+    <button class="lb-x" type="button" id="lbClose" aria-label="Close"><svg><use href="#i-close"/></svg></button>
+    <button class="lb-nav lb-prev" type="button" id="lbPrev" aria-label="Previous photo"><svg><use href="#i-arrow"/></svg></button>
+    <figure class="lb-fig"><img id="lbImg" alt=""><figcaption id="lbCap"></figcaption></figure>
+    <button class="lb-nav lb-next" type="button" id="lbNext" aria-label="Next photo"><svg><use href="#i-arrow"/></svg></button>
+  </div>
+</section>
+
 <!-- ===== FAQ ===== -->
 <section class="faq" id="faq" aria-labelledby="f-h">
   <div class="wrap faq-grid">
@@ -307,13 +324,13 @@
 <div class="cursor" aria-hidden="true"><i></i></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="data.js?v=20261106b"></script>
-<script src="tours.js?v=20261106b"></script>
-<script src="i18n.js?v=20261106b"></script>
-<script src="map.js?v=20261106b"></script>
+<script src="data.js?v=20261107a"></script>
+<script src="tours.js?v=20261107a"></script>
+<script src="i18n.js?v=20261107a"></script>
+<script src="map.js?v=20261107a"></script>
 <script src="vendor/gsap.min.js" defer></script>
 <script src="vendor/ScrollTrigger.min.js" defer></script>
 <script src="vendor/lenis.min.js" defer></script>
-<script src="app.js?v=20261106b" defer></script>
+<script src="app.js?v=20261107a" defer></script>
 </body>
 </html>

@@ -24,6 +24,19 @@ window.NGT = {
   ],
 
   reels: ['reel-herds', 'reel-dunes', 'reel-sunset', 'reel-terelj', 'reel-autumn', 'reel-steppe'],
+  /* guest photos (img/guests/<img>.webp + <img>-s.webp), sent by Nomad Gate Tour */
+  guests: [
+    { img: 'g01', cls: 'big', cap: {"en": "Gorkhi-Terelj National Park", "mn": "Горхи-Тэрэлж", "ru": "Горхи-Тэрэлж", "ko": "고르히-테렐지 국립공원", "ja": "ゴルヒ・テレルジ国立公園", "de": "Nationalpark Gorkhi-Terelj", "es": "Parque Nacional Gorkhi-Terelj"} },
+    { img: 'g02', cls: 'tall', cap: {"en": "Chinggis Khaan Statue", "mn": "Чингис хааны морьт хөшөө", "ru": "Статуя Чингисхана", "ko": "칭기즈칸 기마상", "ja": "チンギス・ハーン騎馬像", "de": "Dschingis-Khan-Statue", "es": "Estatua de Gengis Kan"} },
+    { img: 'g03', cls: '', cap: {"en": "Lunch in a ger", "mn": "Гэрт үдийн хоол", "ru": "Обед в юрте", "ko": "게르에서 점심", "ja": "ゲルでの昼食", "de": "Mittagessen in der Jurte", "es": "Almuerzo en un ger"} },
+    { img: 'g04', cls: '', cap: {"en": "Turtle Rock, Terelj", "mn": "Мэлхий хад, Тэрэлж", "ru": "Скала Черепаха, Тэрэлж", "ko": "거북바위, 테렐지", "ja": "亀石、テレルジ", "de": "Schildkrötenfelsen, Terelj", "es": "Roca Tortuga, Terelj"} },
+    { img: 'g05', cls: 'wide', cap: {"en": "Horse riding in Terelj", "mn": "Тэрэлжид морь унах", "ru": "Верховая езда в Тэрэлже", "ko": "테렐지에서 승마", "ja": "テレルジで乗馬", "de": "Reiten in Terelj", "es": "A caballo en Terelj"} },
+    { img: 'g06', cls: 'wide', cap: {"en": "Ulaanbaatar", "mn": "Улаанбаатар", "ru": "Улан-Батор", "ko": "울란바토르", "ja": "ウランバートル", "de": "Ulaanbaatar", "es": "Ulán Bator"} },
+    { img: 'g07', cls: '', cap: {"en": "Ice cream break in the city", "mn": "Хотод зайрмагны завсарлага", "ru": "Мороженое в городе", "ko": "시내에서 아이스크림 타임", "ja": "街でアイスクリーム休憩", "de": "Eispause in der Stadt", "es": "Pausa para un helado en la ciudad"} },
+    { img: 'g08', cls: '', cap: {"en": "With our guide at the Chinggis Statue", "mn": "Чингисийн хөшөөнд хөтөчтэйгөө", "ru": "С гидом у статуи Чингисхана", "ko": "칭기즈칸 기마상에서 가이드와 함께", "ja": "チンギス像でガイドと一緒に", "de": "Mit unserem Guide an der Dschingis-Statue", "es": "Con nuestro guía en la estatua de Gengis"} },
+    { img: 'g09', cls: '', cap: {"en": "A day in Terelj", "mn": "Тэрэлжид нэг өдөр", "ru": "День в Тэрэлже", "ko": "테렐지에서의 하루", "ja": "テレルジでの一日", "de": "Ein Tag in Terelj", "es": "Un día en Terelj"} },
+    { img: 'g10', cls: '', cap: {"en": "Good times in Ulaanbaatar", "mn": "Улаанбаатарт хөгжилтэй мөч", "ru": "Весёлые моменты в Улан-Баторе", "ko": "울란바토르에서의 즐거운 순간", "ja": "ウランバートルでの楽しいひととき", "de": "Gute Laune in Ulaanbaatar", "es": "Buenos momentos en Ulán Bator"} }
+  ],
 
   faq: [
     { q: { en: 'When is the best time to travel?', mn: 'Хэзээ аялахад хамгийн тохиромжтой вэ?' },
@@ -63,7 +76,7 @@ window.NGT = {
       'b.send': 'Continue to request', 'b.note': 'No payment now. We reply with a plan and a price.', 'close': 'Close',
       'm.title': 'Where the gate leads', 'm.lead': 'From Ulaanbaatar our routes reach the Gobi in the south and Lake Khuvsgul in the north. Choose a tour to trace it.',
       'x.title': 'Experiences', 'x.lead': 'What a day on the road with us feels like.',
-      'r.title': 'From the road', 'r.lead': 'Real clips filmed on our journeys and shared on Instagram.', 'r.follow': 'Follow on Instagram',
+      'r.title': 'From the road', 'r.lead': 'Real clips filmed on our journeys and shared on Instagram.', 'r.follow': 'Follow on Instagram', 'g.title': 'Our travellers', 'g.lead': 'Guests from around the world on Nomad Gate Tour journeys.', 'g.close': 'Close', 'g.prev': 'Previous photo', 'g.next': 'Next photo',
       'f.title': 'Before you go',
       'c.title': 'Open the gate to your journey', 'c.lead': 'Tell us when you want to travel and who is coming. We’ll shape the route around you.',
       'c.call': 'Call or WhatsApp', 'c.mail': 'Email', 'c.copy': 'Copy', 'c.copied': 'Copied',
@@ -88,7 +101,7 @@ window.NGT = {
       'b.send': 'Хүсэлт рүү үргэлжлүүлэх', 'b.note': 'Одоо төлбөр төлөхгүй. Бид төлөвлөгөө, үнийг илгээнэ.', 'close': 'Хаах',
       'm.title': 'Хаалганы цаана', 'm.lead': 'Манай маршрутууд Улаанбаатараас урагшаа Говь, хойшоо Хөвсгөл хүрдэг. Аяллаа сонгож замыг нь хараарай.',
       'x.title': 'Туршлага', 'x.lead': 'Бидэнтэй замд гарсан нэг өдөр ямар байдаг вэ.',
-      'r.title': 'Замаас', 'r.lead': 'Аяллын үеэр бичиж Instagram-д хуваалцсан жинхэнэ бичлэгүүд.', 'r.follow': 'Instagram-д дагах',
+      'r.title': 'Замаас', 'r.lead': 'Аяллын үеэр бичиж Instagram-д хуваалцсан жинхэнэ бичлэгүүд.', 'r.follow': 'Instagram-д дагах', 'g.title': 'Манай аялагчид', 'g.lead': 'Дэлхийн өнцөг булан бүрээс ирсэн зочид Nomad Gate Tour-тай хамт.', 'g.close': 'Хаах', 'g.prev': 'Өмнөх зураг', 'g.next': 'Дараах зураг',
       'f.title': 'Аялахын өмнө',
       'c.title': 'Аяллынхаа хаалгыг нээ', 'c.lead': 'Хэзээ, хэдүүлээ аялахаа бичээрэй. Маршрутыг танд тааруулж зохионо.',
       'c.call': 'Утас эсвэл WhatsApp', 'c.mail': 'Имэйл', 'c.copy': 'Хуулах', 'c.copied': 'Хуулагдлаа',
