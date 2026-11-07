@@ -276,7 +276,7 @@
     sv.addEventListener('touchend', function (e) { if (sx == null) return; var dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 60) svShow(svAt + (dx < 0 ? 1 : -1)); sx = null; }); })();
 
   /* ---------- travellers: guest photos with rating, name and country in the corner; the review opens with the photo ---------- */
-  if (!D.reviews) D.reviews = (D.guests || []).map(function (g) { return { photo: 'guests/' + g.img, cls: g.cls || '', name: '', country: '', rating: 0, text: '', lang: '', place: g.cap }; });
+  if (!D.reviews) D.reviews = (D.guests || []).map(function (g) { return { photo: 'guests/' + g.img, cls: g.cls || '', name: g.name || '', country: g.country || '', rating: g.rating || 0, text: g.text || '', lang: g.lang || '', tour: g.tour || '', place: g.cap }; });
   if (!D.team) D.team = [];
   function photoSrc(v, small) { v = String(v || ''); if (/^guests\/[\w-]+$/.test(v)) return 'img/' + v + (small ? '-s' : '') + '.webp'; return imgSrc(v); }
   function starsHTML(n) {
@@ -290,7 +290,7 @@
   function renderGallery() {
     var g = photos(), box = $('#gal'); if (!box) return;
     box.innerHTML = g.map(function (r, i) {
-      var place = revPlace(r), who = r.name ? '<b class="gi-who">' + esc(r.name) + (r.country ? ' <small>· ' + esc(r.country) + '</small>' : '') + '</b>' : '';
+      var place = L(r.place) || revPlace(r), who = r.name ? '<b class="gi-who">' + esc(r.name) + (r.country ? ' <small>· ' + esc(r.country) + '</small>' : '') + '</b>' : '';
       return '<button type="button" class="gal-i ' + esc(r.cls || '') + '" data-gi="' + i + '" aria-label="' + esc([t('g.view'), r.name, r.country, place].filter(Boolean).join(' — ')) + '">' +
         '<img src="' + esc(photoSrc(r.photo, true)) + '" alt="" loading="lazy" decoding="async">' + (r.rating ? '<span class="gi-rate">' + starsHTML(r.rating) + '</span>' : '') +
         '<span class="gi-meta">' + who + (place ? '<span class="gi-place">' + esc(place) + '</span>' : '') + '</span></button>';
@@ -312,8 +312,8 @@
     var r = g[lbAt], img = $('#lbImg'), place = revPlace(r), has = !!(r.text || r.name || r.rating);
     img.src = photoSrc(r.photo); img.alt = [r.name, place].filter(Boolean).join(' — ');
     $('#lbCap').textContent = (has ? '' : place + '  ·  ') + (lbAt + 1) + ' / ' + g.length;
-    var rv = $('#lbRev'); rv.hidden = !has; $('#lb').classList.toggle('has-rev', has);
-    rv.innerHTML = has ? starsHTML(r.rating) + (r.text ? '<q>' + esc(r.text) + '</q>' : '') +
+    var rv = $('#lbRev'); rv.hidden = !has; $('#lb').classList.toggle('has-rev', has); $('#lb').classList.toggle('has-text', !!r.text); rv.scrollTop = 0; $('.lb-fig').scrollTop = 0;
+    rv.innerHTML = has ? starsHTML(r.rating) + (r.text ? '<q' + (r.text.length > 260 ? ' class="long"' : '') + '>' + esc(r.text) + '</q>' : '') +
       ((r.name || r.country) ? '<p>' + esc([r.name, r.country].filter(Boolean).join(' · ')) + (place ? '<small>' + esc(place) + '</small>' : '') + '</p>' : place ? '<p><small>' + esc(place) + '</small></p>' : '') : '';
   }
   function lbOpen(i) { lbFocus = document.activeElement; lbShow(i); $('#lb').hidden = false; lockPage(true); $('#lbClose').focus(); }

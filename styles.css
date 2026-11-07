@@ -587,6 +587,18 @@ html.rm .gal-i img{transition:none}
 .lb-rev p{margin:0;font:600 10.5px/1.5 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--gold-hi)}
 .lb-rev small{display:block;color:var(--muted);font:400 13px/1.5 var(--sans);letter-spacing:0;text-transform:none;margin-top:2px}
 .lb.has-rev .lb-fig img{max-height:calc(100vh - 330px);max-height:calc(100dvh - 330px)}
+/* a written review: photo and words side by side on wide screens; on narrow ones the photo sits on top and the words scroll under it */
+.lb-rev q.long{font-size:clamp(16px,1.2vw,19px);line-height:1.62;letter-spacing:0}
+@media (min-width:1000px){
+  .lb.has-text .lb-fig{grid-template-columns:minmax(0,1.2fr) minmax(320px,1fr);grid-template-areas:"img rev" "img cap";column-gap:clamp(28px,3.4vw,56px);row-gap:18px;align-items:center;width:min(100%,1320px);justify-self:center}
+  .lb.has-text .lb-fig img{grid-area:img;justify-self:end;max-height:calc(100vh - 120px);max-height:calc(100dvh - 120px)}
+  .lb.has-text .lb-rev{grid-area:rev;align-self:end;justify-items:start;text-align:left;max-height:calc(100vh - 200px);max-height:calc(100dvh - 200px);overflow-y:auto;overscroll-behavior:contain;padding-right:6px}
+  .lb.has-text .lb-fig figcaption{grid-area:cap;align-self:start;justify-self:start}
+}
+@media (max-width:999px){
+  .lb.has-text .lb-fig{align-self:stretch;align-content:start;max-height:100%;overflow-y:auto;overscroll-behavior:contain;padding-bottom:8px}
+  .lb.has-text .lb-fig img{max-height:48vh;max-height:48dvh}
+}
 .rv-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:14px;margin-top:clamp(16px,2vw,26px)}
 .rv-list:empty{display:none}
 .rv-card{background:var(--felt);border:1px solid var(--line-2);border-radius:16px;padding:22px 22px 18px;display:grid;gap:12px;align-content:start;margin:0}
