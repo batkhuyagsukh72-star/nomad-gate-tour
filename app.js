@@ -957,21 +957,30 @@
     if (reduce || !matchMedia('(pointer: fine)').matches) return;
     var wide = matchMedia('(min-width: 1024px)'), mx = .5, my = .5, moved = false;
     // journeys: the cards swing toward the pointer; clips: the whole row pans with the pointer (left edge = first clip, right edge = last)
-    // pointer near the right edge = travel forward, near the left edge = back, middle = still (so a card stays put under the cursor and can be clicked)
-    var rows = [{ sec: $('#journeys'), el: $('#jTrack'), kids: '.jc', d: [1.5, -1], zone: [.36, .76], max: function () { return jDist ? jDist() : 0; }, ay: 26 },
-                { sec: $('#road'), el: $('#reels'), kids: '.reel', d: [-1.4, 1.2], zone: [.22, .78], max: function (r) { return Math.max(0, r.el.scrollWidth - window.innerWidth); }, ay: 22 }];
+    // the row travels toward the side the pointer is on: the further from the middle of the row, the faster;
+    // over a card it slows right down (the card pops out) so it is easy to click, between cards it moves quickly
+    var rows = [{ sec: $('#journeys'), el: $('#jTrack'), kids: '.jc', d: [1.5, -1], left: function () { var i = $('.j-intro'); return i ? i.getBoundingClientRect().right / window.innerWidth : 0; }, max: function () { return jDist ? jDist() : 0; }, ay: 26 },
+                { sec: $('#road'), el: $('#reels'), kids: '.reel', d: [-1.4, 1.2], left: function () { return 0; }, max: function (r) { return Math.max(0, r.el.scrollWidth - window.innerWidth); }, ay: 22 }];
+    var hovEl = null;
     rows.forEach(function (r) { r.x = 0; r.y = 0; r.t = 0; r.on = false; }); rows[0].prog = $('#jProg');
-    window.addEventListener('mousemove', function (e) { mx = e.clientX / window.innerWidth; my = e.clientY / window.innerHeight; moved = true; }, { passive: true });
+    window.addEventListener('mousemove', function (e) { mx = e.clientX / window.innerWidth; my = e.clientY / window.innerHeight; moved = true; hovEl = e.target && e.target.closest ? e.target.closest('.jc, .reel') : null; }, { passive: true });
+    document.documentElement.addEventListener('mouseleave', function () { hovEl = null; mx = .5; }, { passive: true });
     if ('IntersectionObserver' in window) { var io = new IntersectionObserver(function (ents) { ents.forEach(function (en) { rows.forEach(function (r) { if (r.sec === en.target) r.on = en.isIntersecting; }); }); }); rows.forEach(function (r) { io.observe(r.sec); }); }
     else rows.forEach(function (r) { r.on = true; });
-    var last = 0, SPEED = 1500; // px per second at the very edge
-    var vel = function (z) { if (mx < z[0]) { var a = (z[0] - mx) / z[0]; return -a * a; } if (mx > z[1]) { var b = (mx - z[1]) / (1 - z[1]); return b * b; } return 0; };
+    var last = 0, SPEED = 2200, DZ = .035; // px per second at the far edge; small still zone in the middle of the row
+    var vel = function (r) {
+      var L = Math.max(0, Math.min(.6, r.left())), c = L + (1 - L) / 2, v = 0;
+      if (mx > c + DZ) v = Math.pow((mx - c - DZ) / (1 - c - DZ), .85);
+      else if (mx < c - DZ) v = -Math.pow((c - DZ - mx) / (c - DZ), .85);
+      if (hovEl && r.el.contains(hovEl)) v *= .28; // over a card: slow drift
+      return Math.max(-1, Math.min(1, v));
+    };
     var tick = function (now) {
       var dt = last ? Math.min(.05, (now - last) / 1000) : 0; last = now;
       rows.forEach(function (r) {
         if (!wide.matches) { if (r.x || r.y) { r.x = r.y = 0; r.el.style.translate = ''; $$(r.kids, r.el).forEach(function (k) { k.style.translate = ''; }); } return; }
         if (!r.on || !moved || document.body.classList.contains('modal-open')) return;
-        var m = r.max(r); r.t = Math.max(-m, Math.min(0, r.t - vel(r.zone) * SPEED * dt));
+        var m = r.max(r); r.t = Math.max(-m, Math.min(0, r.t - vel(r) * SPEED * dt));
         var tx = r.t, ty = (.5 - my) * r.ay;
         if (Math.abs(tx - r.x) < .05 && Math.abs(ty - r.y) < .05) return;
         r.x += (tx - r.x) * .18; r.y += (ty - r.y) * .12; // quick, smooth follow

@@ -134,18 +134,28 @@ html:not(.js) .st-text .w,html.rm .st-text .w{opacity:1}
 /* ================= JOURNEYS ================= */
 .journeys{position:relative;background:var(--night)}
 .j-pin{display:flex;align-items:center;min-height:100vh;overflow:hidden;padding:120px 0 80px}
-.j-intro{flex:0 0 min(36vw,480px);padding:0 48px 0 var(--g);position:relative;z-index:2;align-self:stretch;display:flex;flex-direction:column;justify-content:center;background:var(--night)}
+.j-intro{flex:0 0 min(31vw,430px);padding:0 48px 0 var(--g);position:relative;z-index:2;align-self:stretch;display:flex;flex-direction:column;justify-content:center;background:var(--night)}
 .j-intro::after{content:"";position:absolute;top:0;bottom:0;left:100%;width:80px;background:linear-gradient(90deg,var(--night),rgba(13,11,9,0));pointer-events:none}
 .j-drag{display:flex;align-items:center;gap:16px;font:600 10.5px/1 var(--sans);letter-spacing:.26em;text-transform:uppercase;color:var(--muted);margin-top:40px}
-.j-progress{display:block;width:120px;height:1px;background:var(--line-2);position:relative;overflow:hidden}
+.j-drag span{white-space:nowrap}
+.j-progress{display:block;width:120px;flex:0 1 120px;min-width:36px;height:1px;background:var(--line-2);position:relative;overflow:hidden}
 .j-progress b{position:absolute;inset:0;background:var(--gold);transform-origin:left;transform:scaleX(0)}
-.j-track{display:flex;gap:clamp(18px,2.2vw,32px);padding-right:var(--g);will-change:transform}
-.jc{flex:0 0 clamp(290px,27vw,410px);display:flex;flex-direction:column}
+.j-track{display:flex;gap:clamp(18px,2vw,30px);padding-left:96px;padding-right:var(--g);will-change:transform}
+.jc{flex:0 0 clamp(250px,21vw,340px);display:flex;flex-direction:column;position:relative}
 .jc-img{position:relative;aspect-ratio:4/5;overflow:hidden;border-radius:2px;background:var(--felt-2);cursor:pointer}
 .jc-img img{width:100%;height:100%;object-fit:cover;transform:scale(1.08);transition:transform 1.6s var(--ease)}
 .jc-img::after{content:"";position:absolute;inset:12px;border:1px solid rgba(241,220,154,.7);opacity:0;transform:scale(1.04);transition:opacity .6s,transform .9s var(--ease)}
 .jc:hover .jc-img img{transform:scale(1)}
 .jc:hover .jc-img::after{opacity:1;transform:scale(1)}
+/* with a mouse the hovered journey pops out a little */
+@media (pointer:fine) and (min-width:1024px){
+  .jc .jc-img{transition:scale .55s var(--ease),box-shadow .55s var(--ease);transform-origin:50% 60%}
+  .jc:hover{z-index:3}
+  .jc:hover .jc-img{scale:1.045;box-shadow:0 26px 60px -18px rgba(0,0,0,.6),0 0 0 1px rgba(241,220,154,.25)}
+  .reel{transition:scale .55s var(--ease)}
+  .reel:hover{scale:1.04;z-index:3}
+}
+@media (pointer:fine) and (min-width:1024px) and (prefers-reduced-motion:reduce){ .jc:hover .jc-img,.reel:hover{scale:1} }
 .jc-days{position:absolute;left:18px;top:18px;z-index:2;display:grid;place-items:center;width:64px;height:64px;border-radius:50%;background:rgba(13,11,9,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(241,220,154,.45);text-align:center;line-height:1}
 .jc-days b{font:300 26px/1 var(--serif);color:var(--gold-hi)}
 .jc-days small{font:600 10px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;margin-top:3px;display:block}

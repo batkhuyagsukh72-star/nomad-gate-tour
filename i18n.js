@@ -398,6 +398,6 @@
 /* journeys hint when the row follows the mouse */
 (function () {
   var D = window.NGT; if (!D || !D.t) return;
-  var M = { en: 'Point to the edges', mn: 'Хулганаа зах руу', ru: 'Мышь к краю', ko: '마우스를 가장자리로', ja: 'マウスを端へ', de: 'Maus an den Rand', es: 'Ratón al borde' };
+  var M = { en: 'Move the mouse', mn: 'Хулганаа хөдөлгө', ru: 'Ведите мышью', ko: '마우스를 움직이세요', ja: 'マウスを動かす', de: 'Maus bewegen', es: 'Mueve el ratón' };
   Object.keys(M).forEach(function (l) { if (D.t[l]) D.t[l]['j.move'] = M[l]; });
 })();
