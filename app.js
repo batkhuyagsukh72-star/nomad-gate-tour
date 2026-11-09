@@ -534,12 +534,12 @@
   /* ---------- statement words ---------- */
   /* Japanese has no spaces between words: segment it so the scrubbed word-lighting still works */
   function words(s) {
-    if (lang !== 'ja') return s.split(' ');
-    try { if (window.Intl && Intl.Segmenter) { var out = [], seg = new Intl.Segmenter('ja', { granularity: 'word' }); Array.from(seg.segment(s)).forEach(function (x) { if (x.isWordLike || !out.length) out.push(x.segment); else out[out.length - 1] += x.segment; }); return out; } } catch (e) {}
-    return s.match(/[^、。]+[、。]?/g) || [s];
+    if (lang !== 'ja' && lang !== 'zh') return s.split(' ');
+    try { if (window.Intl && Intl.Segmenter) { var out = [], seg = new Intl.Segmenter(lang, { granularity: 'word' }); Array.from(seg.segment(s)).forEach(function (x) { if (x.isWordLike || !out.length) out.push(x.segment); else out[out.length - 1] += x.segment; }); return out; } } catch (e) {}
+    return s.match(/[^、。，]+[、。，]?/g) || [s];
   }
   function splitStatement() {
-    var el = $('#stText'), full = t('statement'), brand = t('st.brand'), J = lang === 'ja' ? '' : ' ';
+    var el = $('#stText'), full = t('statement'), brand = t('st.brand'), J = (lang === 'ja' || lang === 'zh') ? '' : ' ';
     var cut = full.indexOf(brand); if (cut < 0) cut = full.indexOf('Nomad Gate Tour'); if (cut < 0) cut = full.length;
     var span = function (w) { return '<span class="w">' + esc(w) + '</span>'; };
     var head = words(full.slice(0, cut).trim()), tail = full.slice(cut).trim();
@@ -780,6 +780,7 @@
     return true;
   }
   function applyContent(c) {
+    if (c && D.zhFill) D.zhFill(c); // Chinese for API content, matched by its English text
     var itemsDirty = !!(c && applyItems(c.items));
     if (!applyTours(c) && itemsDirty) { renderReels(); renderGallery(); renderTeam(); if (hasGsap()) { buildScroll(); ScrollTrigger.refresh(); } }
   }

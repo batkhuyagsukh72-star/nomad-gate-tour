@@ -90,10 +90,12 @@ html.js:not(.ready) .gate-stage > *{opacity:0}
 :root:lang(ja){--serif:'Manrope','Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic','Noto Sans JP','Noto Sans CJK JP',sans-serif;--sans:'Montserrat','Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic','Meiryo','Noto Sans JP','Noto Sans CJK JP',sans-serif}
 :root:lang(ko){--serif:'Manrope','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Noto Sans CJK KR',sans-serif;--sans:'Montserrat','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Noto Sans CJK KR',sans-serif}
 :root:lang(ko) body{word-break:keep-all}
+:root:lang(zh){--serif:'Manrope','PingFang SC','Hiragino Sans GB','Microsoft YaHei','Noto Sans SC','Noto Sans CJK SC',sans-serif;--sans:'Montserrat','PingFang SC','Hiragino Sans GB','Microsoft YaHei','Noto Sans SC','Noto Sans CJK SC',sans-serif}
+:root:lang(zh) body{line-break:strict}
 :root:lang(ja) body{line-break:strict}
-:root:lang(ja) .hero-h1,:root:lang(ko) .hero-h1{letter-spacing:0;font-size:clamp(36px,5.6vw,92px);line-height:1.12}
-:root:lang(ja) .st-text,:root:lang(ko) .st-text{letter-spacing:0;font-size:clamp(22px,2.7vw,44px);line-height:1.55;max-width:19em}
-:root:lang(ja) .h2,:root:lang(ko) .h2{letter-spacing:0}
+:root:lang(ja) .hero-h1,:root:lang(ko) .hero-h1,:root:lang(zh) .hero-h1{letter-spacing:0;font-size:clamp(36px,5.6vw,92px);line-height:1.12}
+:root:lang(ja) .st-text,:root:lang(ko) .st-text,:root:lang(zh) .st-text{letter-spacing:0;font-size:clamp(22px,2.7vw,44px);line-height:1.55;max-width:19em}
+:root:lang(ja) .h2,:root:lang(ko) .h2,:root:lang(zh) .h2{letter-spacing:0}
 .hdr-cta{min-height:44px;padding:0 22px}
 .burger{display:none;width:46px;height:46px;border:1px solid var(--line);border-radius:50%;position:relative}
 .burger i{position:absolute;left:14px;right:14px;height:1px;background:var(--ivory);transition:transform .45s var(--ease)}
@@ -525,6 +527,8 @@ html.rm .gal-i img{transition:none}
   .qnav a.on{border-color:var(--gold);color:var(--gold-hi);background:color-mix(in srgb,var(--night) 64%,transparent)}
   .qnav a[hidden]{display:none}
   .hdr.menu-open .qnav{visibility:hidden}
+  .hdr > .hdr-r{position:relative;z-index:5}
+  .lang-list{max-height:calc(100dvh - 90px);overflow-y:auto;overscroll-behavior:contain}
 }
 @media (max-width:640px){ .hdr > .brand,.hdr > .hdr-r{min-height:64px} }
 @media (max-width:380px){ .hdr-r .theme-btn{display:none} }
