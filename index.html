@@ -42,8 +42,8 @@
 <link rel="preload" as="image" href="img/hero-poster.jpg" fetchpriority="high">
 <link rel="preconnect" href="https://oiaagrrfkwfnnohstzqu.supabase.co" crossorigin>
 <style>html{background:#0D0B09}html[data-theme="light"]{background:#F6F1E7}html.js:not(.entered) body{overflow:hidden}</style>
-<link rel="stylesheet" href="fonts.css?v=20261109c">
-<link rel="stylesheet" href="styles.css?v=20261109c">
+<link rel="stylesheet" href="fonts.css?v=20261127a">
+<link rel="stylesheet" href="styles.css?v=20261127a">
 <script>document.documentElement.classList.add('js');try{var th=localStorage.getItem('ngt-theme');if(th==='light'){document.documentElement.setAttribute('data-theme','light');document.getElementById('themeColor').setAttribute('content','#F6F1E7')}}catch(e){}try{if(matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('rm')}catch(e){}setTimeout(function(){document.documentElement.classList.add('entered')},12000);</script>
 </head>
 <body>
@@ -168,8 +168,8 @@
   <div class="j-pin" id="jPin">
     <div class="j-intro">
       <h2 class="h2" id="j-h" data-i18n="j.title" data-reveal>Signature journeys</h2>
-      <p class="lead" data-i18n="j.lead" data-reveal>Five routes through the places we film and love.</p>
-      <p class="note" data-i18n="j.note" data-reveal>Sample routes for this demo.</p>
+      <p class="lead" data-i18n="j.lead" data-reveal>Eight private tours from Ulaanbaatar, from a single day to thirteen. Every one can be changed to suit your group.</p>
+      <p class="note" data-i18n="j.note" data-reveal>Every tour is private for your group and starts and ends in Ulaanbaatar.</p>
       <p class="j-drag" data-reveal><span data-i18n="j.drag">Scroll to travel</span><i class="j-progress"><b id="jProg"></b></i></p>
     </div>
     <div class="j-track" id="jTrack" role="list"></div>
@@ -181,7 +181,7 @@
   <div class="wrap map-grid">
     <div class="map-side">
       <h2 class="h2" id="m-h" data-i18n="m.title" data-reveal>Where the gate leads</h2>
-      <p class="lead" data-i18n="m.lead" data-reveal>Our routes fan out from Ulaanbaatar.</p>
+      <p class="lead" data-i18n="m.lead" data-reveal>From Ulaanbaatar our routes reach the Gobi in the south and Lake Khuvsgul in the north. Choose a tour to trace it.</p>
       <ol class="map-list" id="mapList"></ol>
     </div>
     <div class="map-wrap"><div class="map" id="map-svg"></div></div>
@@ -205,7 +205,7 @@
   <div class="wrap road-head">
     <div>
       <h2 class="h2" id="r-h" data-i18n="r.title" data-reveal>From the road</h2>
-      <p class="lead" data-i18n="r.lead" data-reveal>Real clips filmed on our journeys.</p>
+      <p class="lead" data-i18n="r.lead" data-reveal>Real moments from our journeys. Tap a clip to watch it large and read the story behind it.</p>
     </div>
     <a class="btn btn-line magnet" href="https://www.instagram.com/nomad_gate_tour" target="_blank" rel="noopener" data-reveal><svg><use href="#i-ig"/></svg><span data-i18n="r.follow">Follow on Instagram</span></a>
   </div>
@@ -369,7 +369,7 @@
     <div class="f rv-photo"><span data-i18n="rv.photo">Trip photo (optional)</span>
       <label class="rv-drop" id="rvDrop"><input type="file" id="rv-file" accept="image/*" class="sr"><img id="rvPv" alt="" hidden><span class="rv-drop-t"><svg aria-hidden="true"><use href="#i-plus"/></svg><span data-i18n="rv.photoAdd">Add a photo</span></span></label>
       <button type="button" class="rv-photo-x" id="rvPhotoX" hidden data-i18n="rv.photoRemove">Remove photo</button></div>
-    <label class="f"><span data-i18n="rv.email">Email (optional)</span><input id="rv-email" name="email" type="email" autocomplete="email" maxlength="200"></label>
+    <label class="f"><span data-i18n="rv.email">Email (optional, never shown)</span><input id="rv-email" name="email" type="email" autocomplete="email" maxlength="200"></label>
     <label class="hp" aria-hidden="true">Website<input id="rv-web" name="website" tabindex="-1" autocomplete="off"></label>
     <button class="btn btn-gold btn-wide" type="submit" id="rvSend"><span data-i18n="rv.send">Send review</span><svg><use href="#i-arrow"/></svg></button>
     <p class="f-note" id="rvNote" aria-live="polite"></p>
@@ -391,14 +391,14 @@
 <div class="cursor" aria-hidden="true"><i></i></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="data.js?v=20261109c"></script>
-<script src="tours.js?v=20261109c"></script>
-<script src="i18n.js?v=20261109c"></script>
-<script src="i18n-zh.js?v=20261109c"></script>
-<script src="map.js?v=20261109c"></script>
+<script src="data.js?v=20261127a"></script>
+<script src="tours.js?v=20261127a"></script>
+<script src="i18n.js?v=20261127a"></script>
+<script src="i18n-zh.js?v=20261127a"></script>
+<script src="map.js?v=20261127a"></script>
 <script src="vendor/gsap.min.js" defer></script>
 <script src="vendor/ScrollTrigger.min.js" defer></script>
 <script src="vendor/lenis.min.js" defer></script>
-<script src="app.js?v=20261109c" defer></script>
+<script src="app.js?v=20261127a" defer></script>
 </body>
 </html>
